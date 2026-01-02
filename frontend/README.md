@@ -1,0 +1,1 @@
+This directory contains the frontend and it is responsible for the user interface and client-side intreactions with the backend APIs.

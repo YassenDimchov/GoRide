@@ -1,0 +1,1 @@
+This directory contains the backend logic and it will be built using Laravel and handle business logic, API endpoints and database interactions.
