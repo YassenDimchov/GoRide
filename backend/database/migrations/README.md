@@ -1,0 +1,1 @@
+Default Laravel migrations were disabled because DB schema already existed.
