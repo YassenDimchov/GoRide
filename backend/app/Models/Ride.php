@@ -30,7 +30,14 @@ class Ride extends Model
         'fare',
         'status',
         'accepted_at',
+        'started_at',
         'completed_at',
+    ];
+
+    protected $casts = [
+        'accepted_at' => 'datetime',
+        'started_at' => 'datetime',
+        'completed_at' => 'datetime',
     ];
 
     /**
