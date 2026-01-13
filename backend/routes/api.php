@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\RideController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PaymentController;
+use App\Http\Controllers\Api\ReviewController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register']);
@@ -22,6 +23,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/payments/{payment}/pay', [PaymentController::class, 'pay']);
     Route::get('/payments', [PaymentController::class, 'index']);
 
+    Route::post('/rides/{ride}/review', [ReviewController::class, 'store']);
+    Route::get('/reviews', [ReviewController::class, 'index']);
+    Route::get('/drivers/{driver}/reviews', [ReviewController::class, 'driverReviews']);
 
     // for debugging
     Route::get('/rides/{ride}', [RideController::class, 'show']);
