@@ -199,4 +199,92 @@ class RideController extends Controller
             'payment' => $payment,
         ], 200);
     }
+
+    public function mine(Request $request)
+    {
+        $user = $request->user();
+
+        $query = Ride::query()->where('user_id', $user->id);
+
+        if ($status = $request->query('status')) 
+        {
+            $query->where('status', $status);
+        }
+
+        if ($from = $request->query('from')) 
+        {
+            $query->whereDate('created_at', '>=', $from);
+        }
+
+        if ($to = $request->query('to')) 
+        {
+            $query->whereDate('created_at', '<=', $to);
+        }
+
+        if ($request->boolean('with_payment')) $query->with('payment');
+        if ($request->boolean('with_review')) $query->with('review');
+        if ($request->boolean('with_driver')) $query->with('driver');
+
+        $rides = $query->latest()->paginate(20);
+
+        return response()->json($rides);
+    }
+
+    public function driverRides(Request $request)
+    {
+        $user = $request->user();
+        $driver = $user->driver;
+
+        if (!$driver) 
+        {
+            return response()->json(['message' => 'Only drivers can view driver rides.'], 403);
+        }
+
+        $query = Ride::query()->where('driver_id', $driver->id);
+
+        if ($status = $request->query('status')) 
+        {
+            $query->where('status', $status);
+        }
+
+        if ($from = $request->query('from')) 
+        {
+            $query->whereDate('created_at', '>=', $from);
+        }
+
+        if ($to = $request->query('to')) 
+        {
+            $query->whereDate('created_at', '<=', $to);
+        }
+
+        if ($request->boolean('with_payment')) $query->with('payment');
+        if ($request->boolean('with_review')) $query->with('review');
+        if ($request->boolean('with_user')) $query->with('user');
+
+        $rides = $query->latest()->paginate(20);
+
+        return response()->json($rides);
+    }
+
+    public function available(Request $request)
+    {
+        $user = $request->user();
+
+        if (!$user->driver) 
+        {
+            return response()->json(['message' => 'Only drivers can view available rides.'], 403);
+        }
+
+        $query = Ride::query()
+            ->where('status', RideStatus::PENDING->value)
+            ->whereNull('driver_id');
+
+        if ($request->boolean('with_user')) $query->with('user');
+
+        $rides = $query->latest()->paginate(20);
+
+        return response()->json($rides);
+    }
+
+
 }

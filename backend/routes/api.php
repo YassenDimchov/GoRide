@@ -27,6 +27,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/reviews', [ReviewController::class, 'index']);
     Route::get('/drivers/{driver}/reviews', [ReviewController::class, 'driverReviews']);
 
+    Route::get('/rides/mine', [RideController::class, 'mine']);
+    Route::get('/rides/driver', [RideController::class, 'driverRides']);
+    Route::get('/rides/available', [RideController::class, 'available']);   
+
     // for debugging
     Route::get('/rides/{ride}', [RideController::class, 'show']);
 });
