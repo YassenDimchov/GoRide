@@ -32,9 +32,26 @@ class RideController extends Controller
     //Show ride details (used for testing)
     public function show(Ride $ride) 
     {
-        return response()->json([
-            'data' => $ride,
+        $user = auth()->user();
+
+        $isPassenger = (int)$ride->user_id === (int)$user->id;
+        $isDriver = $user->driver && (int)$ride->driver_id === (int)$user->driver->id;
+
+        if (!$isPassenger && !$isDriver) 
+        {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+
+        $ride->load([
+        'user',
+        'driver.user',
+        'payment',
+        'review',
         ]);
+
+        return response()->json([
+            'data' => $ride
+        ], 200);
     }
 
     public function accept(Ride $ride)
@@ -75,15 +92,21 @@ class RideController extends Controller
             }
             
             // Ride was already accepted.
-            if ($lockedRide->status !== RideStatus::PENDING->value) 
-            {
+            if ($lockedRide->status !== RideStatus::PENDING->value) {
+                // Same driver trying to accept
+                if ($lockedRide->driver_id === $driver->id) {
+                    return response()->json([
+                        'message' => 'Ride already accepted by you.',
+                        'data' => $lockedRide,
+                    ], 200);
+                }
+
                 return response()->json([
                     'message' => 'Ride is not available for acceptance.'
                 ], 409);
             }
 
-            if ($lockedRide->driver_id !== null) 
-            {
+            if ($lockedRide->driver_id !== null && $lockedRide->driver_id !== $driver->id) {
                 return response()->json([
                     'message' => 'Ride has already been accepted by another driver.'
                 ], 409);
@@ -158,10 +181,13 @@ class RideController extends Controller
 
         if ($ride->status === RideStatus::COMPLETED->value) 
         {
+            $ride->load(['payment']);
             return response()->json([
-                'message' => 'Ride has already been completed.'
-            ], 409);
-        } 
+                'message' => 'Ride already completed.',
+                'data' => $ride,
+                'payment' => $ride->payment,
+            ], 200);
+        }
 
         if ($ride->status !== RideStatus::ONGOING->value) 
         {

@@ -3,6 +3,10 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -15,5 +19,37 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
-    })->create();
+
+        $exceptions->render(function (\Throwable $e, Request $request) {
+
+            if ($request->is('api/*') || $request->expectsJson()) {
+
+                if ($e instanceof AuthenticationException) {
+                    return response()->json(['message' => 'Unauthenticated.'], 401);
+                }
+
+                if ($e instanceof ModelNotFoundException) {
+                    return response()->json(['message' => 'Resource not found.'], 404);
+                }
+
+                if ($e instanceof NotFoundHttpException) {
+                    $msg = $e->getMessage();
+
+                    if (str_contains($msg, 'No query results for model')) {
+                        return response()->json(['message' => 'Resource not found.'], 404);
+                    }
+
+                    return response()->json(['message' => 'Endpoint not found.'], 404);
+                }
+
+                return response()->json([
+                    'message' => 'Server error.',
+                    // Uncomment for detailed errors in local
+                    // 'error' => $e->getMessage(),
+                ], 500);
+            }
+
+            return null;
+        });
+    })
+    ->create();

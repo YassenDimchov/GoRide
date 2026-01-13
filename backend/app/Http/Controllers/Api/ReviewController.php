@@ -64,4 +64,16 @@ class ReviewController extends Controller
 
         return response()->json($reviews);
     }
+
+    public function rating(\App\Models\Driver $driver)  
+    {
+        $count = $driver->reviews()->count();
+        $avg = $driver->reviews()->avg('rating');
+
+        return response()->json([
+            'driver_id' => $driver->id,
+            'reviews_count' => $count,
+            'average_rating' => $avg ? round((float)$avg, 2) : null,
+        ]);
+    }
 }
