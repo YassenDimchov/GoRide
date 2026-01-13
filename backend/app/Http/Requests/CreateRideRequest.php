@@ -20,8 +20,8 @@ class CreateRideRequest extends FormRequest
             'end_lat'   => ['required', 'numeric', 'between:-90,90'],
             'end_lng'   => ['required', 'numeric', 'between:-180,180'],
 
-            'start_address' => ['nullable', 'string', 'max:255'],
-            'end_address'   => ['nullable', 'string', 'max:255'],
+            'start_address' => ['required', 'string', 'max:255'],
+            'end_address'   => ['required', 'string', 'max:255'],
         ];
     }
 }

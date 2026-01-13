@@ -27,6 +27,10 @@ class Driver extends Model
         'current_lng',
     ];
 
+    protected $casts = [
+        'last_ride_completed_at' => 'datetime',
+    ];
+
     /**
      * Get the user that owns the driver profile.
      */

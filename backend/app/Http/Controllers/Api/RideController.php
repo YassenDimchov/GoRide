@@ -218,7 +218,10 @@ class RideController extends Controller
             ]
         );
 
-        Driver::whereKey($driver->id)->update(['status' => 'available']);
+        Driver::whereKey($driver->id)->update([
+            'status' => 'available',
+            'last_ride_completed_at' => now(),
+        ]);
 
         return response()->json([
             'data' => $ride,
@@ -295,22 +298,71 @@ class RideController extends Controller
     public function available(Request $request)
     {
         $user = $request->user();
+        $driver = $user->driver;
 
-        if (!$user->driver) 
+        if (!$driver) 
         {
             return response()->json(['message' => 'Only drivers can view available rides.'], 403);
         }
 
-        $query = Ride::query()
+        if ($driver->current_lat === null || $driver->current_lng === null) 
+        {
+            return response()->json(['message' => 'Driver location is not set.'], 409);
+        }
+
+        $rides = Ride::query()
             ->where('status', RideStatus::PENDING->value)
-            ->whereNull('driver_id');
+            ->whereNull('driver_id')
+            ->with('user')
+            ->get();
 
-        if ($request->boolean('with_user')) $query->with('user');
+        $maxKm = 10.0;
+        $maxWaitMin = 60.0;
 
-        $rides = $query->latest()->paginate(20);
+        $scored = $rides->map(function ($ride) use ($driver, $maxKm, $maxWaitMin) 
+        {
 
-        return response()->json($rides);
+            $distanceKm = $this->haversineKm(
+                (float) $driver->current_lat,
+                (float) $driver->current_lng,
+                (float) $ride->start_lat,
+                (float) $ride->start_lng
+            );
+
+            $normDist = min($distanceKm / $maxKm, 1.0);
+
+            $waitMin = max(0, (int) $ride->created_at->diffInMinutes(now()));
+            $normWait = 1.0 - min($waitMin / $maxWaitMin, 1.0);
+
+            $score = (0.7 * $normDist) + (0.3 * $normWait);
+
+            $ride->match = [
+                'distance_km' => round($distanceKm, 2),
+                'wait_min' => $waitMin,
+                'score' => round($score, 4),
+            ];
+
+            return $ride;
+        })
+        ->sortBy(fn($r) => $r->match['score'])
+        ->values();
+
+        return response()->json(['data' => $scored], 200);
     }
 
+
+
+    private function haversineKm(float $lat1, float $lon1, float $lat2, float $lon2): float
+    {
+        $earth = 6371;
+        $dLat = deg2rad($lat2 - $lat1);
+        $dLon = deg2rad($lon2 - $lon1);
+
+        $a = sin($dLat / 2) ** 2
+            + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * (sin($dLon / 2) ** 2);
+
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+        return $earth * $c;
+    }
 
 }
