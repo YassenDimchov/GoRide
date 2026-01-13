@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\RideController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\PaymentController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register']);
@@ -17,6 +18,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::delete('/me', [AuthController::class, 'destroy']);
     Route::get('/me', [AuthController::class, 'me']); // may scrape
+
+    Route::post('/payments/{payment}/pay', [PaymentController::class, 'pay']);
+    Route::get('/payments', [PaymentController::class, 'index']);
+
 
     // for debugging
     Route::get('/rides/{ride}', [RideController::class, 'show']);

@@ -23,6 +23,11 @@ class Payment extends Model
         'paid_at',
     ];
 
+    protected $casts = [
+        'amount' => 'decimal:2',
+        'paid_at' => 'datetime',
+    ];
+
     /**
      * Get the ride that the payment was for.
      */

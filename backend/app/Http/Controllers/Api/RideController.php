@@ -9,6 +9,8 @@ use App\Models\Ride;
 use App\Enums\RideStatus;
 use Illuminate\Support\Facades\DB;
 use App\Models\Driver;
+use App\Models\Payment;
+use App\Enums\PaymentStatus;
 
 class RideController extends Controller
 {
@@ -180,11 +182,21 @@ class RideController extends Controller
         $ride->status = RideStatus::COMPLETED->value;
         $ride->completed_at = now();
         $ride->save();
+        $payment = $ride->payment()->firstOrCreate(
+            ['ride_id' => $ride->id],
+            [
+                'amount'  => $ride->fare,
+                'method'  => 'cash',
+                'status'  => PaymentStatus::Pending->value,
+                'paid_at' => null,
+            ]
+        );
 
         Driver::whereKey($driver->id)->update(['status' => 'available']);
 
         return response()->json([
-            'data' => $ride
+            'data' => $ride,
+            'payment' => $payment,
         ], 200);
     }
 }
