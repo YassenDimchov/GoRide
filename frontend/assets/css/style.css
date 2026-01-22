@@ -15,8 +15,10 @@
     --accent-2: #51A2FF;
 
     --danger: #ef4444;
+    --black: #0b0d17;
 
     /* Fonts */
+    --fs-xxxl: 30px;
     --fs-xxl: 24px;
     --fs-xl: 20px;
     --fs-lg: 16px;
