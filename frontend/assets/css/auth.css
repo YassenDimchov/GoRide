@@ -3,6 +3,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 40px 16px;
 }
 
 .auth-card {
@@ -79,6 +80,33 @@
     font-family: var(--font-sans);
     font-size: var(--fs-md);
     color: var(--text);
+}
+
+.auth-password {
+    position: relative;
+}
+
+.eye-btn{
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 4px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.eye-btn:hover img{
+    opacity: 1;
+}
+
+.eye-btn img{
+    width: 18px;
+    height: 18px;
+    max-width: 18px;
+    max-height: 18px;
 }
 
 .auth-input input::placeholder{
@@ -287,3 +315,17 @@ select:-webkit-autofill {
 }
 
 /* Add alerts later!!! */
+
+/* Form errors */
+.field-error{
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--danger);
+}
+
+.form-error{
+    margin: 10px 0 0;
+    font-size: 13px;
+    color: var(--danger);
+    text-align: center;
+}

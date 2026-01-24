@@ -1,3 +1,10 @@
+<?php
+    session_start();
+    $errors = $_SESSION['errors'] ?? [];
+    $old    = $_SESSION['old'] ?? [];
+    unset($_SESSION['errors'], $_SESSION['old']);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,21 +31,33 @@
             <h1 class="auth-title">Welcome Back!</h1>
             <p class="auth-subtitle">Sign in to your account</p>
 
-            <form action="login_action.php" class="auth-form" method="POST">
+            <form action="login_action.php" class="auth-form" method="POST" novalidate>
 
                 <!-- Email -->
                 <label class="auth-label" for="email">Email</label>
                 <div class="auth-input">
                     <img src="assets/images/Icons/mail.svg" class="icon20" alt="">
-                    <input id="email" name="email" type="email" placeholder="you@example.com" required>
+                    <input id="email" name="email" type="email" placeholder="you@example.com"
+                        value="<?= htmlspecialchars($old['email'] ?? '') ?>" required>
                 </div>
+
+                <?php if (!empty($errors['email'])): ?>
+                    <div class="field-error"><?= htmlspecialchars($errors['email']) ?></div>
+                <?php endif; ?>
 
                 <!-- Password -->
                 <label class="auth-label" for="password">Password</label>
-                <div class="auth-input">
+                <div class="auth-input auth-password">
                     <img src="assets/images/Icons/lock.svg" class="icon20" alt="">
                     <input id="password" name="password" type="password" placeholder="••••••••" required>
+                    <button type="button" class="eye-btn" data-target="password">
+                        <img src="assets/images/Icons/eye-closed.svg" alt="Toggle password">
+                    </button>
                 </div>
+
+                <?php if (!empty($errors['password'])): ?>
+                    <div class="field-error"><?= htmlspecialchars($errors['password']) ?></div>
+                <?php endif; ?>
 
                 <div class="auth-row">
                     <label class="auth-check">
@@ -48,6 +67,10 @@
                 </div>
 
                 <a class="auth-link" href="forgot_password.php">Forgot password?</a>
+                
+                <?php if (!empty($errors['general'])): ?>
+                    <div class="form-error"><?= htmlspecialchars($errors['general']) ?></div>
+                <?php endif; ?>
 
                 <button class="auth-btn-primary" type="submit">Sign In</button>
             </form>
@@ -69,5 +92,7 @@
             
         </div>
     </div>
+
+    <script src="assets/js/password-eye.js"></script>
 </body>
 </html>

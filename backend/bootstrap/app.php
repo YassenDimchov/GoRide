@@ -42,10 +42,16 @@ return Application::configure(basePath: dirname(__DIR__))
                     return response()->json(['message' => 'Endpoint not found.'], 404);
                 }
 
+                if ($e instanceof \Illuminate\Validation\ValidationException) {
+                    return response()->json([
+                        'message' => $e->getMessage(),
+                        'errors' => $e->errors(),
+                    ], 422);
+                }
+
                 return response()->json([
                     'message' => 'Server error.',
-                    // Uncomment for detailed errors in local
-                    // 'error' => $e->getMessage(),
+                    
                 ], 500);
             }
 
