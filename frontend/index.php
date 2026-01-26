@@ -1,4 +1,4 @@
-
+<?php require_once __DIR__ . '/includes/guard.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,8 +22,8 @@
 </head>
 
 <body>
-
-    <?php include 'navbar.php'; ?>
+    <?php include __DIR__ . '/components/navbar.php'; ?>
+    <?php include __DIR__ . '/components/sidebar.php'; ?>
     
     <div class="app-shell">
         <div class="map-area">
