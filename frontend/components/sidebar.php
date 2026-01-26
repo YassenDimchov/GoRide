@@ -26,20 +26,22 @@
             </div>
         </div>
 
-        <div class="user-card">
-            <div class="user-avatar icon48 avatar-btn">
-                <?= htmlspecialchars($initials) ?>
-            </div>
-            <div class="user-info">
-                <div class="user-name">
-                    <?= htmlspecialchars($user['name']) ?>
+        <a href="profile.php" class="user-card-link">
+            <div class="user-card">
+                <div class="user-avatar icon48 avatar-btn">
+                    <?= htmlspecialchars($initials) ?>
                 </div>
-                <div class="user-email">
-                    <?= htmlspecialchars($user['email'] ?? '') ?>
+                <div class="user-info">
+                    <div class="user-name">
+                        <?= htmlspecialchars($user['name']) ?>
+                    </div>
+                    <div class="user-email">
+                        <?= htmlspecialchars($user['email'] ?? '') ?>
+                    </div>
+                    <span class="user-badge">User</span>
                 </div>
-                <span class="user-badge">User</span>
             </div>
-        </div>
+        </a>
     </div>
 
     <nav class="sidebar-nav">
@@ -81,7 +83,7 @@
     </nav>
 
     <div class="sidebar-bottom">
-        <a href="logout.php" class="nav-item">
+        <a href="logout.php" class="nav-item logout">
             <img src="./assets/images/Icons/logout.svg" alt="" class="nav-ic icon20">
             <span>Log Out</span>
         </a>

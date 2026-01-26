@@ -15,9 +15,11 @@
                 <button class="btn1">
                     <img src="./assets/images/Icons/gift.svg" alt="" class=" icon16">
                 </button>
-                <button class="avatar-btn icon40">
-                    <?= htmlspecialchars($initials) ?>
-                </button>
+                <a href="profile.php" class="avatar-link">
+                    <button class="avatar-btn icon40">
+                        <?= htmlspecialchars($initials) ?>
+                    </button>
+                </a>
             </div>
         </div>
     </div>
