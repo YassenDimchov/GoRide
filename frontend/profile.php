@@ -18,5 +18,149 @@
 <body>
     <?php include __DIR__ . '/components/navbar.php'; ?>
     <?php include __DIR__ . '/components/sidebar.php'; ?>
+
+    <main class="app-shell profile-shell">
+        <div class="profile-wrap">
+
+            <!-- Header -->
+            <section class="card profile-card">
+                <div class="profile-id">
+                    <div class="profile-avatar avatar-btn">
+                        <?= htmlspecialchars($initials) ?>
+                    </div>
+
+                    <div class="profile-meta">
+                        <div class="profile-name"><?= htmlspecialchars($user['name']) ?></div>
+                        <div class="profile-email"><?= htmlspecialchars($user['email'] ?? '') ?></div>
+
+                        <div class="profile-badges">
+                            <span class="pill pill-success">Verified Account</span>
+                            <span class="pill pill-blue">Premium Member</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="profile-actions">
+                    <button class="btn-dark" id="editBtn" type="button">
+                        <img src="./assets/images/Icons/pen.svg" class="icon16" alt="">
+                        <span class="edit-profile-text">Edit Profile</span>
+                    </button>
+
+                    <button class="btn-dark" id="saveBtn" type="submit" style="display:none;" form="profileForm">
+                        <img src="./assets/images/Icons/save.svg" class="icon16" alt="">
+                        <span>Save</span>
+                    </button>
+
+                    <button class="btn-light" id="cancelBtn" type="button" style="display:none;">
+                        <img src="./assets/images/Icons/x.svg" class="icon16" alt="">
+                        <span>Cancel</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Personal Info -->
+            <section class="card">
+                <div class="card-title">Personal Information</div>
+
+                <form action="profile_update.php" class="info-form" id="profileForm" autocomplete="off" method="POST">
+                    <!-- Name -->
+                    <div class="field">
+                        <label class="field-label">
+                            <img src="./assets/images/Icons/user.svg" class="icon16" alt="">
+                            <span>Full Name</span>
+                        </label>
+                        <input
+                            class="field-input"
+                            type="text"
+                            name="name"
+                            value="<?= htmlspecialchars($user['name']) ?>"
+                            disabled
+                            data-original="<?= htmlspecialchars($user['name']) ?>"
+                        />
+                    </div>
+
+                    <!-- Email -->
+                    <div class="profile-email"><?= htmlspecialchars($user['email'] ?? '') ?></div>
+
+                    <!-- Phone -->
+                    <div class="field">
+                        <label class="field-label">
+                            <img src="./assets/images/Icons/phone.svg" class="icon16" alt="">
+                            <span>Phone Number</span>
+                        </label>
+                        <input
+                            class="field-input"
+                            type="tel"
+                            name="phone"
+                            value="<?= htmlspecialchars($user['phone'] ?? '') ?>"
+                            placeholder="Enter phone number"
+                            disabled
+                            data-original="<?= htmlspecialchars($user['phone'] ?? '') ?>"
+                        />
+                    </div>
+
+                    <!-- Inline message area -->
+                    <div class="form-note" id="formNote" style="display:none;"></div>
+                </form>
+            </section>
+
+            <!-- Stats -->
+            <section class="card">
+                <div class="card-title">Account Statistics</div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">0</div>
+                        <div class="stat-label">Total Trips</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-number">-</div>
+                        <div class="stat-label">Average Rating</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-number">0euro</div>
+                        <div class="stat-label">Total Spent</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Security -->
+            <section class="card">
+                <div class="card-title">Account Security</div>
+
+                <div class="security-list">
+                    <div class="security-row">
+                        <div>
+                        <div class="sec-title">Password</div>
+                        <div class="sec-sub">Change your account password</div>
+                        </div>
+                        <button class="btn-light" type="button">Change Password</button>
+                    </div>
+
+                    <div class="security-row">
+                        <div>
+                        <div class="sec-title">Two-Factor Authentication</div>
+                        <div class="sec-sub">Add an extra layer of security</div>
+                        </div>
+                        <button class="btn-light" type="button">Enable</button>
+                    </div>
+
+                    <div class="security-row">
+                        <div>
+                        <div class="sec-title">Active Sessions</div>
+                        <div class="sec-sub">Manage your active sessions</div>
+                        </div>
+                        <button class="btn-light" type="button">View All</button>
+                    </div>
+
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="assets/js/profile.js"></script>
 </body>
 </html>

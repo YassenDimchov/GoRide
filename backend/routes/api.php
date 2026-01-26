@@ -32,8 +32,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/rides/driver', [RideController::class, 'driverRides']);
     Route::get('/rides/available', [RideController::class, 'available']); 
     
-    
-
+    Route::patch('/me', [AuthController::class, 'update']);
 
     // for debugging
     Route::get('/rides/{ride}', [RideController::class, 'show']);

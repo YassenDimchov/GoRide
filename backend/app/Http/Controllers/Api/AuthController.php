@@ -89,4 +89,23 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'Account deleted']);
     }
+
+    public function update(Request $request)
+    {
+        $data = $request->validate([
+            'name'  => ['required', 'string', 'min:2', 'max:100'],
+            'phone' => ['nullable', 'string', 'max:20'],
+        ]);
+
+        $user = $request->user();
+        $user->name = $data['name'];
+        $user->phone = $data['phone'] ?? null;
+        $user->save();
+
+        return response()->json([
+            'user' => $user,
+            'message' => 'Profile updated',
+        ]);
+    }
+
 }

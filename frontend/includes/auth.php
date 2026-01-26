@@ -80,3 +80,7 @@ function apiRequest(string $method, string $endpoint, array $data = [], ?string 
 function apiLogout(string $token): bool {
     return apiRequest('POST', '/logout', [], $token) !== null;
 }
+
+function apiUpdateMe(string $token, array $payload): ?array {
+    return apiRequest('PATCH', '/me', $payload, $token);
+}
