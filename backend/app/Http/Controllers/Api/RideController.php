@@ -252,7 +252,7 @@ class RideController extends Controller
 
         if ($request->boolean('with_payment')) $query->with('payment');
         if ($request->boolean('with_review')) $query->with('review');
-        if ($request->boolean('with_driver')) $query->with('driver');
+        if ($request->boolean('with_driver')) $query->with('driver.user');
 
         $rides = $query->latest()->paginate(20);
 

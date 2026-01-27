@@ -86,7 +86,7 @@ function apiUpdateMe(string $token, array $payload): ?array {
 }
 
 function apiMyRides(string $token) {
-    return apiRequest('GET', '/rides/mine', [], $token);
+    return apiRequest('GET', '/rides/mine?with_driver=1&with_payment=1&with_review=1', [], $token);
 }
 
 function apiPayments(string $token) {
