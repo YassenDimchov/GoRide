@@ -18,8 +18,25 @@ if ($name === '') {
     exit;
 }
 
+$currentUser = apiMe($token);
+
+if (!$currentUser) {
+    session_destroy();
+    setcookie('goride_token', '', time() - 3600, '/');
+    header('Location: login.php');
+    exit;
+}
+
+$oldName  = (string)($currentUser['name'] ?? '');
+$oldPhone = (string)($currentUser['phone'] ?? '');
+
+if ($name === $oldName && $phone === $oldPhone) {
+    header('Location: profile.php');
+    exit;
+}
+
 $res = apiUpdateMe($token, [
-    'name' => $name,
+    'name'  => $name,
     'phone' => $phone !== '' ? $phone : null,
 ]);
 

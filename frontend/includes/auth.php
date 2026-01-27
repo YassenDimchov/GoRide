@@ -84,3 +84,15 @@ function apiLogout(string $token): bool {
 function apiUpdateMe(string $token, array $payload): ?array {
     return apiRequest('PATCH', '/me', $payload, $token);
 }
+
+function apiMyRides(string $token) {
+    return apiRequest('GET', '/rides/mine', [], $token);
+}
+
+function apiPayments(string $token) {
+    return apiRequest('GET', '/payments', [], $token);
+}
+
+function apiMyReviews(string $token) {
+    return apiRequest('GET', '/reviews', [], $token);
+}

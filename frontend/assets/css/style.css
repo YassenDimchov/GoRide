@@ -8,7 +8,7 @@
     --border-2: #eef0f3;
 
     --text: #111827;
-    --text-muted: #6b7280;
+    --text-muted: #6A7282;
     --text-subtle: #9ca3af;
 
     --accent: #AD46FF;
@@ -175,7 +175,7 @@ html, body {
     font-size: var(--fs-lg);
 }
 
-.avatar-btn:hover {
+.avatar-btn:hover:not(.no-hover) {
     box-shadow: 0 0 0 1.5px #000000;
 }
 
