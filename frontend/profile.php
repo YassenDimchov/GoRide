@@ -176,6 +176,8 @@
         </div>
     </main>
 
+    <?php require_once __DIR__ . '/components/footer.php'; ?>
+
     <script src="assets/js/profile.js"></script>
 </body>
 </html>

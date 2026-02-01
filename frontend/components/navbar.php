@@ -5,7 +5,7 @@
         </button>
         <div class="navbar-content">
             <div class="navbar-title">
-                GoRide
+                GoRide<span class="logo-dot">.</span>
             </div>
 
             <div class="navbar-actions">

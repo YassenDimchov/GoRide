@@ -21,7 +21,7 @@
                 <img src="./assets/images/Icons/car.svg" alt="" class="icon24">
             </div>
             <div class="brand-text">
-                <div class="brand-name">GoRide</div>
+                <div class="brand-name">GoRide<span class="logo-dot">.</span></div>
                 <div class="brand-sub">Go anywhere</div>
             </div>
         </div>
@@ -67,18 +67,6 @@
         <a href="<?= $payment['href'] ?>" class="<?= $payment['class'] ?>"<?= $payment['data'] ?><?= $payment['aria'] ?>>
             <img src="./assets/images/Icons/card.svg" alt="" class="nav-ic icon20">
             <span>Payment</span>
-        </a>
-
-        <?php $settings = navItem('settings.php', $current); ?>
-        <a href="<?= $settings['href'] ?>" class="<?= $settings['class'] ?>"<?= $settings['data'] ?><?= $settings['aria'] ?>>
-            <img src="./assets/images/Icons/settings.svg" alt="" class="nav-ic icon20">
-            <span>Settings</span>
-        </a>
-
-        <?php $support = navItem('support.php', $current); ?>
-        <a href="<?= $support['href'] ?>" class="<?= $support['class'] ?>"<?= $support['data'] ?><?= $support['aria'] ?>>
-            <img src="./assets/images/Icons/help.svg" alt="" class="nav-ic icon20">
-            <span>Help &amp; Support</span>
         </a>
     </nav>
 

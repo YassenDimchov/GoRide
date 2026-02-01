@@ -50,6 +50,9 @@ html, body {
     font-family: var(--font-sans);
 }
 
+*::-webkit-scrollbar { width: 0; height: 0; }
+* { scrollbar-width: none; }
+
 .capslock {
   text-transform: uppercase;
 }
@@ -108,7 +111,7 @@ html, body {
     background: var(--surface);
     border-bottom: 1px solid var(--border);
     position: fixed;
-    z-index: 1;
+    z-index: 1000;
     width: 100vw;
     padding: 14px 16px;
 }
@@ -158,6 +161,11 @@ html, body {
 .navbar-title {
     font-size: var(--fs-xl);
     font-weight: var(--fw-bold);
+}
+
+.logo-dot {
+    color: red;
+    display: inline-block;
 }
 
 .avatar-btn {
@@ -356,4 +364,189 @@ body.sidebar-open .sidebar-overlay {
 
 .nav-item:active {
     transform: scale(0.98);
+}
+
+/*-----------------------------------*\
+  #FOOTER
+\*-----------------------------------*/
+
+.app-footer {
+    background: var(--white);
+    border-top: 1px solid var(--border);
+    padding: 48px 24px;
+    font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+.footer-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+}
+
+.footer-help {
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px 32px 42px;
+    background: linear-gradient(90deg,rgba(249, 250, 251, 1) 0%, rgba(255, 255, 255, 1) 100%);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.footer-help-head {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.footer-help-head h3 {
+    color: var(--black);
+    font-weight: var(--fw-bold);
+    font-size: var(--fs-xxl);
+    margin: 0;
+}
+
+.footer-help-head p {
+    color: #4A5565;
+    font-size: var(--fs-lg);
+    margin: 0;
+}
+
+.footer-help-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.help-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--white);
+    text-decoration: none;
+}
+
+.help-item:hover {
+    border-color: #dbe2ea;
+    background: #fbfcfe;
+}
+
+.help-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    background: #2B7FFF;
+}
+
+.help-icon img {
+    filter: brightness(0) invert(1);  /* transforms the svg to white */
+}
+
+.help-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.help-label {
+    color: var(--text-muted);
+    font-size: var(--fs-md);
+}
+
+.help-text strong {
+    color: var(--black);
+    font-size: var(--fs-lg);
+}
+
+.footer-grid {
+    display:grid;
+    grid-template-columns: 1.2fr 1fr 1fr 1fr;
+    gap: 32px;
+}
+
+
+.footer-col {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.footer-col h4 {
+    color: var(--black);
+    font-weight: var(--fw-bold);
+    font-size: 18px;
+    margin: 0;
+}
+
+.footer-logo {
+    font-size: 18px;
+    font-weight: var(--fw-bold);
+    color:#0f172a;
+}
+
+.footer-muted {
+    margin: 0;
+    font-size: var(--fs-md);
+    color: var(--text-muted);
+    max-width: 260px;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 8px;
+}
+
+.footer-links a {
+    font-size: var(--fs-md);
+    color: var(--text-muted);
+    text-decoration: none;
+}
+
+.footer-links a:hover {
+    color: #0f172a;
+}
+
+.footer-pay {
+    padding: 10px 16px;
+    border-radius: 16px;
+    max-width: 256px;
+}
+
+.pay-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #fff;
+    font-size: var(--fs-md);
+    font-weight: var(--fw-bold);
+}
+
+.pay-stripe {
+    background: linear-gradient(90deg,rgba(97, 95, 255, 1) 0%, rgba(152, 16, 250, 1) 100%);
+}
+
+.pay-cash {
+    background: linear-gradient(90deg,rgba(0, 188, 125, 1) 0%, rgba(0, 150, 137, 1) 100%);
+}
+
+.pay-cash .pay-chip img {
+    filter: brightness(0) invert(1);  /* transforms the svg to white */
+}
+
+.footer-bottom {
+    border-top: 1px solid var(--border);
+    padding-top: 32px;
+    text-align: center;
+    font-size: var(--fs-md);
+    color: var(--text-muted);
 }

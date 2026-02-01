@@ -1,6 +1,20 @@
+html, body { height: 100%; }
+body { margin: 0; }
+
+.app-shell {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.app-shell > main {
+    flex: 1;
+    min-height: 0;
+}
+
 .trips-shell {
     padding-top: 100px;
-    height: 100vh;
+    min-height: calc(100vh - 100px);
     display: flex;
     justify-content: center;
     align-items: flex-start;
@@ -11,8 +25,9 @@
 
 .trips-wrap {
     width: 832px;
-    margin: 0 auto;
-    height: 1000px;
+    margin: 0 auto 80px;
+    min-height: 600px;
+    
 }
 
 .card {

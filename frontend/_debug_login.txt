@@ -1,0 +1,4 @@
+STATUS: 200
+
+RESPONSE:
+{"user":{"id":13,"name":"Yassen Dimchov","email":"yassen.dimchov@gmail.com","phone":"0889917046","created_at":"2026-01-24T15:45:43.000000Z","updated_at":"2026-01-27T13:22:38.000000Z","role":"user"},"token":"33|u5FT4K9qKXgZy6XTo7h6B0B8zhPCO4dnCD3tYZYL638041f7"}
