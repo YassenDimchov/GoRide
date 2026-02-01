@@ -43,6 +43,7 @@ class PaymentController extends Controller
 
         $payments = Payment::query()
             ->whereHas('ride', fn($q) => $q->where('user_id', $user->id))
+            ->with(['ride:id,end_address,completed_at'])
             ->latest()
             ->paginate(20);
 
