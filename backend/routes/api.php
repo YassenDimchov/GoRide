@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\ReviewController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\OrsController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -37,3 +38,5 @@ Route::middleware('auth:sanctum')->group(function () {
     // for debugging
     Route::get('/rides/{ride}', [RideController::class, 'show']);
 });
+
+Route::get('/geocode/autocomplete', [OrsController::class, 'autocomplete']);

@@ -40,6 +40,11 @@
 
                     <div class="panel-input">
                         <input id="pickup" type="text" placeholder="Where from?">
+                        <div class="suggestions" id="pickupSug" style="display:none;"></div>
+                        
+                        <button type="button" class="pick-on-map" id="pickPickupOnMap">
+                            Pick pickup on map
+                        </button>
                     </div>
                 </div>
 
@@ -51,6 +56,11 @@
 
                     <div class="panel-input">
                         <input id="destination" type="text" placeholder="Where to?">
+                        <div class="suggestions" id="destSug" style="display:none;"></div>
+
+                        <button type="button" class="pick-on-map" id="pickDropoffOnMap">
+                            Pick dropoff on map
+                        </button>
                     </div>
                 </div>
             </div>
@@ -166,6 +176,7 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="assets/js/map.js"></script>
+    <script src="assets/js/autocomplete.js"></script>
     <script src="assets/js/ui.js"></script>
 </body>
 </html>
