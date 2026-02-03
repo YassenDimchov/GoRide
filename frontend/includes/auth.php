@@ -71,7 +71,11 @@ function apiRequest(string $method, string $endpoint, array $data = [], ?string 
     $json = json_decode($response, true);
 
     if ($http < 200 || $http >= 300) {
-        return null;
+        return [
+            '_error' => true,
+            'status' => $http,
+            'body' => $json,
+        ];
     }
 
     return is_array($json) ? $json : null;

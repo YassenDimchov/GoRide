@@ -365,4 +365,40 @@ class RideController extends Controller
         return $earth * $c;
     }
 
+    public function cancel(Ride $ride)
+    {
+        $user = auth()->user();
+
+        if ((int)$ride->user_id !== (int)$user->id) {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+
+        if (in_array($ride->status, [RideStatus::COMPLETED->value, RideStatus::CANCELLED->value], true)) {
+            return response()->json(['message' => 'Ride already finished.'], 409);
+        }
+
+        if ($ride->status === RideStatus::ONGOING->value) {
+            return response()->json(['message' => 'Cannot cancel an ongoing ride.'], 409);
+        }
+
+        return DB::transaction(function () use ($ride) {
+            $lockedRide = Ride::whereKey($ride->id)->lockForUpdate()->first();
+
+            if (in_array($lockedRide->status, [RideStatus::COMPLETED->value, RideStatus::CANCELLED->value], true)) {
+                return response()->json(['message' => 'Ride already finished.'], 409);
+            }
+
+            if ($lockedRide->driver_id !== null) {
+                Driver::whereKey($lockedRide->driver_id)->update(['status' => 'available']);
+            }
+
+            $lockedRide->status = RideStatus::CANCELLED->value;
+            $lockedRide->save();
+
+            return response()->json(['data' => $lockedRide], 200);
+        });
+    }
+
+
+
 }

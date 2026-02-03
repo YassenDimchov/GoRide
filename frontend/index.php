@@ -39,7 +39,8 @@
                     </div>
 
                     <div class="panel-input">
-                        <input id="pickup" type="text" placeholder="Where from?">
+                        <input id="pickup" type="text" placeholder="Where from?" 
+                            autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
                         <div class="suggestions" id="pickupSug" style="display:none;"></div>
                         
                         <button type="button" class="pick-on-map" id="pickPickupOnMap">
@@ -55,7 +56,8 @@
                     </div>
 
                     <div class="panel-input">
-                        <input id="destination" type="text" placeholder="Where to?">
+                        <input id="destination" type="text" placeholder="Where to?"
+                            autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
                         <div class="suggestions" id="destSug" style="display:none;"></div>
 
                         <button type="button" class="pick-on-map" id="pickDropoffOnMap">

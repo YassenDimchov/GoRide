@@ -12,6 +12,7 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/rides', [RideController::class, 'store']);
+    Route::post('/rides/{ride}/cancel', [RideController::class, 'cancel']);
 
     Route::post('/rides/{ride}/accept', [RideController::class, 'accept']);
     Route::post('/rides/{ride}/start', [RideController::class, 'start']);
