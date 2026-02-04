@@ -1,17 +1,22 @@
 .profile-shell {
     padding-top: 100px;
-    min-height: 100vh;
+    min-height: 90vh;
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    margin-bottom: 80px;
 }
 
 .profile-wrap {
-    width: 832px;
+    width: 1100px;
     display: flex;
     flex-direction: column;
     gap: 24px;
+}
+
+.profile-hero {
+    border: 0;
+    background: linear-gradient(167deg,rgba(43, 127, 255, 1) 0%, rgba(173, 70, 255, 1) 50%, rgba(246, 51, 154, 1) 100%);
+    border-radius: 16px;
 }
 
 .card {
@@ -31,7 +36,6 @@
 }
 
 /* Profile card */
-
 .profile-card {
     display: flex;
     align-items: flex-start;
@@ -57,14 +61,24 @@
 .profile-name {
     font-size: var(--fs-xxxl);
     font-weight: var(--fw-bold);
-    color: var(--text);
+    color: var(--white);
+}
+
+.mail-meta {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.mail-meta img {
+    filter: brightness(0) invert(1);
 }
 
 .profile-email {
     font-size: var(--fs-lg);
-    color: var(--text-muted);
-    margin-top: 4px;
+    color: var(--white);
 }
+
 
 .profile-badges {
     display: flex;
@@ -82,16 +96,9 @@
     padding: 3px 12px 4px;
     font-size: var(--fs-md);
     border-radius: 999px;
-}
-
-.pill-success {
-    background: #DCFCE7;
-    color: #008236;
-}
-
-.pill-blue {
-    background: #DBEAFE;
-    color: #1447E6;
+    background: rgba(255, 255, 255, 0.3);
+    border: 1px solid var(--border);
+    color: var(--white);
 }
 
 /* Actions */
@@ -117,14 +124,14 @@
 
 .btn-dark {
     border: 0;
-    background: var(--black);
+    background: rgba(255, 255, 255, 0.3);
     color: var(--white);
 }
 
-
-.btn-dark#editBtn img {
+.btn-dark img {
     filter: brightness(0) invert(1);
 }
+
 
 .btn-dark:hover { opacity: .92; }
 .btn-dark:active { transform: scale(.95); }
@@ -201,28 +208,101 @@ body.profile-edit .field-input:focus {
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
+    gap: 16px;
 }
 
 .stat-card {
-    padding: 16px;
-    background: #F9FAFB;
-    border-radius: 14px;
-    text-align: center;
+    padding: 24px;
     display: flex;
-    flex-direction: column;
-    gap: 4px;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 16px;
+    border-radius: 16px;
+}
+
+.stat-ic {
+    width: 56px;
+    height: 56px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 16px;
+}
+
+.stat-ic img {
+    filter: brightness(0) invert(1);
 }
 
 .stat-number {
-    color: var(--text);
     font-size: var(--fs-xxxl);
     font-weight: var(--fw-bold);
 }
 
 .stat-label {
-    color: #4A5565;
-    font-size: var(--fs-lg);
+    font-size: var(--fs-md);
+}
+
+.stat-card.stat-blue {
+    background: linear-gradient(180deg,rgba(239, 246, 255, 1) 0%, rgba(219, 234, 254, 1) 100%);
+    border: 1px solid #BEDBFF;
+}
+
+.stat-card.stat-blue .stat-ic {
+    background-color: #2B7FFF;
+}
+
+.stat-card.stat-blue .stat-meta .stat-number {
+    color: #1C398E;
+}
+
+.stat-card.stat-blue .stat-meta .stat-label {
+    color: #1447E6;
+}
+
+.stat-card.stat-purple {
+    background: linear-gradient(180deg,rgba(250, 245, 255, 1) 0%, rgba(243, 232, 255, 1) 100%);
+    border: 1px solid #E9D4FF;
+}
+
+.stat-card.stat-purple .stat-ic {
+    background-color: #AD46FF;
+}
+
+.stat-card.stat-purple .stat-meta .stat-number {
+    color: #59168B;
+}
+
+.stat-card.stat-purple .stat-meta .stat-label {
+    color: #8200DB;
+}
+
+.stat-card.stat-green {
+    background: linear-gradient(180deg,rgba(240, 253, 244, 1) 0%, rgba(220, 252, 231, 1) 100%);
+    border: 1px solid #B9F8CF;
+}
+
+.stat-card.stat-green .stat-ic {
+    background-color: #00C950;
+}
+
+.stat-card.stat-green .stat-meta .stat-number {
+    color: #0D542B;
+}
+
+.stat-card.stat-green .stat-meta .stat-label {
+    color: #008236;
+}
+
+.info-security-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+}
+
+.personal-info-title {
+    display: flex;
+    gap: 8px;
+    align-items: center;
 }
 
 /* Account Security */
@@ -274,3 +354,32 @@ body.profile-edit .field-input:focus {
 
 *::-webkit-scrollbar { width: 0; height: 0; }
 * { scrollbar-width: none; }
+
+/* role badges */
+
+
+.pill-user img, .pill-admin img, .pill-driver img {
+    width: 14px;
+    height: 14px;
+}
+
+.pill-user, .pill-driver, .pill-admin {
+    display: flex;
+    gap: 4px;
+    color: black;
+}
+
+.pill-user {
+    background: #DCFCE7;
+    border: 1px solid darkolivegreen;
+}
+
+.pill-driver { 
+    background: #DBEAFE;
+    border: 1px solid darkblue;
+}
+
+.pill-admin {
+    background: #ff6057;
+    border: 1px solid darkred;
+}

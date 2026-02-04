@@ -303,6 +303,12 @@ body.sidebar-open .sidebar {
     border-radius: 8px;
 }
 
+.user-badge.badge-driver {
+    width: 49px;
+    background-color: #DBEAFE;
+    color: #1447E6;
+}
+
 .sidebar-nav {
     padding: 16px;
     display: flex;

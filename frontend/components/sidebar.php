@@ -12,6 +12,8 @@
             'aria'  => $isActive ? ' aria-current="page"' : ''
         ];
     }
+
+    $isDriver = (($user['role'] ?? '') === 'driver');
 ?>
 
 <aside class="sidebar" id="sidebar">
@@ -38,7 +40,9 @@
                     <div class="user-email">
                         <?= htmlspecialchars($user['email'] ?? '') ?>
                     </div>
-                    <span class="user-badge">User</span>
+                    <span class="user-badge <?= $isDriver ? 'badge-driver' : 'badge-user' ?>">
+                        <?= $isDriver ? 'Driver' : 'User' ?>
+                    </span>
                 </div>
             </div>
         </a>
@@ -56,6 +60,20 @@
             <img src="./assets/images/Icons/user.svg" alt="" class="nav-ic icon20">
             <span>Profile</span>
         </a>
+
+        <?php if ($isDriver): ?>
+            <?php $activeTrips = navItem('active-trips.php', $current); ?>
+            <a href="<?= $activeTrips['href'] ?>" class="<?= $activeTrips['class'] ?>"<?= $activeTrips['data'] ?><?= $activeTrips['aria'] ?>>
+                <img src="./assets/images/Icons/location.svg" alt="" class="nav-ic icon20">
+                <span>Active Trips</span>
+            </a>
+
+            <?php $earnings = navItem('earnings.php', $current); ?>
+            <a href="<?= $earnings['href'] ?>" class="<?= $earnings['class'] ?>"<?= $earnings['data'] ?><?= $earnings['aria'] ?>>
+                <img src="./assets/images/Icons/chart.svg" alt="" class="nav-ic icon20">
+                <span>Earnings</span>
+            </a>
+        <?php endif; ?>
 
         <?php $trips = navItem('trips.php', $current); ?>
         <a href="<?= $trips['href'] ?>" class="<?= $trips['class'] ?>"<?= $trips['data'] ?><?= $trips['aria'] ?>>
