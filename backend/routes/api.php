@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\RideController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\ReviewController;
+use App\Http\Controllers\Api\DriverController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\OrsController;
 
@@ -35,6 +36,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/rides/available', [RideController::class, 'available']); 
     
     Route::patch('/me', [AuthController::class, 'update']);
+    Route::get('/driver/me', [DriverController::class, 'me']);
+    Route::patch('/driver/me', [DriverController::class, 'updateMe']);
 
     // for debugging
     Route::get('/rides/{ride}', [RideController::class, 'show']);

@@ -4,6 +4,7 @@
     display: flex;
     justify-content: center;
     align-items: flex-start;
+    margin-bottom: 32px;
 }
 
 .profile-wrap {
@@ -299,7 +300,7 @@ body.profile-edit .field-input:focus {
     gap: 24px;
 }
 
-.personal-info-title {
+.info-title {
     display: flex;
     gap: 8px;
     align-items: center;
@@ -382,4 +383,18 @@ body.profile-edit .field-input:focus {
 .pill-admin {
     background: #ff6057;
     border: 1px solid darkred;
+}
+
+.card.vehicle-card {
+    padding: 24px 28px;
+}
+
+.vehicle-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+}
+
+.vehicle-row .field-input:disabled {
+    background: #F9FAFB;
 }

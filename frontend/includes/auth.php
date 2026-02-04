@@ -81,6 +81,7 @@ function apiRequest(string $method, string $endpoint, array $data = [], ?string 
     return is_array($json) ? $json : null;
 }
 
+
 function apiLogout(string $token): bool {
     return apiRequest('POST', '/logout', [], $token) !== null;
 }
@@ -99,4 +100,36 @@ function apiPayments(string $token) {
 
 function apiMyReviews(string $token) {
     return apiRequest('GET', '/reviews', [], $token);
+}
+
+function apiDriverMe(string $token): ?array {
+    $res = apiRequest('GET', '/driver/me', [], $token);
+    if (!$res || !empty($res['_error'])) return null;
+    return $res['driver'] ?? null;
+}
+
+function apiUpdateDriverMe(string $token, array $payload): array {
+    $res = apiRequest('PATCH', '/driver/me', $payload, $token);
+
+    if (!$res) {
+        return ['ok' => false, 'error' => 'No response from API'];
+    }
+
+    if (!empty($res['_error'])) {
+        $msg = $res['body']['message'] ?? ('HTTP ' . ($res['status'] ?? '???'));
+        $errs = $res['body']['errors'] ?? null;
+
+        return [
+            'ok' => false,
+            'error' => $msg,
+            'errors' => $errs,
+            'status' => $res['status'] ?? null,
+            'body' => $res['body'] ?? null,
+        ];
+    }
+
+    return [
+        'ok' => true,
+        'driver' => $res['driver'] ?? null,
+    ];
 }

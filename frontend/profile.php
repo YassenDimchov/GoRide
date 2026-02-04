@@ -3,6 +3,13 @@
 <?php require_once __DIR__ . '/includes/profile_stats.php'; ?>
 <?php $stats = profileStats($token); ?>
 
+<?php
+$driver = null;
+if (isDriver()) {
+    $driver = apiDriverMe($token);
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -50,7 +57,7 @@
                                     Admin
                                 </span>
 
-                            <?php elseif (isDriver()): ?>
+                            <?php elseif ($isDriver): ?>
                                 <span class="pill pill-driver">
                                     <img src="./assets/images/Icons/car.svg" alt="">
                                     Driver
@@ -121,89 +128,156 @@
                     </div>
                 </div>
             </div>
+            <form action="profile_update.php" class="info-form" id="profileForm" autocomplete="off" method="POST">
+                <div class="info-security-container">
+                    <!-- Personal Info -->
+                    <section class="card">
+                        <div class="info-title">
+                            <img src="./assets/images/Icons/pen.svg" class="icon20" alt="">
+                            <div class="card-title">Personal Information</div>
+                        </div>
+                        
+                            <!-- Name -->
+                            <div class="field">
+                                <label class="field-label" for="name">
+                                    <img src="./assets/images/Icons/user.svg" class="icon16" alt="">
+                                    <span>Full Name</span>
+                                </label>
+                                <input
+                                    class="field-input"
+                                    type="text"
+                                    name="name"
+                                    id="name"
+                                    value="<?= htmlspecialchars($user['name']) ?>"
+                                    disabled
+                                    data-original="<?= htmlspecialchars($user['name']) ?>"
+                                />
+                            </div>
+                            <!-- Email (read-only) -->
+                            <div class="field field-readonly">
+                                <label class="field-label">
+                                    <img src="./assets/images/Icons/mail.svg" class="icon16" alt="">
+                                    <span>Email Address</span>
+                                </label>
+                                <div class="field-readonly-value">
+                                    <?= htmlspecialchars($user['email'] ?? '') ?>
+                                </div>
+                            </div>
+                            <!-- Phone -->
+                            <div class="field">
+                                <label class="field-label" for="phone">
+                                    <img src="./assets/images/Icons/phone.svg" class="icon16" alt="">
+                                    <span>Phone Number</span>
+                                </label>
+                                <input
+                                    class="field-input"
+                                    type="tel"
+                                    name="phone"
+                                    id="phone"
+                                    value="<?= htmlspecialchars($user['phone'] ?? '') ?>"
+                                    placeholder="Enter phone number"
+                                    disabled
+                                    data-original="<?= htmlspecialchars($user['phone'] ?? '') ?>"
+                                />
+                            </div>
+                        
+                    </section>
+                    <!-- Security -->
+                    <section class="card">
+                        <div class="card-title">Account Security</div>
+                        <div class="security-list">
+                            <div class="security-row">
+                                <div>
+                                    <div class="sec-title">Password</div>
+                                    <div class="sec-sub">Change your account password</div>
+                                </div>
+                                <button class="btn-light" type="button">Change Password</button>
+                            </div>
+                            <div class="security-row">
+                                <div>
+                                    <div class="sec-title">Two-Factor Authentication</div>
+                                    <div class="sec-sub">Add an extra layer of security</div>
+                                </div>
+                                <button class="btn-light" type="button">Enable</button>
+                            </div>
+                            <div class="security-row">
+                                <div>
+                                    <div class="sec-title">Active Sessions</div>
+                                    <div class="sec-sub">Manage your active sessions</div>
+                                </div>
+                                <button class="btn-light" type="button">View All</button>
+                            </div>
+                        </div>
+                    </section>
+                </div>
 
-            <div class="info-security-container">
-                <!-- Personal Info -->
-                <section class="card">
-                    <div class="personal-info-title">
-                        <img src="./assets/images/Icons/pen.svg" class="icon20" alt="">
-                        <div class="card-title">Personal Information</div>
-                    </div>
-                    <form action="profile_update.php" class="info-form" id="profileForm" autocomplete="off" method="POST">
-                        <!-- Name -->
-                        <div class="field">
-                            <label class="field-label" for="name">
-                                <img src="./assets/images/Icons/user.svg" class="icon16" alt="">
-                                <span>Full Name</span>
-                            </label>
-                            <input
-                                class="field-input"
-                                type="text"
-                                name="name"
-                                id="name"
-                                value="<?= htmlspecialchars($user['name']) ?>"
-                                disabled
-                                data-original="<?= htmlspecialchars($user['name']) ?>"
-                            />
-                        </div>
-                        <!-- Email (read-only) -->
-                        <div class="field field-readonly">
-                            <label class="field-label">
-                                <img src="./assets/images/Icons/mail.svg" class="icon16" alt="">
-                                <span>Email Address</span>
-                            </label>
-                            <div class="field-readonly-value">
-                                <?= htmlspecialchars($user['email'] ?? '') ?>
-                            </div>
-                        </div>
-                        <!-- Phone -->
-                        <div class="field">
-                            <label class="field-label" for="phone">
-                                <img src="./assets/images/Icons/phone.svg" class="icon16" alt="">
-                                <span>Phone Number</span>
-                            </label>
-                            <input
-                                class="field-input"
-                                type="tel"
-                                name="phone"
-                                id="phone"
-                                value="<?= htmlspecialchars($user['phone'] ?? '') ?>"
-                                placeholder="Enter phone number"
-                                disabled
-                                data-original="<?= htmlspecialchars($user['phone'] ?? '') ?>"
-                            />
-                        </div>
-                    </form>
-                </section>
-                <!-- Security -->
-                <section class="card">
-                    <div class="card-title">Account Security</div>
-                    <div class="security-list">
-                        <div class="security-row">
-                            <div>
-                                <div class="sec-title">Password</div>
-                                <div class="sec-sub">Change your account password</div>
-                            </div>
-                            <button class="btn-light" type="button">Change Password</button>
-                        </div>
-                        <div class="security-row">
-                            <div>
-                                <div class="sec-title">Two-Factor Authentication</div>
-                                <div class="sec-sub">Add an extra layer of security</div>
-                            </div>
-                            <button class="btn-light" type="button">Enable</button>
-                        </div>
-                        <div class="security-row">
-                            <div>
-                                <div class="sec-title">Active Sessions</div>
-                                <div class="sec-sub">Manage your active sessions</div>
-                            </div>
-                            <button class="btn-light" type="button">View All</button>
-                        </div>
-                    </div>
-                </section>
-            </div>
+                <!-- Driver vechile info -->
+                <?php if ($isDriver): ?>
+                    <?php
+                        $vehicleMake  = $driver['vehicle_make']  ?? '';
+                        $vehicleModel = $driver['vehicle_model'] ?? '';
+                        $licensePlate = $driver['license_plate'] ?? '';
+                    ?>
 
+                    <section class="card vehicle-card">
+                        <div class="info-title">
+                            <img src="./assets/images/Icons/car.svg" class="icon20" alt="">
+                            <div class="card-title">Vehicle Information</div>
+                        </div>
+
+                        <div class="vehicle-row">
+                            <div class="field">
+                                <label class="field-label" for="vehicle_make">
+                                    <span>Make</span>
+                                </label>
+                                <input
+                                    class="field-input"
+                                    type="text"
+                                    id="vehicle_make"
+                                    name="vehicle_make"
+                                    value="<?= htmlspecialchars($vehicleMake) ?>"
+                                    disabled
+                                    data-original="<?= htmlspecialchars($vehicleMake) ?>"
+                                    form="profileForm"
+                                />
+                            </div>
+
+                            <div class="field">
+                                <label class="field-label" for="vehicle_model">
+                                    <span>Model</span>
+                                </label>
+                                <input
+                                    class="field-input"
+                                    type="text"
+                                    id="vehicle_model"
+                                    name="vehicle_model"
+                                    value="<?= htmlspecialchars($vehicleModel) ?>"
+                                    disabled
+                                    data-original="<?= htmlspecialchars($vehicleModel) ?>"
+                                    form="profileForm"
+                                />
+                            </div>
+
+                            <div class="field">
+                                <label class="field-label" for="license_plate">
+                                    <span>License Plate</span>
+                                </label>
+                                <input
+                                    class="field-input"
+                                    type="text"
+                                    id="license_plate"
+                                    name="license_plate"
+                                    value="<?= htmlspecialchars($licensePlate) ?>"
+                                    disabled
+                                    data-original="<?= htmlspecialchars($licensePlate) ?>"
+                                    form="profileForm"
+                                />
+                            </div>
+                        </div>
+                    </section>
+                <?php endif; ?>
+
+            </form>
         </div>
     </main>
 

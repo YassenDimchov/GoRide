@@ -6,7 +6,13 @@
 
   if (!editBtn || !saveBtn || !cancelBtn || !form) return;
 
-  const inputs = Array.from(form.querySelectorAll('input.field-input'));
+  const getInputs = () => {
+    const inside = Array.from(form.querySelectorAll('input.field-input'));
+    const linked = Array.from(document.querySelectorAll('input.field-input[form="profileForm"]'));
+    return Array.from(new Set([...inside, ...linked]));
+  };
+
+  const inputs = getInputs();
 
   const setEditMode = (on) => {
     document.body.classList.toggle('profile-edit', on);
@@ -20,7 +26,9 @@
   editBtn.addEventListener('click', () => setEditMode(true));
 
   cancelBtn.addEventListener('click', () => {
-    inputs.forEach(i => (i.value = i.dataset.original ?? i.value));
+    inputs.forEach(i => {
+      if (i.dataset.original !== undefined) i.value = i.dataset.original;
+    });
     setEditMode(false);
   });
 
