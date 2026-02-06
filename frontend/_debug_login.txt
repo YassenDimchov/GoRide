@@ -1,4 +1,4 @@
 STATUS: 200
 
 RESPONSE:
-{"user":{"id":12,"name":"Brian Kennedy","email":"bk@gmail.com","phone":"0888888888","created_at":"2026-01-24T14:17:06.000000Z","updated_at":"2026-01-27T12:56:48.000000Z","role":"driver"},"token":"38|VxZ6FxvnZqvY2TfiqlpNuFTosbQegg1GxZiJvZf2ed6c1312"}
+{"user":{"id":12,"name":"Brian Kennedy","email":"bk@gmail.com","phone":"0888888888","created_at":"2026-01-24T14:17:06.000000Z","updated_at":"2026-02-04T01:48:03.000000Z","role":"driver"},"token":"42|AdbWMQts1fnz4ZZrrKRl7SH3bU0au7CdeFbi0ITx43028a8d"}

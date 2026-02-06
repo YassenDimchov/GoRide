@@ -133,3 +133,13 @@ function apiUpdateDriverMe(string $token, array $payload): array {
         'driver' => $res['driver'] ?? null,
     ];
 }
+
+function apiDriverHeartbeat(string $token): array {
+    $res = apiRequest('POST', '/driver/heartbeat', [], $token);
+
+    if (!$res) return ['ok' => false, 'error' => 'No response from API'];
+    if (!empty($res['_error'])) {
+        return ['ok' => false, 'error' => $res['body']['message'] ?? 'Heartbeat failed', 'status' => $res['status'] ?? null];
+    }
+    return ['ok' => true, 'data' => $res];
+}

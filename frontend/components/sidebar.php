@@ -62,7 +62,7 @@
         </a>
 
         <?php if ($isDriver): ?>
-            <?php $activeTrips = navItem('active-trips.php', $current); ?>
+            <?php $activeTrips = navItem('active_trips.php', $current); ?>
             <a href="<?= $activeTrips['href'] ?>" class="<?= $activeTrips['class'] ?>"<?= $activeTrips['data'] ?><?= $activeTrips['aria'] ?>>
                 <img src="./assets/images/Icons/location.svg" alt="" class="nav-ic icon20">
                 <span>Active Trips</span>

@@ -14,6 +14,27 @@ use App\Enums\PaymentStatus;
 
 class RideController extends Controller
 {
+
+    private function autoOfflineIfStale(Driver $driver, int $minutes = 5): bool
+    {
+        $cutoff = now()->subMinutes($minutes);
+        $isStale = ($driver->last_seen_at === null) || $driver->last_seen_at->lt($cutoff);
+
+        if ($driver->status === 'available' && $isStale) {
+            $driver->status = 'offline';
+            $driver->save();
+            return true;
+        }
+
+        return false;
+    }
+
+    private function touchDriver(Driver $driver): void
+    {
+        $driver->last_seen_at = now();
+        $driver->save();
+    }
+
     // Create a new ride request.
     public function store(CreateRideRequest $request) 
     {
@@ -82,14 +103,18 @@ class RideController extends Controller
                 ->lockForUpdate()
                 ->first();
 
-            
-            // If driver is busy.
-            if ($lockedDriver->status !== 'available') 
-            {
+            if ($this->autoOfflineIfStale($lockedDriver, 5)) {
                 return response()->json([
-                    'message' => 'Driver is not available.'
+                    'message' => 'Driver is offline due to inactivity.',
+                    'code' => 'AUTO_OFFLINE',
                 ], 409);
             }
+
+            if ($lockedDriver->status !== 'available') {
+                return response()->json(['message' => 'Driver is not available.'], 409);
+            }
+
+            $this->touchDriver($lockedDriver);
             
             // Ride was already accepted.
             if ($lockedRide->status !== RideStatus::PENDING->value) {
@@ -309,6 +334,19 @@ class RideController extends Controller
         {
             return response()->json(['message' => 'Driver location is not set.'], 409);
         }
+
+        if ($this->autoOfflineIfStale($driver, 5)) {
+            return response()->json([
+                'message' => 'You were set offline due to inactivity.',
+                'code' => 'AUTO_OFFLINE',
+            ], 409);
+        }
+
+        if ($driver->status !== 'available') {
+            return response()->json(['message' => 'Driver is not available.'], 409);
+        }
+
+        $this->touchDriver($driver);
 
         $rides = Ride::query()
             ->where('status', RideStatus::PENDING->value)

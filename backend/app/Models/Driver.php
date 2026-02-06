@@ -23,12 +23,13 @@ class Driver extends Model
         'vehicle_model',
         'license_plate',
         'status',
+        'last_seen_at',
         'current_lat',
         'current_lng',
     ];
 
     protected $casts = [
-        'last_ride_completed_at' => 'datetime',
+        'last_seen_at' => 'datetime',
     ];
 
     /**
