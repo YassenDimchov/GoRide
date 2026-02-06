@@ -21,6 +21,28 @@ window.addEventListener("map:pickMode", (e) => {
     }
 });
 
+let pickupMarker = null;
+let dropoffMarker = null;
+let routeLine = null;
+
+function addOrMoveMarker(kind, loc) {
+  if (!loc || !Number.isFinite(loc.lat) || !Number.isFinite(loc.lng)) return;
+
+  const latlng = [loc.lat, loc.lng];
+
+  const marker = L.marker(latlng);
+
+  if (kind === "pickup") {
+    if (pickupMarker) map.removeLayer(pickupMarker);
+    // pickupMarker = marker.addTo(map).bindPopup("Pickup").openPopup();
+        pickupMarker = marker.addTo(map);
+  } else {
+    if (dropoffMarker) map.removeLayer(dropoffMarker);
+    // dropoffMarker = marker.addTo(map).bindPopup("Dropoff").openPopup();
+        dropoffMarker = marker.addTo(map);
+  }
+}
+
 map.on("click", async (e) => {
     if (!pickMode) return;
 
@@ -82,4 +104,16 @@ map.on("click", async (e) => {
     }
 
     window.dispatchEvent(new Event("ride:locationChanged"));
+});
+
+window.addEventListener("map:setPickup", (e) => {
+  const loc = e.detail;
+  addOrMoveMarker("pickup", loc);
+  drawRouteIfPossible();
+});
+
+window.addEventListener("map:setDropoff", (e) => {
+  const loc = e.detail;
+  addOrMoveMarker("dropoff", loc);
+  drawRouteIfPossible();
 });

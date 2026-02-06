@@ -38,6 +38,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch('/me', [AuthController::class, 'update']);
     Route::get('/driver/me', [DriverController::class, 'me']);
     Route::patch('/driver/me', [DriverController::class, 'updateMe']);
+    Route::patch('/driver/location', [DriverController::class, 'updateLocation']);
 
     // for debugging
     Route::get('/rides/{ride}', [RideController::class, 'show']);

@@ -87,4 +87,40 @@ class DriverController extends Controller
             'driver' => $driver,
         ]);
     }
+
+    public function updateLocation(Request $request)
+    {
+        $user = $request->user();
+
+        if (($user->role ?? null) !== 'driver') {
+            return response()->json(['message' => 'Forbidden.'], 403);
+        }
+
+        $driver = Driver::where('user_id', $user->id)->first();
+        if (!$driver) {
+            return response()->json(['message' => 'Driver profile not found.'], 404);
+        }
+
+        if ($driver->status === 'offline') {
+            return response()->json(['message' => 'Driver is offline.'], 409);
+        }
+
+        $data = $request->validate([
+            'lat' => ['required', 'numeric', 'between:-90,90'],
+            'lng' => ['required', 'numeric', 'between:-180,180'],
+        ]);
+
+        $driver->current_lat = $data['lat'];
+        $driver->current_lng = $data['lng'];
+
+        $driver->last_seen_at = now();
+
+        $driver->save();
+
+        return response()->json([
+            'ok' => true,
+            'driver' => $driver,
+        ]);
+    }
+
 }

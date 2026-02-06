@@ -143,3 +143,11 @@ function apiDriverHeartbeat(string $token): array {
     }
     return ['ok' => true, 'data' => $res];
 }
+
+function apiAvailableRides(string $token): ?array {
+    return apiRequest('GET', '/rides/available', [], $token);
+}
+
+function apiAcceptRide(string $token, int $rideId): ?array {
+    return apiRequest('POST', '/rides/' . $rideId . '/accept', [], $token);
+}

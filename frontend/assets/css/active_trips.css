@@ -10,6 +10,7 @@
     width: 1100px;
     display: flex;
     flex-direction: column;
+    gap: 24px;
 }
 
 .page-head {
@@ -105,4 +106,154 @@
 
 .status-msg {
     align-self: flex-end;
+    font-size: var(--fs-lg);
+    font-weight: var(--fw-bold);
+}
+
+.pending-head {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.pending-top {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    background-color: var(--black);
+    padding: 8px;
+    width: 100%;
+    border-radius: 12px;
+}
+
+.pending-title, .pending-count {
+    font-size: var(--fs-md);
+    color: var(--white);
+}
+
+.pending-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+}
+
+.req-card {
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    gap: 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+.req-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.req-user {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.req-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: var(--fw-bold);
+    font-size: 18px;
+    color: var(--white);
+    background: linear-gradient(
+        var(--accent-2),
+        var(--accent)
+    );
+}
+
+.req-name {
+    font-size: var(--fs-lg);
+    font-weight: var(--fw-bold);
+}
+
+.req-sub {
+    font-size: var(--fs-md);
+    color: var(--text-muted);
+}
+
+.req-price { 
+    text-align: right; 
+}
+
+.money {
+    font-size: var(--fs-xxl);
+    font-weight: var(--fw-bold);
+    color: #00A63E;
+}
+
+.km {
+    font-size: var(--fs-md);
+    color: var(--text-muted);
+}
+
+.req-route {
+    background: #F9FAFB;
+    border-radius: 12px;
+    padding: 16px;
+}
+
+.route-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.route-row div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.route-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 999px;
+}
+
+.route-dot.pick {
+    background-color: #00C950;
+}
+
+.route-dot.drop {
+    background-color: #FB2C36;
+}
+
+.route-label {
+    color: var(--text-muted);
+}
+
+.route-text, .route-label {
+    font-size: var(--fs-md);
+}
+
+.req-actions {
+    display: flex;
+    justify-content: center;
+}
+
+.btn-accept {
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-size: var(--fs-md);
+    color: white;
+    background-color: #00A63E;
+    cursor: pointer;
+    border: none;
+    width: 200px;
 }

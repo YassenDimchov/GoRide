@@ -373,10 +373,24 @@ class RideController extends Controller
             $normWait = 1.0 - min($waitMin / $maxWaitMin, 1.0);
 
             $score = (0.7 * $normDist) + (0.3 * $normWait);
+            $tripKm = $this->haversineKm(
+                (float) $ride->start_lat,
+                (float) $ride->start_lng,
+                (float) $ride->end_lat,
+                (float) $ride->end_lng
+            );
+
+            $base = 2.00;
+            $perKm = 1.20;
+            $minFare = 4.00;
+
+            $estimatedFare = max($minFare, $base + ($tripKm * $perKm));
 
             $ride->match = [
                 'distance_km' => round($distanceKm, 2),
                 'wait_min' => $waitMin,
+                'trip_km' => round($tripKm, 2),
+                'estimated_fare' => round($estimatedFare, 2),
                 'score' => round($score, 4),
             ];
 

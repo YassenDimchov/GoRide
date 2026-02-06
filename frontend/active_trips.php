@@ -63,6 +63,20 @@ $currentStatus = $driver['status'] ?? 'offline';
             </div>
             <div class="status-msg" id="statusMsg" aria-live="polite"></div>
             
+            <section class="pending">
+                <div class="pending-head">
+                    <div class="pending-top">
+                        <div class="pending-title">Pending Requests</div>
+                        <div class="pending-count" id="pendingCount">0</div>
+                    </div>
+
+                    <div class="pending-list" id="pendingList"></div>
+
+                    <div class="pending-empty" id="pendingEmpty" style="display: none;">
+                        No pending rides right now.
+                    </div>
+                </div>
+            </section>
         </div>
     </main>
 
