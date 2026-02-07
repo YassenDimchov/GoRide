@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Driver;
 use App\Models\Payment;
 use App\Enums\PaymentStatus;
+use App\Support\Fare;
 
 class RideController extends Controller
 {
@@ -36,7 +37,7 @@ class RideController extends Controller
     }
 
     // Create a new ride request.
-    public function store(CreateRideRequest $request) 
+    public function store(CreateRideRequest $request)
     {
         $data = $request->validated();
 
@@ -44,11 +45,23 @@ class RideController extends Controller
         $data['driver_id'] = null;
         $data['status'] = RideStatus::PENDING->value;
 
+        $distanceM = isset($data['trip_distance_m']) ? (int) $data['trip_distance_m'] : null;
+        $durationS = isset($data['trip_duration_s']) ? (int) $data['trip_duration_s'] : null;
+
+        if ($distanceM !== null && $durationS !== null) {
+            $km = $distanceM / 1000;
+            $min = max(1, (int) round($durationS / 60));
+
+            $data['trip_distance_m'] = $distanceM;
+            $data['trip_duration_s'] = $durationS;
+            $data['estimated_fare']  = Fare::estimate($km, $min);
+        }
+
         $ride = Ride::create($data);
-        return response()->json([
-            'data' => $ride,
-        ], 201);
+
+        return response()->json(['data' => $ride], 201);
     }
+
 
     //Show ride details (used for testing)
     public function show(Ride $ride) 
@@ -187,25 +200,19 @@ class RideController extends Controller
         ], 200);
     }
 
-    public function complete(Ride $ride) 
+    public function complete(Ride $ride)
     {
         $driver = auth()->user()->driver;
 
         if (!$driver) {
-            return response()->json([
-                'message' => 'Only drivers can complete rides.'
-            ], 403);
+            return response()->json(['message' => 'Only drivers can complete rides.'], 403);
         }
 
-        if ($ride->driver_id !== $driver->id) 
-        {
-            return response()->json([
-                'message' => 'You are not assigned to this ride.'
-            ], 403);
+        if ((int)$ride->driver_id !== (int)$driver->id) {
+            return response()->json(['message' => 'You are not assigned to this ride.'], 403);
         }
 
-        if ($ride->status === RideStatus::COMPLETED->value) 
-        {
+        if ($ride->status === RideStatus::COMPLETED->value) {
             $ride->load(['payment']);
             return response()->json([
                 'message' => 'Ride already completed.',
@@ -214,45 +221,61 @@ class RideController extends Controller
             ], 200);
         }
 
-        if ($ride->status !== RideStatus::ONGOING->value) 
-        {
-            return response()->json([
-                'message' => 'Ride cannot be completed in its current state.'
-            ], 409);
-        } 
-
-        if (!$ride->started_at) {
-            return response()->json([
-                'message' => 'Ride has no started time; cannot calculate fare.'
-            ], 500);
+        if ($ride->status !== RideStatus::ONGOING->value) {
+            return response()->json(['message' => 'Ride cannot be completed in its current state.'], 409);
         }
 
-        $minutes = max(1, $ride->started_at->diffInMinutes(now()));
-        $ride->fare = $minutes * 1.0;
+        $finalFare = $ride->estimated_fare;
 
-        $ride->status = RideStatus::COMPLETED->value;
-        $ride->completed_at = now();
-        $ride->save();
-        $payment = $ride->payment()->firstOrCreate(
-            ['ride_id' => $ride->id],
-            [
-                'amount'  => $ride->fare,
-                'method'  => 'cash',
-                'status'  => PaymentStatus::Pending->value,
-                'paid_at' => null,
-            ]
-        );
+        if ($finalFare === null) {
 
-        Driver::whereKey($driver->id)->update([
-            'status' => 'available',
-            'last_ride_completed_at' => now(),
-        ]);
+            $finalFare = 5.00;
+        }
 
-        return response()->json([
-            'data' => $ride,
-            'payment' => $payment,
-        ], 200);
+        return DB::transaction(function () use ($ride, $driver, $finalFare) {
+
+            $lockedRide = Ride::whereKey($ride->id)->lockForUpdate()->first();
+
+            if ($lockedRide->status === RideStatus::COMPLETED->value) {
+                $lockedRide->load(['payment']);
+                return response()->json([
+                    'message' => 'Ride already completed.',
+                    'data' => $lockedRide,
+                    'payment' => $lockedRide->payment,
+                ], 200);
+            }
+
+            if ($lockedRide->status !== RideStatus::ONGOING->value) {
+                return response()->json(['message' => 'Ride cannot be completed in its current state.'], 409);
+            }
+
+            $lockedRide->fare = $finalFare;
+            $lockedRide->status = RideStatus::COMPLETED->value;
+            $lockedRide->completed_at = now();
+            $lockedRide->save();
+
+            $payment = $lockedRide->payment()->updateOrCreate(
+                ['ride_id' => $lockedRide->id],
+                [
+                    'amount'  => $lockedRide->fare,
+                    'method'  => 'cash',
+                    'status'  => PaymentStatus::Pending->value,
+                    'paid_at' => null,
+                ]
+            );
+
+            Driver::whereKey($driver->id)->update([
+                'status' => 'available',
+                'last_ride_completed_at' => now(),
+            ]);
+
+            return response()->json([
+                'data' => $lockedRide,
+                'payment' => $payment,
+            ], 200);
+        });
     }
+
 
     public function mine(Request $request)
     {
@@ -373,24 +396,27 @@ class RideController extends Controller
             $normWait = 1.0 - min($waitMin / $maxWaitMin, 1.0);
 
             $score = (0.7 * $normDist) + (0.3 * $normWait);
-            $tripKm = $this->haversineKm(
-                (float) $ride->start_lat,
-                (float) $ride->start_lng,
-                (float) $ride->end_lat,
-                (float) $ride->end_lng
-            );
+            $tripKm = $ride->trip_distance_m
+                ? ($ride->trip_distance_m / 1000)
+                : $this->haversineKm(
+                    (float) $ride->start_lat,
+                    (float) $ride->start_lng,
+                    (float) $ride->end_lat,
+                    (float) $ride->end_lng
+                );
 
-            $base = 2.00;
-            $perKm = 1.20;
-            $minFare = 4.00;
+            $estimatedFare = $ride->estimated_fare;
 
-            $estimatedFare = max($minFare, $base + ($tripKm * $perKm));
+            if ($estimatedFare === null) {
+                $tripMin = $ride->trip_duration_s ? max(1, (int) round($ride->trip_duration_s / 60)) : 1;
+                $estimatedFare = \App\Support\Fare::estimate($tripKm, $tripMin);
+            }
 
             $ride->match = [
                 'distance_km' => round($distanceKm, 2),
                 'wait_min' => $waitMin,
                 'trip_km' => round($tripKm, 2),
-                'estimated_fare' => round($estimatedFare, 2),
+                'estimated_fare' => round((float)$estimatedFare, 2),
                 'score' => round($score, 4),
             ];
 

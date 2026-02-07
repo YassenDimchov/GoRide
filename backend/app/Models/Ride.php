@@ -27,6 +27,9 @@ class Ride extends Model
         'end_lng',
         'start_address',
         'end_address',
+        'trip_distance_m',
+        'trip_duration_s',
+        'estimated_fare',
         'fare',
         'status',
         'accepted_at',
@@ -35,6 +38,7 @@ class Ride extends Model
     ];
 
     protected $casts = [
+        'estimated_fare' => 'decimal:2',
         'accepted_at' => 'datetime',
         'started_at' => 'datetime',
         'completed_at' => 'datetime',

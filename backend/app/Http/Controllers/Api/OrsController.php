@@ -114,4 +114,44 @@ class OrsController extends Controller
         return response()->json(['data' => array_slice($unique, 0, 8)], 200);
     }
 
+    public function directions(Request $request)
+    {
+        $request->validate([
+            'start_lat' => ['required', 'numeric'],
+            'start_lng' => ['required', 'numeric'],
+            'end_lat'   => ['required', 'numeric'],
+            'end_lng'   => ['required', 'numeric'],
+        ]);
+
+        $key = config('services.ors.key');
+        if (!$key) return response()->json(['message' => 'ORS key missing'], 500);
+
+        $start = [(float)$request->start_lng, (float)$request->start_lat];
+        $end   = [(float)$request->end_lng, (float)$request->end_lat];
+
+        $body = [
+            'coordinates' => [$start, $end],
+        ];
+
+        $res = Http::withHeaders([
+            'Authorization' => $key,
+        ])->asJson()
+        ->post('https://api.openrouteservice.org/v2/directions/driving-car/geojson', $body);
+
+
+        if (!$res->ok()) {
+            \Log::warning('ORS directions failed', [
+                'status' => $res->status(),
+                'body'   => $res->body(),
+            ]);
+
+            return response()->json([
+                'message' => 'Directions failed',
+            ], 502);
+        }
+
+        return response()->json($res->json());
+    }
+
+
 }

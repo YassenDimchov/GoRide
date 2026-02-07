@@ -77,6 +77,27 @@
             </button>
 
             <!-- State 2 -->
+            <div class="estimate-card" id="estimateCard" style="display:none;">
+                <div class="estimate-row">
+                    <div class="estimate-item">
+                        <div class="estimate-label">ETA</div>
+                        <div class="estimate-value" id="estEta">–</div>
+                    </div>
+
+                    <div class="estimate-item">
+                        <div class="estimate-label">Distance</div>
+                        <div class="estimate-value" id="estDistance">–</div>
+                    </div>
+
+                    <div class="estimate-item">
+                        <div class="estimate-label">Est. fare</div>
+                        <div class="estimate-value" id="estFare">–</div>
+                    </div>
+                </div>
+
+                <div class="estimate-sub" id="estNote" style="display:none;"></div>
+            </div>
+            
             <div class="info-card" id="readyCard" style="display:none;">
                 <div class="info-icon">
                     <img src="assets/images/Icons/car.svg" alt="" class="icon20">
@@ -118,9 +139,9 @@
                     <div class="driver-card">
                         <div class="driver-top">
                             <div class="driver-left">
-                                <div class="driver-avatar">MC</div>
+                                <div class="driver-avatar" id="driverAvatar">MC</div>
                                 <div class="driver-meta">
-                                    <div class="driver-name">Mike Chen</div>
+                                    <div class="driver-name" id="driverName" >Mike Chen</div>
                                     <div class="driver-rating">
                                         <span class="star">★</span>
                                         <span>4.9</span>
@@ -138,9 +159,9 @@
 
                         <div class="driver-bottom">
                             <img src="assets/images/Icons/car.svg" alt="" class="icon20">
-                            <span class="car-model">Toyota Camry</span>
+                            <span class="car-model" id="carModel">Toyota Camry</span>
                             <span class="dot-sep">•</span>
-                            <span class="car-plate">ABC-1234</span>
+                            <span class="car-plate" id="carPlate">ABC-1234</span>
                         </div>
                     </div>
 

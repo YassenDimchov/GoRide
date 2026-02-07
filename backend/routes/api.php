@@ -45,3 +45,4 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::get('/geocode/autocomplete', [OrsController::class, 'autocomplete']);
+Route::get('/directions', [OrsController::class, 'directions']);

@@ -22,6 +22,8 @@ class CreateRideRequest extends FormRequest
 
             'start_address' => ['required', 'string', 'max:255'],
             'end_address'   => ['required', 'string', 'max:255'],
+            'trip_distance_m' => ['nullable', 'numeric', 'min:0'],
+            'trip_duration_s' => ['nullable', 'numeric', 'min:0'],
         ];
     }
 }

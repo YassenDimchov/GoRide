@@ -76,6 +76,11 @@ function goWaitingUI() {
 function goFoundUI(ride) {
   isWaiting = false;
   isFound = true;
+  const driverAvatarEl = document.getElementById("driverAvatar");
+  const driverNameEl   = document.getElementById("driverName");
+  const carModelEl     = document.getElementById("carModel");
+  const carPlateEl     = document.getElementById("carPlate");
+  const callDriverBtn  = document.getElementById("callDriverBtn");
 
   waitingCard.style.display = "none";
 
@@ -83,6 +88,31 @@ function goFoundUI(ride) {
   tripDropoff.textContent = ride.end_address || normalize(destinationEl.value);
 
   foundWrap.style.display = "flex";
+
+  const d = ride.driver || null;
+  const du = d?.user || null;
+
+  const driverName = du?.name || "Driver";
+  const initials = driverName.trim().split(/\s+/).slice(0,2).map(s => s[0]?.toUpperCase() || "").join("") || "DR";
+
+  if (driverAvatarEl) driverAvatarEl.textContent = initials;
+  if (driverNameEl) driverNameEl.textContent = driverName;
+
+  const make = d?.vehicle_make || "";
+  const model = d?.vehicle_model || "";
+  if (carModelEl) carModelEl.textContent = [make, model].filter(Boolean).join(" ") || "Vehicle";
+
+  if (carPlateEl) carPlateEl.textContent = d?.license_plate || "—";
+
+  if (callDriverBtn) {
+    const phone = du?.phone || "";
+    callDriverBtn.disabled = !phone;
+    callDriverBtn.onclick = () => {
+      if (!phone) return;
+      window.location.href = `tel:${phone}`;
+    };
+  }
+
 }
 
 async function pollRideStatus() {
@@ -149,6 +179,9 @@ requestBtn.addEventListener("click", async () => {
     end_lng: window.dropoffLoc.lng,
     start_address: window.pickupLoc.address || normalize(pickupEl.value),
     end_address: window.dropoffLoc.address || normalize(destinationEl.value),
+
+    trip_distance_m: window.tripEstimate?.distance_m ?? null,
+    trip_duration_s: window.tripEstimate?.duration_s ?? null,
   };
 
   goWaitingUI();
@@ -171,6 +204,11 @@ requestBtn.addEventListener("click", async () => {
     const ride = json.data;
 
     currentRideId = ride?.id ?? null;
+
+    if (ride?.estimated_fare != null) {
+      const fareEl = document.getElementById("estFare");
+      if (fareEl) fareEl.textContent = `${Number(ride.estimated_fare).toFixed(2)} €`;
+    }
 
     stopPolling();
     pollTimer = setInterval(pollRideStatus, 2000);
@@ -216,16 +254,29 @@ function resetRideUI() {
 cancelBtn.addEventListener("click", async () => {
   stopPolling();
   await cancelBackendRideIfAny();
-  resetRideUI();
+
+  isWaiting = false;
+  isFound = false;
+
+  waitingCard.style.display = "none";
+  foundWrap.style.display = "none";
+
+  pickupEl.disabled = false;
+  destinationEl.disabled = false;
+
+  updateState();
 });
+
 
 
 // Cancel ride in State 4 
 cancelRideBtn.addEventListener("click", async () => {
   stopPolling();
   await cancelBackendRideIfAny();
+  if (window.mapResetTrip) window.mapResetTrip();
   resetRideUI();
 });
+
 
 window.addEventListener("ride:locationChanged", updateState);
 

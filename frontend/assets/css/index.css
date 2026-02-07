@@ -469,3 +469,43 @@
     color: var(--text);
     font-size: 14px;
 }
+
+.estimate-card {
+    margin-top: 12px;
+    background: #fff;
+    border: 1px solid rgba(15,23,42,0.08);
+    border-radius: 14px;
+    padding: 12px 14px;
+}
+
+.estimate-row {
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+}
+
+.estimate-item {
+    flex: 1;
+    min-width: 0;
+}
+
+.estimate-label {
+    font-size: 12px;
+    color: rgba(15,23,42,0.6);
+    margin-bottom: 2px;
+}
+
+.estimate-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: #0f172a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.estimate-sub {
+    margin-top: 8px;
+    font-size: 12px;
+    color: rgba(15,23,42,0.65);
+}

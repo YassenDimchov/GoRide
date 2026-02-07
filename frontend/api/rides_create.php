@@ -39,7 +39,20 @@ $payload = [
     'end_lng' => (float)$data['end_lng'],
     'start_address' => (string)$data['start_address'],
     'end_address' => (string)$data['end_address'],
+    'trip_distance_m' => isset($data['trip_distance_m']) ? (int)$data['trip_distance_m'] : null,
+    'trip_duration_s' => isset($data['trip_duration_s']) ? (int)$data['trip_duration_s'] : null,
 ];
+
+if (isset($data['trip_distance_m']) && !is_numeric($data['trip_distance_m'])) {
+    http_response_code(422);
+    echo json_encode(['message' => 'trip_distance_m must be numeric']);
+    exit;
+}
+if (isset($data['trip_duration_s']) && !is_numeric($data['trip_duration_s'])) {
+    http_response_code(422);
+    echo json_encode(['message' => 'trip_duration_s must be numeric']);
+    exit;
+}
 
 $res = apiRequest('POST', '/rides', $payload, $token);
 
