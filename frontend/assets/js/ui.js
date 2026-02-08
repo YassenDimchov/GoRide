@@ -73,6 +73,8 @@ function goWaitingUI() {
   destinationEl.disabled = true;
 }
 
+let driverLocationMarker = null;
+
 function goFoundUI(ride) {
   isWaiting = false;
   isFound = true;
@@ -104,6 +106,8 @@ function goFoundUI(ride) {
 
   if (carPlateEl) carPlateEl.textContent = d?.license_plate || "—";
 
+  updateDriverLocation(ride.driver.current_lat, ride.driver.current_lng);
+
   if (callDriverBtn) {
     const phone = du?.phone || "";
     callDriverBtn.disabled = !phone;
@@ -112,8 +116,28 @@ function goFoundUI(ride) {
       window.location.href = `tel:${phone}`;
     };
   }
-
 }
+
+function updateDriverLocation(lat, lng) {
+  const customIcon = L.icon({
+    iconUrl: 'assets/images/Icons/car-icon-2.svg',
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
+    popupAnchor: [0, -32]
+  });
+
+  if (driverLocationMarker) {
+    driverLocationMarker.setLatLng([lat, lng]);
+  } else {
+    driverLocationMarker = L.marker([lat, lng], { icon: customIcon }).addTo(map);
+  }
+
+    driverLocationMarker.bindPopup("Your driver is on the way!");
+
+
+  map.setView([lat, lng], 13);
+}
+
 
 async function pollRideStatus() {
   if (!currentRideId) return;
@@ -135,8 +159,47 @@ async function pollRideStatus() {
       goFoundUI(ride);
     }
 
+    if (ride.status === "ongoing" && ride.driver) {
+      updateDriverLocation(ride.driver.current_lat, ride.driver.current_lng);
+    }
   } catch (_) {}
 }
+
+async function pollDriverLocation() {
+  if (!currentRideId) return;
+
+  try {
+    const url = new URL("/GoRide/frontend/api/rides_show.php", window.location.origin);
+    url.searchParams.set("id", String(currentRideId));
+
+    const res = await fetch(url.toString(), { headers: { "Accept": "application/json" } });
+    if (!res.ok) return;
+
+    const json = await res.json();
+    const ride = json.data;
+
+    if (!ride || !ride.driver) return;
+
+    const driver = ride.driver;
+    const currentLat = driver.current_lat;
+    const currentLng = driver.current_lng;
+
+    if (driverLocationMarker) {
+      const markerLat = driverLocationMarker.getLatLng().lat;
+      const markerLng = driverLocationMarker.getLatLng().lng;
+
+      if (markerLat !== currentLat || markerLng !== currentLng) {
+        updateDriverLocation(currentLat, currentLng);
+      }
+    }
+
+  } catch (_) {
+    console.error("Error fetching driver location");
+  }
+}
+
+setInterval(pollDriverLocation, 10000);
+
 
 async function cancelBackendRideIfAny() {
   if (!currentRideId) return;
@@ -273,6 +336,12 @@ cancelBtn.addEventListener("click", async () => {
 cancelRideBtn.addEventListener("click", async () => {
   stopPolling();
   await cancelBackendRideIfAny();
+
+  if (driverLocationMarker) {
+    map.removeLayer(driverLocationMarker);
+    driverLocationMarker = null;
+  }
+
   if (window.mapResetTrip) window.mapResetTrip();
   resetRideUI();
 });
