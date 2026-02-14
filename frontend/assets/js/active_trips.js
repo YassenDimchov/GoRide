@@ -15,8 +15,6 @@
 
   const tabsWrap = document.querySelector(".trips-tabs");
 
-  let cachedUserStats = { userId: null, avgRating: null, count: 0 };
-
   if (!wrap) return;
 
   const POLL_MS = 5000; 
@@ -29,8 +27,6 @@
   const URL_START    = "driver_start_ride_action.php";
   const URL_COMPLETE = "driver_complete_ride_action.php";
   const URL_ACTIVE = "driver_active_ride_action.php";
-  const URL_USER_REVIEWS = "user_reviews_action.php";
-
 
   const LS_ACTIVE_RIDE = "goride_driver_active_ride";
   const LS_ACTIVE_TAB  = "goride_driver_active_tab";
@@ -113,33 +109,6 @@
       return null;
     }
   }
-
-  async function fetchUserRatingStats(userId) {
-    if (!userId) return { avgRating: null, count: 0 };
-
-    try {
-      const res = await fetch(`${URL_USER_REVIEWS}?user_id=${encodeURIComponent(userId)}`);
-      const data = await res.json().catch(() => null);
-      if (!res.ok || !data?.ok) return { avgRating: null, count: 0 };
-
-      const reviews = Array.isArray(data.data) ? data.data : [];
-      let sum = 0, n = 0;
-
-      for (const r of reviews) {
-        const rating = Number(r.rating);
-        if (Number.isFinite(rating)) { sum += rating; n++; }
-      }
-
-      return {
-        avgRating: n ? Math.round((sum / n) * 10) / 10 : null,
-        count: n
-      };
-    } catch {
-      return { avgRating: null, count: 0 };
-    }
-  }
-
-
 
   // location tracking
   function stopLocationTracking() {
@@ -277,7 +246,7 @@
   }
 
   // render ongoing
-  function renderOngoing(ride, stats = null) {
+  function renderOngoing(ride) {
     const hasRide = !!ride;
     ongoingCount.textContent = hasRide ? "1" : "0";
 
@@ -295,11 +264,6 @@
     const drop = ride.end_address || `${ride.end_lat}, ${ride.end_lng}`;
     const phone = u.phone || "";
     const email = u.email || "";
-    const avg = stats?.avgRating ?? null;
-    const cnt = stats?.count ?? 0;
-
-    const avgText = avg == null ? "—" : Number(avg).toFixed(1);
-    const cntText = cnt > 0 ? ` (${cnt})` : "";
 
     const est = ride.estimated_fare ?? ride.match?.estimated_fare ?? null;
     const status = String(ride.status || "accepted");
@@ -514,27 +478,24 @@
 
   function startPolling() {
     if (pollTimer) clearInterval(pollTimer);
+
     pollTimer = setInterval(async () => {
       const serverRide = await fetchActiveRideFromServer();
+
       if (serverRide) {
         saveRide(serverRide);
         paint("busy");
-
-        const passengerId = serverRide.user?.id || serverRide.user_id;
-        if (cachedUserStats.userId !== passengerId) {
-          const s = await fetchUserRatingStats(passengerId);
-          cachedUserStats = { userId: passengerId, ...s };
-        }
-
-        renderOngoing(serverRide, cachedUserStats);
+        renderOngoing(serverRide);
       } else {
         saveRide(null);
         renderOngoing(null);
         if (current !== "offline") paint("available");
       }
+
       refreshPending();
     }, POLL_MS);
   }
+
 
   wrap.addEventListener("click", (e) => {
     const btn = e.target.closest(".pill");
@@ -603,21 +564,18 @@
 
   (async () => {
     const serverRide = await fetchActiveRideFromServer();
+
     if (serverRide) {
       saveRide(serverRide);
       paint("busy");
-
-      const passengerId = serverRide.user?.id || serverRide.user_id;
-      const s = await fetchUserRatingStats(passengerId);
-      cachedUserStats = { userId: passengerId, ...s };
-
-      renderOngoing(serverRide, cachedUserStats);
+      renderOngoing(serverRide);
       setTab("ongoing");
     } else {
       saveRide(null);
       renderOngoing(null);
     }
   })();
+
 
 
 
