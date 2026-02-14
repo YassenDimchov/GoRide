@@ -280,7 +280,6 @@ class RideController extends Controller
 
             Driver::whereKey($driver->id)->update([
                 'status' => 'available',
-                'last_ride_completed_at' => now(),
             ]);
 
             return response()->json([

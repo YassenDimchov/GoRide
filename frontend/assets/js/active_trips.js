@@ -110,6 +110,63 @@
     }
   }
 
+  function getPos() {
+    return new Promise((resolve, reject) => {
+      if (!navigator.geolocation) return reject(new Error("Geolocation not supported"));
+      navigator.geolocation.getCurrentPosition(
+        (pos) => resolve(pos),
+        (err) => reject(err),
+        { enableHighAccuracy: true, timeout: 8000, maximumAge: 5000 }
+      );
+    });
+  }
+
+  function openGoogleNav({ originLat, originLng, destLat, destLng }) {
+    const url = new URL("https://www.google.com/maps/dir/");
+    url.searchParams.set("api", "1");
+    url.searchParams.set("destination", `${destLat},${destLng}`);
+    url.searchParams.set("travelmode", "driving");
+
+    if (Number.isFinite(originLat) && Number.isFinite(originLng)) {
+      url.searchParams.set("origin", `${originLat},${originLng}`);
+    }
+
+    window.open(url.toString(), "_blank", "noopener,noreferrer");
+  }
+
+  async function handleNavigateClick(ride) {
+    if (!ride) return;
+
+    const status = String(ride.status || "accepted");
+
+    const dest =
+      status === "accepted"
+        ? { lat: Number(ride.start_lat), lng: Number(ride.start_lng) }
+        : { lat: Number(ride.end_lat),   lng: Number(ride.end_lng) };
+
+    if (!Number.isFinite(dest.lat) || !Number.isFinite(dest.lng)) {
+      setMsg("Missing destination coordinates for navigation.");
+      return;
+    }
+
+    try {
+      const pos = await getPos();
+      openGoogleNav({
+        originLat: pos.coords.latitude,
+        originLng: pos.coords.longitude,
+        destLat: dest.lat,
+        destLng: dest.lng,
+      });
+    } catch {
+      openGoogleNav({
+        originLat: NaN,
+        originLng: NaN,
+        destLat: dest.lat,
+        destLng: dest.lng,
+      });
+    }
+  }
+
   // location tracking
   function stopLocationTracking() {
     if (locTimer) clearInterval(locTimer);
@@ -535,8 +592,13 @@
       if (action === "start") return startTrip(rideId, ongoingCard);
       if (action === "complete") return completeTrip(rideId, ongoingCard);
       if (action === "navigate") {
-        setMsg("Navigate clicked (hook it to Google/OSM later).");
-        setTimeout(() => setMsg(""), 900);
+        const ride = getSavedRide();
+        if (!ride) {
+          setMsg("No active ride found.");
+          return;
+        }
+        handleNavigateClick(ride);
+        return;
       }
       if (action === "call") {
         const ride = getSavedRide();

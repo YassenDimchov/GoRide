@@ -24,6 +24,7 @@ window.addEventListener("map:pickMode", (e) => {
 let pickupMarker = null;
 let dropoffMarker = null;
 let routeLine = null;
+window.DEBUG_DIRECTIONS = false;
 
 function makeDot(lat, lng, kind) {
   return L.circleMarker([lat, lng], {
@@ -74,9 +75,8 @@ async function drawRouteIfPossible() {
     const res = await fetch(url.toString(), { headers: { "Accept": "application/json" } });
     if (!res.ok) throw new Error("directions failed");
     console.log("Directions status:", res.status);
-    const txt = await res.text();
-    console.log("Directions raw:", txt);
-    const geo = JSON.parse(txt);
+    const geo = await res.json();
+    if (window.DEBUG_DIRECTIONS) console.log("Directions geo:", geo);
 
     const coords = geo?.features?.[0]?.geometry?.coordinates;
     if (!Array.isArray(coords) || coords.length < 2) throw new Error("bad geometry");

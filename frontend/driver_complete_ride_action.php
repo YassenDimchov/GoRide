@@ -45,4 +45,10 @@ if (!empty($res['_error'])) {
     exit;
 }
 
-echo json_encode(['ok' => true, 'data' => $res['data'] ?? null, 'payment' => $res['payment'] ?? null]);
+$body = $res['body'] ?? $res;
+
+echo json_encode([
+  'ok' => true,
+  'data' => $body['data'] ?? null,
+  'payment' => $body['payment'] ?? null,
+]);
