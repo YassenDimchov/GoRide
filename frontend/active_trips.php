@@ -62,19 +62,37 @@ $currentStatus = $driver['status'] ?? 'offline';
                 </section>
             </div>
             <div class="status-msg" id="statusMsg" aria-live="polite"></div>
-            
-            <section class="pending">
-                <div class="pending-head">
-                    <div class="pending-top">
-                        <div class="pending-title">Pending Requests</div>
-                        <div class="pending-count" id="pendingCount">0</div>
-                    </div>
 
-                    <div class="pending-list" id="pendingList"></div>
+            <section class="trips-tabs">
+                <button class="tab is-active" type="button" data-tab="pending">
+                    Pending Requests <span class="badge" id="pendingCount">0</span>
+                </button>
+                <button class="tab" type="button" data-tab="ongoing">
+                    Ongoing Rides <span class="badge" id="ongoingCount">0</span>
+                </button>
+            </section>
 
-                    <div class="pending-empty" id="pendingEmpty" style="display: none;">
-                        No pending rides right now.
+            <section class="pending" id="pendingSection">
+                <div class="pending-list" id="pendingList"></div>
+                <div class="pending-empty" id="pendingEmpty" style="display: none;">
+                    No pending rides right now.
+                </div>
+            </section>
+
+            <section class="ongoing" id="ongoingSection" style="display:none;">
+                <div id="ongoingList"></div>
+                <div class="pending-empty" id="ongoingEmpty" style="display:none;">No ongoing rides right now.</div>
+            </section>
+
+            <section id="rideDetailsWrap" class="ride-details-wrap" style="display: none;">
+                <div class="ride-details">
+                    <div class="ride-header">
+                        <h3>Ride Accepted</h3>
                     </div>
+                    <div class="ride-info" id="rideInfo">
+                    <!-- Ride info will be dynamically populated here -->
+                    </div>
+                    <button id="startRideBtn" class="start-ride-btn">Start Trip</button>
                 </div>
             </section>
         </div>

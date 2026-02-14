@@ -76,4 +76,15 @@ class ReviewController extends Controller
             'average_rating' => $avg ? round((float)$avg, 2) : null,
         ]);
     }
+
+    public function forUser(int $userId)
+    {
+        $reviews = \App\Models\Review::query()
+            ->where('user_id', $userId)
+            ->select('id','rating','comment','created_at')
+            ->latest()
+            ->get();
+
+        return response()->json(['data' => $reviews], 200);
+    }
 }

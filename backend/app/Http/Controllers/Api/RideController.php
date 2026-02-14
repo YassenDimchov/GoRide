@@ -191,6 +191,20 @@ class RideController extends Controller
             ], 409);
         }   
 
+        $pickupLat = $ride->start_lat;
+        $pickupLng = $ride->start_lng;
+        $driverLat = $driver->current_lat;
+        $driverLng = $driver->current_lng;
+
+        $distance = $this->haversineKm($driverLat, $driverLng, $pickupLat, $pickupLng);
+
+        if ($distance > 0.3) {
+            return response()->json([
+                'message' => 'You are too far from the pickup location to start the ride.',
+                'distance' => $distance
+            ], 409);
+        }
+
         $ride->status = RideStatus::ONGOING->value;
         $ride->started_at = now();
         $ride->save();
@@ -476,6 +490,24 @@ class RideController extends Controller
             return response()->json(['data' => $lockedRide], 200);
         });
     }
+
+    public function driverActive()
+    {
+        $driver = auth()->user()->driver;
+        if (!$driver) {
+            return response()->json(['message' => 'Only drivers.'], 403);
+        }
+
+        $ride = Ride::query()
+            ->where('driver_id', $driver->id)
+            ->whereIn('status', [RideStatus::ACCEPTED->value, RideStatus::ONGOING->value])
+            ->latest('accepted_at')
+            ->with(['user'])
+            ->first();
+
+        return response()->json(['data' => $ride], 200);
+    }
+
 
 
 

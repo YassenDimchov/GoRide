@@ -257,3 +257,150 @@
     border: none;
     width: 200px;
 }
+
+.trips-tabs {
+    width: 100%;
+    display: flex;
+    gap: 10px;
+    background: var(--black);
+    padding: 10px;
+    border-radius: 12px;
+    justify-content: space-between;
+}
+
+.tab {
+    border: none;
+    border-radius: 10px;
+    padding: 10px 12px;
+    cursor: pointer;
+    font-size: var(--fs-md);
+    background: transparent;
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    opacity: 0.75;
+}
+
+.tab.is-active {
+    background: var(--white);
+    color: black;
+    opacity: 1;
+}
+
+.tab.is-active .badge {
+    border: 2px solid var(--border);
+}
+
+
+.badge {
+    min-width: 28px;
+    height: 22px;
+    padding: 0 8px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: var(--fw-bold);
+}
+
+.ongoing-card {
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:24px;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+}
+
+.ongoing-top {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.ongoing-badge {
+    background:#E5F0FF;
+    color:#1D4ED8;
+    padding:6px 10px;
+    border-radius:999px;
+    font-size: var(--fs-md);
+    font-weight: var(--fw-semibold);
+}
+
+.ongoing-price {
+    font-size: var(--fs-xxl);
+    font-weight: var(--fw-bold);
+    color:#00A63E;
+}
+
+.ongoing-progress {
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.progress-label {
+    color: var(--text-muted);
+    font-size: var(--fs-md);
+}
+
+.progress-bar {
+    height:8px;
+    background:#E5E7EB;
+    border-radius:999px;
+    overflow:hidden;
+}
+
+.progress-fill {
+    height:100%;
+    background:#1D4ED8;
+    border-radius:999px;
+}
+
+.ongoing-user {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+}
+
+.ongoing-actions-small {
+    display:flex;
+    gap:10px;
+}
+
+.btn-mini {
+    border:1px solid var(--border);
+    background:#fff;
+    padding:8px 12px;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.ongoing-bottom {
+    display:flex;
+    gap:12px;
+}
+
+.btn-nav {
+    flex:1;
+    border:none;
+    border-radius:12px;
+    padding:12px 14px;
+    background:#0B0F19;
+    color:#fff;
+    cursor:pointer;
+}
+
+.btn-complete {
+    flex:1;
+    border:none;
+    border-radius:12px;
+    padding:12px 14px;
+    background:#00A63E;
+    color:#fff;
+    cursor:pointer;
+}
