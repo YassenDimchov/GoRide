@@ -168,6 +168,7 @@
                     <div class="found-actions">
                         <button class="btn-outline" id="callDriverBtn">Call Driver</button>
                         <button class="btn-outline" id="cancelRideBtn">Cancel Ride</button>
+                        <button class="btn-outline" id="navigateBtn" style="display:none;">Navigate</button>
                     </div>
                 </div>
 
