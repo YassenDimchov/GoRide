@@ -1,6 +1,6 @@
 .payments-shell {
     padding-top: 100px;
-    height: 80vh;
+    min-height: 80vh;
     display: flex;
     justify-content: center;
     align-items: flex-start;
@@ -220,7 +220,6 @@
 }
 
 /* Recent transactions */
-/* ----- Recent Transactions ----- */
 
 .pay-list {
     display: flex;

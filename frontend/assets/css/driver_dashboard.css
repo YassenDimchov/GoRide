@@ -1,0 +1,167 @@
+.app-shell {
+    padding-top: 100px;
+    min-height: 90vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    margin-bottom: 32px;
+}
+
+.page {
+    margin: 0 auto 80px;
+    width: 1088px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.page-title {
+    font-size: var(--fs-xxl);
+    font-weight: var(--fw-bold);
+}
+
+.dash-tabs {
+    display: flex;
+    gap: 8px;
+}
+
+.dash-tab {
+    padding: 8px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--white);
+    font-size: var(--fs-md);
+    cursor: pointer;
+    color: #0A0A0A;
+}
+
+.dash-tab.is-active {
+    background: #030213;
+    color: var(--white);
+    border: 0;
+}
+
+.dash-hero {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    border-radius: 14px;
+    padding: 24px;
+    color: var(--white);
+    background: linear-gradient(90deg,rgba(0, 201, 80, 1) 0%, rgba(0, 153, 102, 1) 100%);
+}
+
+.dash-hero-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.dash-hero-label, .dash-hero-sub {
+    font-size: var(--fs-md);
+}
+
+.dash-hero-value {
+    font-size: 48px;
+    font-weight: var(--fw-bold);
+}
+
+.dash-hero-sub {
+    justify-self: flex-end;
+}
+
+.dash-hero-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.18);
+    display: grid;
+    place-items: center;
+}
+
+.dash-stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+}
+
+.dash-stat {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.dash-stat-label {
+    font-size: var(--fs-md);
+    color: var(--text-muted);
+}
+
+.dash-stat-value {
+    font-size: var(--fs-xxxl);
+    font-weight: var(--fw-bold);
+}
+
+.dash-card {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+}
+
+.dash-card-title {
+    font-size: var(--fs-xl);
+    font-weight: var(--fw-bold);
+}
+
+.dash-empty {
+    color: #6b7280;
+    font-size: var(--fs-md);
+    margin-top: 32px;
+}
+
+#ddTripsList:not(:empty), #ddTripsEmpty:not(:empty) {
+    margin-top: 20px;
+}
+
+.dash-trips {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.dash-trip {
+    background-color: #F9FAFB;
+    display: flex;
+    justify-content: space-between;
+    padding: 16px;
+    border-radius: 16px;
+}
+
+.dash-trip-top {
+    display: flex;
+    gap: 8px;
+}
+
+.dash-trip-when {
+    font-size: var(--fs-md);
+    color: var(--text-subtle);
+}
+
+.dash-trip-route {
+    display: flex;
+    margin-top: 4px;
+    gap: 4px;
+    color: var(--black);
+    font-size: var(--fs-md);
+}
+
+.dash-trip-right {
+    font-size: 18px;
+    font-weight: var(--fw-bold);
+    display: flex;
+    flex-direction: column;
+}

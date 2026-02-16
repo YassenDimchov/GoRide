@@ -37,9 +37,6 @@ curl_setopt_array($ch, [
 
 $response = curl_exec($ch);
 $status   = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
-file_put_contents(__DIR__ . '/_debug_login.txt',
-  "STATUS: $status\n\nRESPONSE:\n$response"
-);
 $curlErr  = curl_error($ch);
 curl_close($ch);
 

@@ -68,10 +68,10 @@
                 <span>Active Trips</span>
             </a>
 
-            <?php $earnings = navItem('earnings.php', $current); ?>
-            <a href="<?= $earnings['href'] ?>" class="<?= $earnings['class'] ?>"<?= $earnings['data'] ?><?= $earnings['aria'] ?>>
+            <?php $dashboard = navItem('driver_dashboard.php', $current); ?>
+            <a href="<?= $dashboard['href'] ?>" class="<?= $dashboard['class'] ?>"<?= $dashboard['data'] ?><?= $dashboard['aria'] ?>>
                 <img src="./assets/images/Icons/chart.svg" alt="" class="nav-ic icon20">
-                <span>Earnings</span>
+                <span>Driver Dashboard</span>
             </a>
         <?php endif; ?>
 

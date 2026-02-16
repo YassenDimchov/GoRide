@@ -1,4 +1,0 @@
-STATUS: 200
-
-RESPONSE:
-{"user":{"id":12,"name":"Brian Kennedy","email":"bk@gmail.com","phone":"0888888888","created_at":"2026-01-24T14:17:06.000000Z","updated_at":"2026-02-04T01:48:03.000000Z","role":"driver"},"token":"81|4tnRaGsngNBhEF78h1AvybG2xgoigU3UnXuCjj42589210f6"}
