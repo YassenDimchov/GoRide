@@ -139,6 +139,9 @@
     justify-content: space-between;
     padding: 16px;
     border-radius: 16px;
+    flex-direction: column;
+    gap: 10px;
+    cursor: pointer;
 }
 
 .dash-trip-top {
@@ -164,4 +167,81 @@
     font-weight: var(--fw-bold);
     display: flex;
     flex-direction: column;
+}
+
+.dash-trip-wrap {
+    display: flex;
+    justify-content: space-between;
+}
+
+.dash-trip-main {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.dash-trip-right {
+    font-size: 18px;
+    font-weight: var(--fw-bold);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.dash-trip-reviewToggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: #111827;
+    opacity: .85;
+}
+
+.dash-trip-reviewToggle:hover {
+    opacity: 1;
+}
+
+.dash-trip-reviewIcon {
+    width: 14px;
+    height: 14px;
+}
+
+.dash-trip-review {
+    display: none;
+    border-top: 1px solid rgba(0,0,0,.08);
+    padding-top: 10px;
+}
+
+.dash-trip.is-open .dash-trip-review {
+    display: block;
+}
+
+.dash-trip-reviewName {
+    font-size: 13px;
+    font-weight: 700;
+    color: #0A0A0A;
+    margin-bottom: 4px;
+}
+
+.dash-trip-reviewText {
+    font-size: 13px;
+    color: #374151;
+    line-height: 1.35;
+}
+
+.star-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 4px;
+}
+
+.dash-trip-reviewRating {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 8px;
 }

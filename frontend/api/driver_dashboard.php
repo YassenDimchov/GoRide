@@ -43,7 +43,7 @@ if ($from) $params['from'] = $from;
 if ($to) $params['to'] = $to;
 
 $qs = http_build_query($params);
-$res = apiRequest('GET', '/rides/driver?' . $qs, [], $token);
+$res = apiRequest('GET', '/rides/driver?with_user=true&' . $qs, [], $token);
 
 if (!$res || !empty($res['_error'])) {
     $msg = $res['_error'] ? ($res['body']['message'] ?? 'Dashboard fetch failed') : 'Dashboard fetch failed';

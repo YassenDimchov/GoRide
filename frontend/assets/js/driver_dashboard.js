@@ -10,7 +10,7 @@
     function money(n) {
         const x = Number(n);
         if (!Number.isFinite(x)) return "—";
-        return `$${x.toFixed(2)}`;
+        return `${x.toFixed(2)} €`;
     }
 
     function fmtDate(s) {
@@ -52,27 +52,79 @@
             const amt = (r.payment && r.payment.amount != null) ? r.payment.amount : r.fare;
             const right = money(amt);
 
+            const review = r.review;
+            const reviewText = review ? review.review_text : "No review for this trip yet.";
+            const userName = `Passenger - ${r.user.name}`;
+
+            const rating = review ? review.rating : 0;
+            const stars = generateStars(rating);
+
             const row = document.createElement("div");
             row.className = "dash-trip";
 
             row.innerHTML = `
-                <div class="dash-trip-left">
-                    <div class="dash-trip-top">
-                        <img src="./assets/images/Icons/calendar.svg" class="icon16" alt="">
-                        <div class="dash-trip-when">${when || "—"}</div>
+                <div class="dash-trip-wrap">
+                    <div class="dash-trip-left">
+                        <div class="dash-trip-top">
+                            <img src="./assets/images/Icons/calendar.svg" class="icon16" alt="">
+                            <div class="dash-trip-when">${when || "—"}</div>
+                        </div>
+                        <div class="dash-trip-route">
+                            <div class="dash-trip-from">${from || "—"}</div>
+                            <div class="dash-trip-arrow">→</div>
+                            <div class="dash-trip-to">${to || "—"}</div>
+                        </div>
                     </div>
-                    <div class="dash-trip-route">
-                        <div class="dash-trip-from">${from || "—"}</div>
-                        <div class="dash-trip-arrow">-></div>
-                        <div class="dash-trip-to">${to || "—"}</div>
+                    <div class="dash-trip-right">
+                        <div class="dash-trip-price">${right}</div>
+                        <button class="dash-trip-reviewToggle" type="button">
+                            Review
+                            <img class="dash-trip-reviewIcon" src="./assets/images/Icons/down-arrow.svg" alt="Toggle Review">
+                        </button>
                     </div>
                 </div>
-                <div class="dash-trip-right">${right}</div>
             `;
+
+            const reviewBox = document.createElement("div");
+            reviewBox.className = "dash-trip-review";
+            reviewBox.style.display = "none";
+
+            reviewBox.innerHTML = `
+                <div class="dash-trip-reviewName">${userName}</div>
+                <div class="dash-trip-reviewRating">${stars}</div>
+                <div class="dash-trip-reviewText">${reviewText}</div>
+            `;
+
+            row.appendChild(reviewBox);
+
+            const toggleBtn = row.querySelector(".dash-trip-reviewToggle");
+            const iconEl = row.querySelector(".dash-trip-reviewIcon");
+
+            toggleBtn.addEventListener("click", () => {
+                const open = reviewBox.style.display === "block";
+                reviewBox.style.display = open ? "none" : "block";
+                iconEl.src = open ? "./assets/images/Icons/down-arrow.svg" : "./assets/images/Icons/up-arrow.svg";
+            });
 
             listEl.appendChild(row);
         }
     }
+
+    function generateStars(rating) {
+        const maxRating = 5;
+        let stars = "";
+        
+        for (let i = 1; i <= maxRating; i++) {
+            if (i <= rating) {
+                stars += `<img src="./assets/images/Icons/star-filled.svg" class="star-icon" alt="star">`;
+            } else {
+                stars += `<img src="./assets/images/Icons/star-empty.svg" class="star-icon" alt="star">`;
+            }
+        }
+
+        return stars;
+    }
+
 
     async function load(period) {
         setActiveTab(period);
