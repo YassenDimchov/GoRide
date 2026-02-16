@@ -14,6 +14,7 @@
     <!-- CSS -->
     <link rel="stylesheet" href="assets/css/style.css"/>
     <link rel="stylesheet" href="assets/css/index.css"/>
+    <link rel="stylesheet" href="assets/css/review.css"/>
 
     <link
         rel="stylesheet"
@@ -202,5 +203,6 @@
     <script src="assets/js/map.js"></script>
     <script src="assets/js/autocomplete.js"></script>
     <script src="assets/js/ui.js"></script>
+    <script src="assets/js/review_modal.js"></script>
 </body>
 </html>

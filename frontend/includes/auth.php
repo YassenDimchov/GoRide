@@ -151,3 +151,12 @@ function apiAvailableRides(string $token): ?array {
 function apiAcceptRide(string $token, int $rideId): ?array {
     return apiRequest('POST', '/rides/' . $rideId . '/accept', [], $token);
 }
+
+function apiCreateRideReview(string $token, int $rideId, int $rating, string $reviewText = ''): ?array {
+    $payload = [
+        'rating' => $rating,
+        'review_text' => $reviewText,
+    ];
+
+    return apiRequest('POST', '/rides/' . $rideId . '/review', $payload, $token);
+}

@@ -227,7 +227,22 @@ function applyActionButtons(ride) {
     }
     if (reviewBtn) {
       reviewBtn.style.display = "";
-      reviewBtn.onclick = () => alert("Working on Review screen.");
+      reviewBtn.onclick = async () => {
+          if (!window.ReviewModal || typeof window.ReviewModal.open !== "function") {
+              alert("Review modal is not available.");
+              return;
+          }
+
+          const latest = currentRideId ? await fetchRide(currentRideId) : ride;
+
+          window.ReviewModal.open({
+              rideId: latest?.id || currentRideId,
+              ride: latest || ride,
+              onSubmitted: () => {
+                  if (reviewBtn) reviewBtn.style.display = "none";
+              },
+          });
+      };
     }
     return;
   }
