@@ -1,9 +1,11 @@
 <?php 
 require_once __DIR__ . '/includes/guard.php';
 require_once __DIR__ . '/includes/trips_data.php';
+require_once __DIR__ . '/includes/driver_modal_profile.php';
 
 date_default_timezone_set('Europe/Sofia');
 $rides = getTripHistory($token);
+
 ?>
 
 <!DOCTYPE html>
@@ -22,10 +24,10 @@ $rides = getTripHistory($token);
     <link rel="stylesheet" href="assets/css/style.css"/>
     <link rel="stylesheet" href="assets/css/trips.css"/>
     <link rel="stylesheet" href="assets/css/review.css"/>
+    <link rel="stylesheet" href="assets/css/driver_profile.css"/>
 </head>
 <body>
     <div class="app-shell">
-        <?php include __DIR__ . '/components/navbar.php'; ?>
         <?php include __DIR__ . '/components/sidebar.php'; ?>
         
         <main class="trips-shell">
@@ -46,12 +48,14 @@ $rides = getTripHistory($token);
                                     $vehicleModel = $r['driver']['vehicle_model'] ?? null;
                                     $plate        = $r['driver']['license_plate'] ?? null;
                                     $driverName = $r['driver']['user']['name'] ?? null;
+                                    $driverId = $r['driver']['id'] ?? null;
                                     $rating = $r['review']['rating'] ?? null;
                                     $paymentMethod = $r['payment']['method'] ?? null;
                                     $tripDurationMinutes = isset($r['trip_duration_s']) ? round($r['trip_duration_s'] / 60) : null;
                                     $tripDistanceKm = isset($r['trip_distance_m']) ? round($r['trip_distance_m'] / 1000, 2) : null;
                                     $nameParts = explode(' ', $driverName);
                                     $driverInitials = strtoupper($nameParts[0][0] . (isset($nameParts[1]) ? $nameParts[1][0] : ''));
+                                    $driverProfile = getDriverProfile($token, $driverId)['driver'];
                                 ?>
                                 <article class="trip-card" data-ride-id="<?= $r['id'] ?>">
                                     <div class="trip-top">
@@ -109,10 +113,93 @@ $rides = getTripHistory($token);
                                     </div>
 
                                     <div class="driver-info">
-                                        <button class="driver-profile-btn" onclick="openDriverProfileModal(<?= $r['driver']['id'] ?>)">
+                                        <button class="driver-profile-btn" data-driver-profile='<?= json_encode($driverProfile) ?>' onclick="openDriverProfileModal(this)">
                                             <div class="driver-avatar"><?= htmlspecialchars($driverInitials) ?></div>
                                             <div class="driver-name"><?= htmlspecialchars($driverName) ?></div>
                                         </button>
+
+                                        <div id="driverProfileModal" class="modal">
+                                            <div class="modal-content">
+                                                <div class="driver-top">
+                                                    <span class="drive-modal-title">Driver Profile</span>
+                                                    <span class="close-btn" onclick="closeDriverProfileModal()">×</span>
+                                                </div>
+                                                <div class="driver-info-modal">
+                                                    <div class="driver-avatar-modal">
+                                                        <div><?= htmlspecialchars($driverInitials) ?></div>
+                                                    </div>
+                                                    <div class="detailed-driver-info">
+                                                        <div id="driverName"></div>
+                                                        <div class="rating-and-trips">
+                                                            <img src="./assets/images/Icons/star-filled.svg" class="star icon16" alt="Filled star" />
+                                                            <div id="averageRating"></div>
+                                                            <div id="totalTripsInfo"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="driver-stats">
+                                                    <div class="driver-profile-stat-card">
+                                                        <div class="stat-text">Total Trips</div>
+                                                        <div id="totalTrips"></div>
+                                                    </div>
+                                                    <div class="driver-profile-stat-card">
+                                                        <div class="stat-text">Time as a Driver</div>
+                                                        <div id="yearsActive"></div>
+                                                    </div>
+                                                    <div class="driver-profile-stat-card">
+                                                        <div class="stat-text">Response Time</div>
+                                                        <div id="averageResponseTime"></div>
+                                                    </div>
+                                                </div>
+                                                <div id="ratingBreakdown">
+                                                    <h3>Rating Breakdown:</h3>
+                                                    
+                                                    <div class="rating-item">
+                                                        <span class="rating-label">5 ★</span>
+                                                        <div class="rating-bar">
+                                                            <div id="ratingBar5" class="rating-fill"></div>
+                                                        </div>
+                                                        <span id="ratingCount5" class="rating-count">0%</span>
+                                                    </div>
+                                                    
+                                                    <div class="rating-item">
+                                                        <span class="rating-label">4 ★</span>
+                                                        <div class="rating-bar">
+                                                            <div id="ratingBar4" class="rating-fill"></div>
+                                                        </div>
+                                                        <span id="ratingCount4" class="rating-count">0%</span>
+                                                    </div>
+                                                    
+                                                    <div class="rating-item">
+                                                        <span class="rating-label">3 ★</span>
+                                                        <div class="rating-bar">
+                                                            <div id="ratingBar3" class="rating-fill"></div>
+                                                        </div>
+                                                        <span id="ratingCount3" class="rating-count">0%</span>
+                                                    </div>
+                                                    
+                                                    <div class="rating-item">
+                                                        <span class="rating-label">2 ★</span>
+                                                        <div class="rating-bar">
+                                                            <div id="ratingBar2" class="rating-fill"></div>
+                                                        </div>
+                                                        <span id="ratingCount2" class="rating-count">0%</span>
+                                                    </div>
+                                                    
+                                                    <div class="rating-item">
+                                                        <span class="rating-label">1 ★</span>
+                                                        <div class="rating-bar">
+                                                            <div id="ratingBar1" class="rating-fill"></div>
+                                                        </div>
+                                                        <span id="ratingCount1" class="rating-count">0%</span>
+                                                    </div>
+                                                </div>
+                                                <a class="btn-outline" id="callDriverBtn" href="tel:" disabled>
+                                                    <span><img src="./assets/images/Icons/phone.svg" class="icon16" alt="" /></span> Call Driver
+                                                </a>
+                                            </div>
+                                        </div>
+
                                         <?php if (empty($r['review'])): ?>
                                             <button class="leave-review-btn" onclick="openReviewModal(<?= $r['id'] ?>)">Leave a Review</button>
                                             <div class="trip-review-text" style="display: none;"></div>

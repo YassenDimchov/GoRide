@@ -37,6 +37,81 @@ class DriverController extends Controller
         ]);
     }
 
+    public function profile(Request $request, $driver_id) {
+        $user = $request->user();
+
+        $driver = Driver::where('id', $driver_id)->first();
+
+        if (!$driver) {
+            return response()->json([
+                'message' => 'Driver profile not found.',
+            ], 404);
+        }
+
+        $driverName = $driver->user->name;
+
+        $driverPhone = $driver->user->phone;
+
+        $createdAt = $driver->created_at;
+        $now = now();
+        $activeTime = $createdAt->diff($now);
+        $yearsActive = $activeTime->y;
+        $monthsActive = $activeTime->m;
+        $daysActive = $activeTime->days;
+
+        $totalTrips = $driver->rides()->count();
+
+        $rides = $driver->rides()->whereNotNull('accepted_at')->get();
+        $totalResponseTime = 0;
+        $responseCount = 0;
+
+        foreach ($rides as $ride) {
+            if ($ride->accepted_at) {
+                $responseTime = abs($ride->accepted_at->diffInSeconds($ride->created_at));
+                $totalResponseTime += $responseTime;
+                $responseCount++;
+            }
+        }
+
+        $averageResponseTime = $responseCount > 0 ? $totalResponseTime / $responseCount : 0;
+
+        $ratingBreakdown = [
+            5 => 0,
+            4 => 0,
+            3 => 0,
+            2 => 0,
+            1 => 0
+        ];
+
+        foreach ($driver->reviews as $review) {
+            $ratingBreakdown[$review->rating]++;
+        }
+
+        $totalRating = 0;
+        $totalReviewCount = $driver->reviews()->count();
+        foreach ($driver->reviews as $review) {
+            $totalRating += $review->rating;
+        }
+
+        $averageReview = $totalReviewCount > 0 ? round($totalRating / $totalReviewCount, 2) : null;
+
+        return response()->json([
+            'driver' => [
+                'name' => $driverName,
+                'phone' => $driverPhone,
+                'average_review' => $averageReview,
+                'total_trips' => $totalTrips,
+                'active_time' => [
+                    'years' => $yearsActive,
+                    'months' => $monthsActive,
+                    'days' => $daysActive
+                ],
+                'average_response_time' => $averageResponseTime,
+                'rating_breakdown' => $ratingBreakdown
+            ]
+        ]);
+    }
+
     public function updateMe(Request $request)
     {
         $user = $request->user();

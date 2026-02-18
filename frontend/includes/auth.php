@@ -160,3 +160,7 @@ function apiCreateRideReview(string $token, int $rideId, int $rating, string $re
 
     return apiRequest('POST', '/rides/' . $rideId . '/review', $payload, $token);
 }
+
+function apiDriverProfile(string $token, int $driverId): ?array {
+    return apiRequest('GET', "/driver/{$driverId}/profile", [], $token);
+}

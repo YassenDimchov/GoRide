@@ -39,11 +39,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/driver/me', [DriverController::class, 'me']);
     Route::patch('/driver/me', [DriverController::class, 'updateMe']);
     Route::patch('/driver/location', [DriverController::class, 'updateLocation']);
+    Route::get('/driver/{driver_id}/profile', [DriverController::class, 'profile']);
 
     Route::get('/driver/active-ride', [RideController::class, 'driverActive']);
     Route::get('/users/{id}/reviews', [ReviewController::class, 'forUser']);
-
-
+    
     // for debugging
     Route::get('/rides/{ride}', [RideController::class, 'show']);
 });

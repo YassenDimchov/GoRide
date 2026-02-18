@@ -42,3 +42,68 @@ function generateStars(rating) {
   }
   return stars;
 }
+
+function openDriverProfileModal(button) {
+  const driverProfile = JSON.parse(button.getAttribute('data-driver-profile'));
+  console.log(driverProfile);
+
+  document.getElementById('driverName').innerText = driverProfile.name;
+  document.getElementById('averageRating').innerText = driverProfile.average_review;
+  document.getElementById('totalTripsInfo').innerText = '• ' + driverProfile.total_trips + ' trips';
+  document.getElementById('totalTrips').innerText = driverProfile.total_trips;
+
+  let timeAsDriver = '';
+  const years = driverProfile.active_time.years;
+  const months = driverProfile.active_time.months;
+  const days = driverProfile.active_time.days;
+
+  if (years > 0) {
+    timeAsDriver = `${years} years, ${months} months, ${days} days`;
+  } else if (months > 0) {
+    timeAsDriver = `${months} months, ${days} days`;
+  } else {
+    timeAsDriver = `${days} days`;
+  }
+
+  document.getElementById('yearsActive').innerText = timeAsDriver;
+
+  const average_response_time = Math.round(driverProfile.average_response_time / 60);
+  document.getElementById('averageResponseTime').innerText = `${average_response_time} minutes`;
+
+  const totalReviews = Object.values(driverProfile.rating_breakdown).reduce((acc, count) => acc + count, 0);
+  for (let i = 1; i <= 5; i++) {
+    const ratingPercent = Math.round((driverProfile.rating_breakdown[i] / totalReviews) * 100 || 0);
+    document.getElementById(`ratingBar${i}`).style.width = `${ratingPercent}%`;
+    document.getElementById(`ratingCount${i}`).innerText = `${ratingPercent.toFixed(0)}%`;
+  }
+
+  const modal = document.getElementById('driverProfileModal');
+  const overlay = document.createElement('div');
+  overlay.classList.add('modal-overlay');
+  document.body.appendChild(overlay);
+
+  document.body.style.overflow = 'hidden';
+
+  modal.style.display = 'block';
+
+  const callDriverBtn = document.getElementById('callDriverBtn');
+  if (driverProfile.phone) {
+    callDriverBtn.href = `tel:${driverProfile.phone}`;
+  } else {
+    callDriverBtn.disabled = true;
+  }
+
+  overlay.addEventListener('click', closeDriverProfileModal);
+}
+
+function closeDriverProfileModal() {
+  const modal = document.getElementById('driverProfileModal');
+  const overlay = document.querySelector('.modal-overlay');
+  if (overlay) {
+    overlay.remove();
+  }
+  
+  document.body.style.overflow = 'auto';
+
+  modal.style.display = 'none';
+}
