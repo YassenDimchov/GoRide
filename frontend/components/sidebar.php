@@ -14,6 +14,7 @@
     }
 
     $isDriver = (($user['role'] ?? '') === 'driver');
+    $isAdmin = (($user['role'] ?? '') === 'admin');
 ?>
 
 <aside class="sidebar" id="sidebar">
@@ -72,6 +73,32 @@
             <a href="<?= $dashboard['href'] ?>" class="<?= $dashboard['class'] ?>"<?= $dashboard['data'] ?><?= $dashboard['aria'] ?>>
                 <img src="./assets/images/Icons/chart.svg" alt="" class="nav-ic icon20">
                 <span>Driver Dashboard</span>
+            </a>
+        <?php endif; ?>
+
+        <?php if ($isAdmin): ?>
+            <?php $manageUsers = navItem('manage_users.php', $current); ?>
+            <a href="<?= $manageUsers['href'] ?>" class="<?= $manageUsers['class'] ?>"<?= $manageUsers['data'] ?><?= $manageUsers['aria'] ?>>
+                <img src="./assets/images/Icons/users.svg" alt="" class="nav-ic icon20">
+                <span>Manage Users</span>
+            </a>
+
+            <?php $manageDrivers = navItem('manage_drivers.php', $current); ?>
+            <a href="<?= $manageDrivers['href'] ?>" class="<?= $manageDrivers['class'] ?>"<?= $manageDrivers['data'] ?><?= $manageDrivers['aria'] ?>>
+                <img src="./assets/images/Icons/car.svg" alt="" class="nav-ic icon20">
+                <span>Manage Drivers</span>
+            </a>
+
+            <?php $analytics = navItem('analytics.php', $current); ?>
+            <a href="<?= $analytics['href'] ?>" class="<?= $analytics['class'] ?>"<?= $analytics['data'] ?><?= $analytics['aria'] ?>>
+                <img src="./assets/images/Icons/chart.svg" alt="" class="nav-ic icon20">
+                <span>Analytics</span>
+            </a>
+
+            <?php $allTrips = navItem('all_trips.php', $current); ?>
+            <a href="<?= $allTrips['href'] ?>" class="<?= $allTrips['class'] ?>"<?= $allTrips['data'] ?><?= $allTrips['aria'] ?>>
+                <img src="./assets/images/Icons/all-trips.svg" alt="" class="nav-ic icon20">
+                <span>All trips</span>
             </a>
         <?php endif; ?>
 

@@ -1,5 +1,13 @@
 <?php require_once __DIR__ . '/includes/guard.php'; ?>
 
+<?php
+if (($user['role'] ?? '') !== 'driver') {
+    header('Location: index.php');
+    exit;
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -66,8 +74,11 @@
                 <div id="ddTripsList" class="dash-trips"></div>
             </section>
         </main>
+
+        
     </div>
 
+    <?php require_once __DIR__ . '/components/footer.php'; ?>
     <script src="assets/js/driver_dashboard.js"></script>
 </body>
 </html>

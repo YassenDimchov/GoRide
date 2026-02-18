@@ -28,6 +28,7 @@ $rides = getTripHistory($token);
 </head>
 <body>
     <div class="app-shell">
+        <?php include __DIR__ . '/components/navbar.php'; ?>
         <?php include __DIR__ . '/components/sidebar.php'; ?>
         
         <main class="trips-shell">
@@ -222,6 +223,9 @@ $rides = getTripHistory($token);
                                         <?php endif; ?>
                                     </div>
                                 </article>
+                                <script>
+                                    window.ridesData = <?= json_encode($rides) ?>;
+                                </script>
                             <?php endforeach; ?>
                         </div>
                     <?php endif; ?>

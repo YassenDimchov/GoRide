@@ -53,7 +53,11 @@
             const right = money(amt);
 
             const review = r.review;
-            const reviewText = review ? review.review_text : "No review for this trip yet.";
+            let reviewText = review ? review.review_text : "No review for this trip yet.";
+            if (reviewText == null) {
+                reviewText = "No description.";
+            }
+                
             const userName = `Passenger - ${r.user.name}`;
 
             const rating = review ? review.rating : 0;

@@ -45,7 +45,6 @@ function generateStars(rating) {
 
 function openDriverProfileModal(button) {
   const driverProfile = JSON.parse(button.getAttribute('data-driver-profile'));
-  console.log(driverProfile);
 
   document.getElementById('driverName').innerText = driverProfile.name;
   document.getElementById('averageRating').innerText = driverProfile.average_review;
