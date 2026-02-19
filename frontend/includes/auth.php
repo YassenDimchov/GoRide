@@ -164,3 +164,23 @@ function apiCreateRideReview(string $token, int $rideId, int $rating, string $re
 function apiDriverProfile(string $token, int $driverId): ?array {
     return apiRequest('GET', "/driver/{$driverId}/profile", [], $token);
 }
+
+function apiLogoutOtherSessions(string $token): void {
+    apiRequest('POST', '/logout-all', [], $token);
+}
+
+function apiUpdatePassword(string $token, string $oldPassword, string $newPassword): ?array {
+    $payload = [
+        'oldPassword' => $oldPassword,
+        'newPassword' => $newPassword,
+        'newPassword_confirmation' => $newPassword
+    ];
+
+    $response = apiRequest('POST', '/change-password', $payload, $token);
+
+    if ($response && isset($response['message']) && $response['message'] === 'Password updated successfully.') {
+        apiLogoutOtherSessions($token);
+    }
+
+    return $response;
+}

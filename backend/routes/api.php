@@ -22,6 +22,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::delete('/me', [AuthController::class, 'destroy']);
     Route::get('/me', [AuthController::class, 'me']); // may scrape
+    Route::post('/change-password', [AuthController::class, 'changePassword']);
+    Route::post('/logout-all', [AuthController::class, 'logoutAll']);
 
     Route::post('/payments/{payment}/pay', [PaymentController::class, 'pay']);
     Route::get('/payments', [PaymentController::class, 'index']);

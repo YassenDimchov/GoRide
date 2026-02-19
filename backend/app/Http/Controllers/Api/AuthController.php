@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -107,5 +108,40 @@ class AuthController extends Controller
             'message' => 'Profile updated',
         ]);
     }
+
+    public function changePassword(Request $request)
+    {
+        $user = Auth::user();
+
+        $validated = $request->validate([
+            'oldPassword' => 'required|string',
+            'newPassword' => 'required|string|confirmed|min:8',
+        ]);
+
+        if (!Hash::check($validated['oldPassword'], $user->password)) {
+            throw ValidationException::withMessages([
+                'oldPassword' => ['The provided password does not match our records.'],
+            ]);
+        }
+
+        $user->password = Hash::make($validated['newPassword']);
+        $user->save();
+
+        return response()->json(['message' => 'Password updated successfully.']);
+    }
+
+    public function logoutAll(Request $request)
+    {
+        $user = Auth::user();
+
+        $user->tokens->each(function ($token) use ($request) {
+            if ($token->id != $request->user()->currentAccessToken()->id) {
+                $token->delete();
+            }
+        });
+
+        return response()->json(['message' => 'Logged out from all other devices.']);
+    }
+
 
 }

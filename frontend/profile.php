@@ -191,7 +191,7 @@ if (isDriver()) {
                                     <div class="sec-title">Password</div>
                                     <div class="sec-sub">Change your account password</div>
                                 </div>
-                                <button class="btn-light" type="button">Change Password</button>
+                                <button class="btn-light" type="button" id="changePasswordBtn">Change Password</button>
                             </div>
                             <div class="security-row">
                                 <div>
@@ -278,6 +278,29 @@ if (isDriver()) {
                 <?php endif; ?>
 
             </form>
+            <div id="changePasswordModal" class="modal" style="display:none;">
+                <div class="modal-content">
+                    <span class="close-btn">&times;</span>
+                    <h2>Change Password</h2>
+                    <form id="changePasswordForm" method="POST" action="change_password.php"> 
+                        <div>
+                            <label for="oldPassword">Old Password:</label>
+                            <input type="password" id="oldPassword" name="oldPassword" required>
+                        </div>
+                        <div>
+                            <label for="newPassword">New Password:</label>
+                            <input type="password" id="newPassword" name="newPassword" required>
+                        </div>
+                        <div>
+                            <label for="confirmPassword">Confirm New Password:</label>
+                            <input type="password" id="confirmPassword" name="confirmPassword" required>
+                        </div>
+                        <button type="submit" id="submitChangePasswordBtn">Change Password</button>
+                    </form>
+                </div>
+            </div>
+            <div id="successMessage" style="display: none; color: green;">Password changed successfully!</div>
+            <div id="errorMessage" style="color: red; display: none;"></div>
         </div>
     </main>
 
