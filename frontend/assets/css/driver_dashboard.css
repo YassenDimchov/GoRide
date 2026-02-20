@@ -245,3 +245,167 @@
     gap: 4px;
     margin-bottom: 8px;
 }
+
+.dash-pay-row {
+    display: inline-flex;
+    gap: 8px;
+    margin-top: 2px;
+}
+
+.dash-pay-action-btn {
+    border: 1px solid transparent;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    padding: 8px 10px;
+    cursor: pointer;
+    transition: all .18s ease;
+}
+
+.dash-pay-action-confirm {
+    background: #16A34A;
+    color: #FFFFFF;
+}
+
+.dash-pay-action-confirm:hover {
+    background: #15803D;
+}
+
+.dash-pay-action-report {
+    background: #FFFFFF;
+    border-color: #FECACA;
+    color: #B91C1C;
+}
+
+.dash-pay-action-report:hover {
+    background: #FEF2F2;
+}
+
+.dash-pay-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(2, 6, 23, .45);
+    padding: 20px;
+}
+
+.dash-pay-modal {
+    width: min(520px, 96vw);
+    background: #FFFFFF;
+    border-radius: 14px;
+    border: 1px solid #E5E7EB;
+    box-shadow: 0 24px 48px rgba(15, 23, 42, .22);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.dash-pay-modal-title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: #0F172A;
+}
+
+.dash-pay-modal-text {
+    margin: 0;
+    color: #334155;
+    font-size: 14px;
+    line-height: 1.45;
+}
+
+.dash-pay-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.dash-pay-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #0F172A;
+}
+
+.dash-pay-input,
+.dash-pay-textarea {
+    width: 100%;
+    border: 1px solid #CBD5E1;
+    border-radius: 10px;
+    font-size: 14px;
+    color: #0F172A;
+    outline: none;
+}
+
+.dash-pay-input {
+    height: 42px;
+    padding: 0 12px;
+}
+
+.dash-pay-textarea {
+    min-height: 110px;
+    padding: 10px 12px;
+    resize: vertical;
+}
+
+.dash-pay-input:focus,
+.dash-pay-textarea:focus {
+    border-color: #16A34A;
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, .16);
+}
+
+.dash-pay-error {
+    min-height: 18px;
+    font-size: 12px;
+    color: #B91C1C;
+}
+
+.dash-pay-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.dash-pay-btn-secondary,
+.dash-pay-btn-primary {
+    border-radius: 10px;
+    border: 1px solid transparent;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 10px 14px;
+    cursor: pointer;
+}
+
+.dash-pay-btn-secondary {
+    background: #FFFFFF;
+    border-color: #CBD5E1;
+    color: #0F172A;
+}
+
+.dash-pay-btn-secondary:hover {
+    background: #F8FAFC;
+}
+
+.dash-pay-btn-primary {
+    background: #16A34A;
+    color: #FFFFFF;
+}
+
+.dash-pay-btn-primary:hover {
+    background: #15803D;
+}
+
+.dash-pay-btn-secondary:disabled,
+.dash-pay-btn-primary:disabled,
+.dash-pay-action-btn:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+body.dash-pay-modal-open {
+    overflow: hidden;
+}

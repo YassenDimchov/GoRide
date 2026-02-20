@@ -28,6 +28,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/payments/{payment}/pay', [PaymentController::class, 'pay']);
     Route::get('/payments', [PaymentController::class, 'index']);
+    Route::post('/payments/{payment}/confirm', [PaymentController::class, 'confirmCashPayment']);
+    Route::post('/payments/{payment}/report-unpaid', [PaymentController::class, 'reportUnpaidCash']);
 
     Route::post('/rides/{ride}/review', [ReviewController::class, 'store']);
     Route::get('/reviews', [ReviewController::class, 'index']);
@@ -57,3 +59,4 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::get('/geocode/autocomplete', [OrsController::class, 'autocomplete']);
 Route::get('/directions', [OrsController::class, 'directions']);
+

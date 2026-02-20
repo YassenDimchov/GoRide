@@ -195,3 +195,16 @@ function apiUpdatePreferredPaymentMethod(string $token, string $preferred_paymen
     ];
     return apiRequest('PATCH', '/me/preferred-payment', $data, $token);
 }
+
+function apiConfirmPayment(string $token, int $paymentId): ?array
+{
+    return apiRequest('POST', '/payments/' . $paymentId . '/confirm', [], $token);
+}
+
+function apiReportUnpaidPayment(string $token, int $paymentId, string $recipientEmail, string $note = ''): ?array
+{
+    return apiRequest('POST', '/payments/' . $paymentId . '/report-unpaid', [
+        'recipient_email' => $recipientEmail,
+        'note' => $note,
+    ], $token);
+}

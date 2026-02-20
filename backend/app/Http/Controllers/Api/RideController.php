@@ -268,15 +268,30 @@ class RideController extends Controller
             $lockedRide->completed_at = now();
             $lockedRide->save();
 
-            $payment = $lockedRide->payment()->updateOrCreate(
-                ['ride_id' => $lockedRide->id],
-                [
-                    'amount'  => $lockedRide->fare,
-                    'method'  => 'cash',
-                    'status'  => PaymentStatus::Pending->value,
-                    'paid_at' => null,
-                ]
-            );
+            $user = $lockedRide->user;
+            $preferredPayment = $user->preferred_payment;
+
+            if ($preferredPayment === 'cash') {
+                $payment = $lockedRide->payment()->updateOrCreate(
+                    ['ride_id' => $lockedRide->id],
+                    [
+                        'amount'  => $lockedRide->fare,
+                        'method'  => 'cash',
+                        'status'  => PaymentStatus::Pending->value,
+                        'paid_at' => null,
+                    ]
+                );
+            } else {
+                $payment = $lockedRide->payment()->updateOrCreate(
+                    ['ride_id' => $lockedRide->id],
+                    [
+                        'amount'  => $lockedRide->fare,
+                        'method'  => 'card',
+                        'status'  => PaymentStatus::Pending->value,
+                        'paid_at' => null,
+                    ]
+                );
+            }
 
             Driver::whereKey($driver->id)->update([
                 'status' => 'available',
