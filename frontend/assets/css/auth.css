@@ -278,6 +278,8 @@
     transition: background-color .15s ease, box-shadow .15s ease;
     justify-self: center;
     font-family: var(--font-sans);
+    text-decoration: none;
+    color: var(--black);
 }
 
 .auth-btn-google:hover{

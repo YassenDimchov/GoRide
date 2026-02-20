@@ -199,18 +199,21 @@ if (isDriver()) {
                             </div>
                             <div class="security-row">
                                 <div>
-                                    <div class="sec-title">Two-Factor Authentication</div>
-                                    <div class="sec-sub">Add an extra layer of security</div>
-                                </div>
-                                <button class="btn-light" type="button">Enable</button>
-                            </div>
-                            <div class="security-row">
-                                <div>
                                     <div class="sec-title">Active Sessions</div>
                                     <div class="sec-sub">Manage your active sessions</div>
                                 </div>
-                                <button class="btn-light" type="button">View All</button>
+                                <button class="btn-light" type="button" id="viewSessionsBtn">View All</button>
                             </div>
+
+                            <?php if (isUser()): ?>
+                                <div class="security-row">
+                                    <div>
+                                        <div class="sec-title">Become a Driver</div>
+                                        <div class="sec-sub">Send a driver application to admin</div>
+                                    </div>
+                                    <button class="btn-light" type="button" id="becomeDriverBtn">Apply</button>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </section>
                 </div>
@@ -303,6 +306,46 @@ if (isDriver()) {
                     </form>
                 </div>
             </div>
+
+            <div id="sessionsModal" class="modal">
+                <div class="modal-content">
+                    <span class="close-btn" id="closeSessionsModal">&times;</span>
+                    <h2>Active Sessions</h2>
+                    <div class="sessions-actions">
+                        <button type="button" class="btn-light" id="logoutOtherSessionsBtn">Log Out All Other Sessions</button>
+                    </div>
+                    <div id="sessionsError" class="modal-error"></div>
+                    <div id="sessionsSuccess" class="modal-success"></div>
+                    <div id="sessionsList" class="sessions-list"></div>
+                </div>
+            </div>
+
+            <?php if (isUser()): ?>
+                <div id="becomeDriverModal" class="modal">
+                    <div class="modal-content driver-apply-content">
+                        <span class="close-btn" id="closeBecomeDriverModal">&times;</span>
+                        <h2>Become a Driver</h2>
+                        <p class="driver-apply-subtitle">Submit your vehicle details and an admin will review your request.</p>
+                        <form id="becomeDriverForm" class="driver-apply-form" method="POST">
+                            <div class="driver-apply-field">
+                                <label for="applyVehicleMake">Vehicle Make</label>
+                                <input type="text" id="applyVehicleMake" name="vehicle_make" required>
+                            </div>
+                            <div class="driver-apply-field">
+                                <label for="applyVehicleModel">Vehicle Model</label>
+                                <input type="text" id="applyVehicleModel" name="vehicle_model" required>
+                            </div>
+                            <div class="driver-apply-field">
+                                <label for="applyLicensePlate">License Plate</label>
+                                <input type="text" id="applyLicensePlate" name="license_plate" required>
+                            </div>
+                            <div id="becomeDriverError" class="modal-error"></div>
+                            <div id="becomeDriverSuccess" class="modal-success"></div>
+                            <button type="submit" id="submitBecomeDriverBtn" class="driver-apply-submit">Send Application</button>
+                        </form>
+                    </div>
+                </div>
+            <?php endif; ?>
         </div>
     </main>
 

@@ -84,11 +84,10 @@
                 <span>Or continue with</span>
             </div>
 
-            <!-- Google button - does nothing right now FINISH LATER !!!-->
-            <button type="button" class="auth-btn-google" onclick="return false;">
+            <a class="auth-btn-google" href="http://127.0.0.1:8000/api/auth/google/redirect">
                 <span class="g-badge">G</span>
                 <span>Google</span>
-            </button>
+            </a>
             
         </div>
     </div>

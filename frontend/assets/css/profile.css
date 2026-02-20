@@ -433,6 +433,7 @@ body.profile-edit .field-input:focus {
 
 .modal-content h2 {
     font-size: var(--fs-xl);
+    margin-bottom: 8px;
 }
 
 #successMessage {
@@ -464,6 +465,130 @@ body.profile-edit .field-input:focus {
 
 #changePasswordForm button:hover {
     background-color: #45a049;
+}
+
+.modal-error {
+    color: #b91c1c;
+    font-size: var(--fs-md);
+    margin-top: 8px;
+    display: none;
+}
+
+.modal-success {
+    color: #166534;
+    font-size: var(--fs-md);
+    margin-top: 8px;
+    display: none;
+}
+
+.sessions-list {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 320px;
+    overflow-y: auto;
+}
+
+.sessions-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 8px;
+}
+
+.driver-apply-content {
+    width: 460px;
+    max-width: 92%;
+}
+
+.driver-apply-subtitle {
+    color: #64748b;
+    font-size: var(--fs-md);
+    margin-bottom: 14px;
+}
+
+.driver-apply-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.driver-apply-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.driver-apply-field label {
+    font-size: var(--fs-md);
+    color: #1e293b;
+    font-weight: var(--fw-bold);
+}
+
+.driver-apply-field input {
+    height: 40px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0 12px;
+    font-size: var(--fs-md);
+    color: #0f172a;
+    outline: none;
+    transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.driver-apply-field input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, .16);
+}
+
+.driver-apply-submit {
+    margin-top: 4px;
+    height: 40px;
+    border: none;
+    border-radius: 10px;
+    background: #16a34a;
+    color: #fff;
+    font-size: var(--fs-md);
+    font-weight: var(--fw-bold);
+    cursor: pointer;
+    transition: background-color .15s ease;
+}
+
+.driver-apply-submit:hover {
+    background: #15803d;
+}
+
+.session-item {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    background: #f9fafb;
+}
+
+.session-title {
+    font-size: var(--fs-md);
+    font-weight: var(--fw-bold);
+    color: #0f172a;
+}
+
+.session-sub {
+    font-size: 12px;
+    color: #475569;
+}
+
+.sessions-empty {
+    font-size: var(--fs-md);
+    color: #64748b;
+}
+
+.session-current {
+    display: inline-block;
+    margin-left: 6px;
+    font-size: var(--fs-sm);
+    color: #fff;
+    background: #0ea5e9;
+    padding: 2px 8px;
+    border-radius: 999px;
 }
 
 @keyframes fadeIn {

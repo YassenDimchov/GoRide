@@ -11,6 +11,8 @@ use App\Http\Controllers\Api\PaymentPreferenceController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/auth/google/redirect', [AuthController::class, 'googleRedirect']);
+Route::get('/auth/google/callback', [AuthController::class, 'googleCallback']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/rides', [RideController::class, 'store']);
@@ -25,6 +27,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']); // may scrape
     Route::post('/change-password', [AuthController::class, 'changePassword']);
     Route::post('/logout-all', [AuthController::class, 'logoutAll']);
+    Route::get('/sessions', [AuthController::class, 'sessions']);
+    Route::post('/driver/apply', [AuthController::class, 'applyDriver']);
 
     Route::post('/payments/{payment}/pay', [PaymentController::class, 'pay']);
     Route::get('/payments', [PaymentController::class, 'index']);

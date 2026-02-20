@@ -208,3 +208,17 @@ function apiReportUnpaidPayment(string $token, int $paymentId, string $recipient
         'note' => $note,
     ], $token);
 }
+
+function apiSessions(string $token): ?array
+{
+    return apiRequest('GET', '/sessions', [], $token);
+}
+
+function apiApplyDriver(string $token, string $vehicleMake, string $vehicleModel, string $licensePlate): ?array
+{
+    return apiRequest('POST', '/driver/apply', [
+        'vehicle_make' => $vehicleMake,
+        'vehicle_model' => $vehicleModel,
+        'license_plate' => $licensePlate,
+    ], $token);
+}
