@@ -128,6 +128,10 @@ if (isDriver()) {
                     </div>
                 </div>
             </div>
+            
+            <div id="successMessage">Password changed successfully!</div>
+            <div id="errorMessage"></div>
+
             <form action="profile_update.php" class="info-form" id="profileForm" autocomplete="off" method="POST">
                 <div class="info-security-container">
                     <!-- Personal Info -->
@@ -278,7 +282,7 @@ if (isDriver()) {
                 <?php endif; ?>
 
             </form>
-            <div id="changePasswordModal" class="modal" style="display:none;">
+            <div id="changePasswordModal" class="modal">
                 <div class="modal-content">
                     <span class="close-btn">&times;</span>
                     <h2>Change Password</h2>
@@ -299,8 +303,6 @@ if (isDriver()) {
                     </form>
                 </div>
             </div>
-            <div id="successMessage" style="display: none; color: green;">Password changed successfully!</div>
-            <div id="errorMessage" style="color: red; display: none;"></div>
         </div>
     </main>
 

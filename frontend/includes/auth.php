@@ -184,3 +184,14 @@ function apiUpdatePassword(string $token, string $oldPassword, string $newPasswo
 
     return $response;
 }
+
+function apiGetPreferredPaymentMethod(string $token): ?array {
+    return apiRequest('GET', '/me/preferred-payment', [], $token);
+}
+
+function apiUpdatePreferredPaymentMethod(string $token, string $preferred_payment): ?array {
+    $data = [
+        'preferred_payment' => $preferred_payment,
+    ];
+    return apiRequest('PATCH', '/me/preferred-payment', $data, $token);
+}

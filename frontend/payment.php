@@ -2,16 +2,14 @@
 require_once __DIR__ . '/includes/guard.php';
 require_once __DIR__ . '/includes/trips_helpers.php';
 require_once __DIR__ . '/includes/payments_data.php';
+require_once __DIR__ . '/includes/auth.php';
 
 date_default_timezone_set('Europe/Sofia');
 $payments = array_slice(getMyPayments($token), 0, 3);
 
-$selected = $_GET['method'] ?? 'card';
-if (!in_array($selected, ['card','cash'], true)) $selected = 'card';
+$userData = apiGetPreferredPaymentMethod($token);
+$selected = $userData['preferred_payment'] ?? 'online';
 
-function methodLabel(string $m): string {
-    return $m === 'cash' ? 'Cash' : 'Online Payment (Stripe)';
-}
 ?>
 
 <!DOCTYPE html>
@@ -52,8 +50,7 @@ function methodLabel(string $m): string {
 
                 <div class="pay-method-grid">
                     <!-- Stripe -->
-                    <a class="pay-method <?= $selected === 'card' ? 'is-active is-blue' : '' ?>"
-                        href="?method=card" aria-label="Online Payment (Stripe)">
+                    <div class="pay-method <?= $selected === 'online' ? 'is-active is-blue' : '' ?>" id="stripe-btn" aria-label="Online Payment (Stripe)">
                         <div class="pay-method-top">
                             <div class="pay-method-top-left">
                                 <div class="pay-method-icon pay-icon-blue">
@@ -65,7 +62,7 @@ function methodLabel(string $m): string {
                                 </div>
                             </div>
 
-                            <?php if ($selected === 'card'): ?>
+                            <?php if ($selected === 'online'): ?>
                                 <div class="pay-method-check">
                                     <img src="./assets/images/Icons/check.svg" class="icon16" alt="">
                                 </div>
@@ -77,10 +74,10 @@ function methodLabel(string $m): string {
                         <div class="pay-method-badges">
                             <span class="badge">Most Popular</span>
                         </div>
-                    </a>
+                    </div>
+
                     <!-- Cash -->
-                    <a class="pay-method <?= $selected === 'cash' ? 'is-active is-green' : '' ?>"
-                        href="?method=cash" aria-label="Cash">
+                    <div class="pay-method <?= $selected === 'cash' ? 'is-active is-green' : '' ?>" id="cash-btn" aria-label="Cash">
                         <div class="pay-method-top">
                             <div class="pay-method-top-left">
                                 <div class="pay-method-icon pay-icon-green">
@@ -104,7 +101,7 @@ function methodLabel(string $m): string {
                         <div class="pay-method-badges">
                             <span class="badge">Pay after Ride</span>
                         </div>
-                    </a>
+                    </div>
                 </div>
 
                 <!-- Extra panel if cash method is selected -->
@@ -190,5 +187,8 @@ function methodLabel(string $m): string {
     </main>
 
     <?php require_once __DIR__ . '/components/footer.php'; ?>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="assets/js/payment-method.js"></script>
 </body>
 </html>

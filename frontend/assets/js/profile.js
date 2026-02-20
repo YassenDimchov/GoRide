@@ -43,17 +43,25 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   changePasswordBtn.addEventListener("click", () => {
-    changePasswordModal.style.display = "block";
+    changePasswordModal.style.display = "flex";
     successMessage.style.display = 'none';  
+    errorMessage.style.display = 'none';
+    document.body.style.overflow = 'hidden';
+
+    document.getElementById('oldPassword').value = '';
+    document.getElementById('newPassword').value = '';
+    document.getElementById('confirmPassword').value = '';
   });
 
   closeModalBtn.addEventListener("click", () => {
     changePasswordModal.style.display = "none";
+    document.body.style.overflow = 'auto';
   });
 
   window.onclick = (event) => {
     if (event.target === changePasswordModal) {
       changePasswordModal.style.display = "none";
+      document.body.style.overflow = 'auto';
     }
   };
 
@@ -97,6 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (data.message === 'Password updated successfully') {
           successMessage.style.display = 'block';
           changePasswordModal.style.display = "none";
+          document.body.style.overflow = 'auto';
 
           document.getElementById('oldPassword').value = '';
           document.getElementById('newPassword').value = '';
@@ -111,6 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
           document.getElementById('oldPassword').value = '';
           document.getElementById('newPassword').value = '';
           document.getElementById('confirmPassword').value = '';
+          document.body.style.overflow = 'auto';
         } else {
           const errorMessage = document.getElementById('errorMessage');
           errorMessage.textContent = 'Something went wrong! Please try again.';
@@ -123,5 +133,10 @@ document.addEventListener('DOMContentLoaded', () => {
         errorMessage.textContent = 'There was an error with the request.';
         errorMessage.style.display = 'block';
       });
+
+      setTimeout(() => {
+        successMessage.style.display = 'none';
+        errorMessage.style.display = 'none';
+      }, 10000);
   });
 });

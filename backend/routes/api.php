@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\DriverController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\OrsController;
+use App\Http\Controllers\Api\PaymentPreferenceController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -48,6 +49,10 @@ Route::middleware('auth:sanctum')->group(function () {
     
     // for debugging
     Route::get('/rides/{ride}', [RideController::class, 'show']);
+
+    Route::get('/me/preferred-payment', [PaymentPreferenceController::class, 'getPreferredPaymentMethod']);
+
+    Route::patch('/me/preferred-payment', [PaymentPreferenceController::class, 'updatePreferredPaymentMethod']);
 });
 
 Route::get('/geocode/autocomplete', [OrsController::class, 'autocomplete']);
