@@ -319,3 +319,62 @@
     color: #991B1B;
     border-color: #FECACA;
 }
+
+.pay-filters {
+    display: flex;
+    gap: 8px;
+}
+
+.pay-filter {
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: var(--fs-sm);
+    color: var(--black);
+    text-decoration: none;
+    background: #fff;
+}
+
+.pay-filter.is-active {
+    background: #111827;
+    color: #fff;
+    border-color: #111827;
+}
+
+.pay-alert {
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-size: var(--fs-sm);
+}
+
+.pay-alert-success {
+    background: #ECFDF3;
+    border: 1px solid #B9F8CF;
+    color: #0D542B;
+}
+
+.pay-alert-error {
+    background: #FEF2F2;
+    border: 1px solid #FECACA;
+    color: #991B1B;
+}
+
+.pay-now-btn {
+    border: none;
+    border-radius: 8px;
+    background: #1D4ED8;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 7px 10px;
+    cursor: pointer;
+}
+
+.pay-now-btn:hover {
+    background: #1E40AF;
+}
+
+.pay-now-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}

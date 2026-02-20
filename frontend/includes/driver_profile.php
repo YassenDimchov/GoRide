@@ -4,7 +4,7 @@
 $driver = null;
 
 try {
-    $stmt = $pdo->prepare("SELECT id, vehicle_make, vehicle_model, license_plate, status
+    $stmt = $pdo->prepare("SELECT id, vehicle_make, vehicle_model, vehicle_color, license_plate, status
                            FROM drivers
                            WHERE user_id = ?
                            LIMIT 1");

@@ -39,4 +39,19 @@ return [
         'key' => env('ORS_API_KEY'),
     ],
 
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect_uri' => 'http://127.0.0.1:8000/api/auth/google/callback',
+        'frontend_callback_url' => 'http://localhost/GoRide/frontend/google_callback.php',
+    ],
+
+    'stripe' => [
+        'secret_key' => env('STRIPE_SECRET_KEY'),
+        'publishable_key' => env('STRIPE_PUBLISHABLE_KEY'),
+        'currency' => 'eur',
+        'checkout_success_url' => 'http://localhost/GoRide/frontend/payment.php?stripe_success=1&payment_id={PAYMENT_ID}&session_id={CHECKOUT_SESSION_ID}',
+        'checkout_cancel_url' => 'http://localhost/GoRide/frontend/payment.php?stripe_cancel=1',
+    ],
+
 ];

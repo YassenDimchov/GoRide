@@ -201,12 +201,13 @@
   }
 
   // render pending
-  function renderPending(data) {
+  function renderPending(data, emptyMessage = "No pending rides right now.") {
     pendingCount.textContent = String(data.length);
 
     if (!data.length) {
       pendingList.innerHTML = "";
       pendingEmpty.style.display = "block";
+      pendingEmpty.textContent = emptyMessage;
       return;
     }
 
@@ -270,12 +271,11 @@
 
   async function refreshPending() {
     if (current !== "available") {
-      renderPending([]);
-      pendingEmpty.style.display = "block";
-      pendingEmpty.textContent =
+      const msg =
         current === "offline"
           ? "You are offline. Switch to Online to see pending requests."
           : "You are busy right now.";
+      renderPending([], msg);
       return;
     }
 

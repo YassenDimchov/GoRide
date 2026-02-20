@@ -5,11 +5,39 @@ require_once __DIR__ . '/includes/payments_data.php';
 require_once __DIR__ . '/includes/auth.php';
 
 date_default_timezone_set('Europe/Sofia');
-$payments = array_slice(getMyPayments($token), 0, 3);
+
+$statusFilter = strtolower((string)($_GET['status'] ?? 'all'));
+if (!in_array($statusFilter, ['all', 'paid', 'unpaid'], true)) {
+    $statusFilter = 'all';
+}
+
+$stripeNotice = '';
+$stripeError = '';
+
+if (isset($_GET['stripe_success'])) {
+    $paymentId = (int)($_GET['payment_id'] ?? 0);
+    $sessionId = trim((string)($_GET['session_id'] ?? ''));
+
+    if ($paymentId > 0 && $sessionId !== '') {
+        $confirm = apiConfirmStripeCheckout($token, $paymentId, $sessionId);
+        if (!$confirm || !empty($confirm['_error'])) {
+            $stripeError = $confirm['body']['message'] ?? 'Stripe payment could not be confirmed.';
+        } else {
+            $stripeNotice = $confirm['message'] ?? 'Card payment completed successfully.';
+        }
+    } else {
+        $stripeError = 'Stripe payment callback is missing required data.';
+    }
+}
+
+if (isset($_GET['stripe_cancel'])) {
+    $stripeError = 'Card payment was canceled.';
+}
+
+$payments = getMyPayments($token, $statusFilter);
 
 $userData = apiGetPreferredPaymentMethod($token);
 $selected = $userData['preferred_payment'] ?? 'online';
-
 ?>
 
 <!DOCTYPE html>
@@ -49,7 +77,6 @@ $selected = $userData['preferred_payment'] ?? 'online';
                 <div class="pay-section-title">Select Payment Method</div>
 
                 <div class="pay-method-grid">
-                    <!-- Stripe -->
                     <div class="pay-method <?= $selected === 'online' ? 'is-active is-blue' : '' ?>" id="stripe-btn" aria-label="Online Payment (Stripe)">
                         <div class="pay-method-top">
                             <div class="pay-method-top-left">
@@ -69,14 +96,11 @@ $selected = $userData['preferred_payment'] ?? 'online';
                             <?php endif; ?>
                         </div>
 
-                        
-
                         <div class="pay-method-badges">
                             <span class="badge">Most Popular</span>
                         </div>
                     </div>
 
-                    <!-- Cash -->
                     <div class="pay-method <?= $selected === 'cash' ? 'is-active is-green' : '' ?>" id="cash-btn" aria-label="Cash">
                         <div class="pay-method-top">
                             <div class="pay-method-top-left">
@@ -96,15 +120,12 @@ $selected = $userData['preferred_payment'] ?? 'online';
                             <?php endif; ?>
                         </div>
 
-                        
-
                         <div class="pay-method-badges">
                             <span class="badge">Pay after Ride</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Extra panel if cash method is selected -->
                 <?php if ($selected === 'cash'): ?>
                     <div class="pay-info">
 
@@ -123,7 +144,6 @@ $selected = $userData['preferred_payment'] ?? 'online';
                     </div>
                 <?php endif; ?>
 
-                <!-- Current selected method -->
                 <div class="pay-current">
                     <div class="pay-current-left">
                         <div class="pay-current-title">Current Payment Method</div>
@@ -142,10 +162,23 @@ $selected = $userData['preferred_payment'] ?? 'online';
             </section>
 
             <section class="card pay-card">
-                <div class="pay-section-title">Recent Transactions</div>
+                <div class="pay-section-title">Transactions</div>
+
+                <div class="pay-filters">
+                    <a class="pay-filter <?= $statusFilter === 'all' ? 'is-active' : '' ?>" href="payment.php?status=all">All</a>
+                    <a class="pay-filter <?= $statusFilter === 'paid' ? 'is-active' : '' ?>" href="payment.php?status=paid">Paid</a>
+                    <a class="pay-filter <?= $statusFilter === 'unpaid' ? 'is-active' : '' ?>" href="payment.php?status=unpaid">Unpaid</a>
+                </div>
+
+                <?php if ($stripeNotice !== ''): ?>
+                    <div class="pay-alert pay-alert-success"><?= htmlspecialchars($stripeNotice) ?></div>
+                <?php endif; ?>
+                <?php if ($stripeError !== ''): ?>
+                    <div class="pay-alert pay-alert-error"><?= htmlspecialchars($stripeError) ?></div>
+                <?php endif; ?>
 
                 <?php if (empty($payments)): ?>
-                    <div class="empty-state">No transactions yet.</div>
+                    <div class="empty-state">No transactions found.</div>
                 <?php else: ?>
                     <div class="pay-list">
                         <?php foreach ($payments as $p): ?>
@@ -157,8 +190,8 @@ $selected = $userData['preferred_payment'] ?? 'online';
                                 $to = $p['ride']['end_address'] ?? null;
                                 $dt = $p['ride']['completed_at'] ?? $p['paid_at'] ?? $p['created_at'] ?? null;
 
-
                                 $statusText = $status === 'paid' ? 'Paid' : ($status === 'failed' ? 'Failed' : 'Pending');
+                                $isCardMethod = in_array($method, ['online', 'card', 'stripe'], true);
                             ?>
                             <div class="pay-row">
                                 <div class="pay-row-left">
@@ -167,21 +200,30 @@ $selected = $userData['preferred_payment'] ?? 'online';
                                     </div>
                                     <div class="pay-row-meta">
                                         <span class="meta-pill"><?= htmlspecialchars(ucfirst($method)) ?></span>
-                                        <span class="meta-dot">•</span>
+                                        <span class="meta-dot">&bull;</span>
                                         <span class="meta-date"><?= htmlspecialchars(fmtDateTime($dt)) ?></span>
                                     </div>
                                 </div>
 
                                 <div class="pay-row-right">
-                                    <div class="pay-row-amount"><?= htmlspecialchars(number_format((float)$amount, 2) . ' €') ?></div>
+                                    <div class="pay-row-amount"><?= htmlspecialchars(number_format((float)$amount, 2) . ' EUR') ?></div>
                                     <span class="status-pill <?= $status === 'paid' ? 'is-paid' : ($status === 'failed' ? 'is-failed' : 'is-pending') ?>">
                                         <?= htmlspecialchars($statusText) ?>
                                     </span>
+                                    <?php if ($isCardMethod && $status === 'pending'): ?>
+                                        <button
+                                            type="button"
+                                            class="pay-now-btn"
+                                            data-payment-id="<?= (int)($p['id'] ?? 0) ?>"
+                                        >
+                                            Pay With Card
+                                        </button>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         <?php endforeach; ?>
                     </div>
-                <?php endif; ?>                      
+                <?php endif; ?>
             </section>
         </div>
     </main>

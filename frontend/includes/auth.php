@@ -94,8 +94,9 @@ function apiMyRides(string $token) {
     return apiRequest('GET', '/rides/mine?with_driver=1&with_payment=1&with_review=1', [], $token);
 }
 
-function apiPayments(string $token) {
-    return apiRequest('GET', '/payments', [], $token);
+function apiPayments(string $token, array $query = []) {
+    $qs = $query ? ('?' . http_build_query($query)) : '';
+    return apiRequest('GET', '/payments' . $qs, [], $token);
 }
 
 function apiMyReviews(string $token) {
@@ -209,16 +210,35 @@ function apiReportUnpaidPayment(string $token, int $paymentId, string $recipient
     ], $token);
 }
 
+function apiCreateStripeCheckout(string $token, int $paymentId): ?array
+{
+    return apiRequest('POST', '/payments/' . $paymentId . '/stripe-checkout', [], $token);
+}
+
+function apiConfirmStripeCheckout(string $token, int $paymentId, string $sessionId): ?array
+{
+    return apiRequest('POST', '/payments/' . $paymentId . '/stripe-confirm', [
+        'session_id' => $sessionId,
+    ], $token);
+}
+
 function apiSessions(string $token): ?array
 {
     return apiRequest('GET', '/sessions', [], $token);
 }
 
-function apiApplyDriver(string $token, string $vehicleMake, string $vehicleModel, string $licensePlate): ?array
+function apiApplyDriver(
+    string $token,
+    string $vehicleMake,
+    string $vehicleModel,
+    string $vehicleColor,
+    string $licensePlate
+): ?array
 {
     return apiRequest('POST', '/driver/apply', [
         'vehicle_make' => $vehicleMake,
         'vehicle_model' => $vehicleModel,
+        'vehicle_color' => $vehicleColor,
         'license_plate' => $licensePlate,
     ], $token);
 }

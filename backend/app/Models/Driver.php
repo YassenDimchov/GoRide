@@ -21,6 +21,7 @@ class Driver extends Model
         'user_id',
         'vehicle_make',
         'vehicle_model',
+        'vehicle_color',
         'license_plate',
         'status',
         'last_seen_at',

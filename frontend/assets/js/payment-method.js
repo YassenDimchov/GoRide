@@ -6,6 +6,38 @@ $(document).ready(function() {
     $('#cash-btn').click(function() {
         updatePaymentMethod('cash');
     });
+
+    $(document).on('click', '.pay-now-btn', function() {
+        const paymentId = Number($(this).data('payment-id') || 0);
+        if (!Number.isInteger(paymentId) || paymentId <= 0) {
+            alert('Invalid payment id.');
+            return;
+        }
+
+        const btn = this;
+        btn.disabled = true;
+        const oldText = btn.textContent;
+        btn.textContent = 'Redirecting...';
+
+        const url = new URL('/GoRide/frontend/api/payments_stripe_checkout.php', window.location.origin);
+        url.searchParams.set('id', String(paymentId));
+
+        fetch(url.toString(), {
+            method: 'POST',
+            headers: { Accept: 'application/json' },
+        })
+            .then((res) => res.json().then((json) => ({ ok: res.ok, status: res.status, json })))
+            .then(({ ok, status, json }) => {
+                if (!ok) throw new Error(json.message || `Stripe checkout failed (${status})`);
+                if (!json.checkout_url) throw new Error('Stripe checkout URL missing.');
+                window.location.href = json.checkout_url;
+            })
+            .catch((error) => {
+                alert(error.message || 'Could not start card payment.');
+                btn.disabled = false;
+                btn.textContent = oldText;
+            });
+    });
 });
 
 function updatePaymentMethod(method) {
@@ -34,6 +66,10 @@ function updatePaymentMethod(method) {
 
 function showError(message) {
     const errorMessage = document.getElementById('errorMessage');
+    if (!errorMessage) {
+        alert(message);
+        return;
+    }
     errorMessage.textContent = message;
     errorMessage.style.display = 'block';
 }

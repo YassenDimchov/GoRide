@@ -11,15 +11,16 @@ if (!is_array($data)) $data = [];
 
 $vehicleMake = trim((string)($data['vehicle_make'] ?? ''));
 $vehicleModel = trim((string)($data['vehicle_model'] ?? ''));
+$vehicleColor = trim((string)($data['vehicle_color'] ?? ''));
 $licensePlate = trim((string)($data['license_plate'] ?? ''));
 
-if ($vehicleMake === '' || $vehicleModel === '' || $licensePlate === '') {
+if ($vehicleMake === '' || $vehicleModel === '' || $vehicleColor === '' || $licensePlate === '') {
     http_response_code(422);
-    echo json_encode(['message' => 'Vehicle make, model, and plate are required']);
+    echo json_encode(['message' => 'Vehicle make, model, color, and plate are required']);
     exit;
 }
 
-$res = apiApplyDriver($token, $vehicleMake, $vehicleModel, $licensePlate);
+$res = apiApplyDriver($token, $vehicleMake, $vehicleModel, $vehicleColor, $licensePlate);
 if (!$res) {
     http_response_code(502);
     echo json_encode(['message' => 'Backend request failed']);
@@ -40,4 +41,3 @@ echo json_encode([
     'message' => $res['message'] ?? 'Driver application sent successfully',
     'sent_to' => $res['sent_to'] ?? null,
 ], JSON_UNESCAPED_UNICODE);
-

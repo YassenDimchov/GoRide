@@ -350,7 +350,8 @@ function goFoundUI(ride) {
 
   const make = d?.vehicle_make || "";
   const model = d?.vehicle_model || "";
-  if (carModelEl) carModelEl.textContent = [make, model].filter(Boolean).join(" ") || "Vehicle";
+  const color = d?.vehicle_color || "";
+  if (carModelEl) carModelEl.textContent = [color, make, model].filter(Boolean).join(" ") || "Vehicle";
   if (carPlateEl) carPlateEl.textContent = d?.license_plate || "—";
 
   if (callDriverBtn) {

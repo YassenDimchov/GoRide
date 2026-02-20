@@ -15,6 +15,7 @@ $phone = trim($_POST['phone'] ?? '');
 
 $vehicleMake  = trim($_POST['vehicle_make'] ?? '');
 $vehicleModel = trim($_POST['vehicle_model'] ?? '');
+$vehicleColor = trim($_POST['vehicle_color'] ?? '');
 $licensePlate = trim($_POST['license_plate'] ?? '');
 
 if ($name === '') {
@@ -61,11 +62,13 @@ if ($isDriver) {
     if ($currentDriver) {
         $oldMake  = (string)($currentDriver['vehicle_make'] ?? '');
         $oldModel = (string)($currentDriver['vehicle_model'] ?? '');
+        $oldColor = (string)($currentDriver['vehicle_color'] ?? '');
         $oldPlate = (string)($currentDriver['license_plate'] ?? '');
 
         $driverChanged = !(
             $vehicleMake === $oldMake &&
             $vehicleModel === $oldModel &&
+            $vehicleColor === $oldColor &&
             $licensePlate === $oldPlate
         );
 
@@ -73,6 +76,7 @@ if ($isDriver) {
             $payload = [
                 'vehicle_make'  => $vehicleMake !== '' ? $vehicleMake : null,
                 'vehicle_model' => $vehicleModel !== '' ? $vehicleModel : null,
+                'vehicle_color' => $vehicleColor !== '' ? $vehicleColor : null,
                 'license_plate' => $licensePlate !== '' ? $licensePlate : null,
             ];
 

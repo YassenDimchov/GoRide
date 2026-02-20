@@ -17,17 +17,17 @@ class AuthController extends Controller
 {
     private function frontendGoogleCallbackUrl(): string
     {
-        return rtrim(env('FRONTEND_GOOGLE_CALLBACK_URL', 'http://localhost/GoRide/frontend/google_callback.php'), '/');
+        return rtrim((string) config('services.google.frontend_callback_url', 'http://localhost/GoRide/frontend/google_callback.php'), '/');
     }
 
     private function googleRedirectUri(): string
     {
-        return env('GOOGLE_REDIRECT_URI', rtrim(config('app.url'), '/') . '/api/auth/google/callback');
+        return (string) config('services.google.redirect_uri', rtrim(config('app.url'), '/') . '/api/auth/google/callback');
     }
 
     public function googleRedirect()
     {
-        $clientId = (string) env('GOOGLE_CLIENT_ID', '');
+        $clientId = (string) config('services.google.client_id', '');
         if ($clientId === '') {
             return response()->json(['message' => 'GOOGLE_CLIENT_ID is not configured'], 500);
         }
@@ -65,8 +65,8 @@ class AuthController extends Controller
             return $redirectWithError('Missing Google authorization code.');
         }
 
-        $clientId = (string) env('GOOGLE_CLIENT_ID', '');
-        $clientSecret = (string) env('GOOGLE_CLIENT_SECRET', '');
+        $clientId = (string) config('services.google.client_id', '');
+        $clientSecret = (string) config('services.google.client_secret', '');
         if ($clientId === '' || $clientSecret === '') {
             return $redirectWithError('Google OAuth credentials are not configured.');
         }
@@ -280,6 +280,7 @@ class AuthController extends Controller
         $data = $request->validate([
             'vehicle_make' => ['required', 'string', 'max:60'],
             'vehicle_model' => ['required', 'string', 'max:60'],
+            'vehicle_color' => ['required', 'string', 'max:30'],
             'license_plate' => ['required', 'string', 'max:30'],
         ]);
 
@@ -299,6 +300,7 @@ class AuthController extends Controller
             '',
             'Vehicle Make: ' . $data['vehicle_make'],
             'Vehicle Model: ' . $data['vehicle_model'],
+            'Vehicle Color: ' . $data['vehicle_color'],
             'License Plate: ' . $data['license_plate'],
             '',
             'Requested At: ' . now()->toDateTimeString(),

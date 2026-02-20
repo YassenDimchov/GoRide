@@ -281,6 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const vehicleMake = document.getElementById('applyVehicleMake')?.value?.trim() || '';
       const vehicleModel = document.getElementById('applyVehicleModel')?.value?.trim() || '';
+      const vehicleColor = document.getElementById('applyVehicleColor')?.value?.trim() || '';
       const licensePlate = document.getElementById('applyLicensePlate')?.value?.trim() || '';
 
       if (becomeDriverError) {
@@ -292,7 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
         becomeDriverSuccess.style.display = 'none';
       }
 
-      if (!vehicleMake || !vehicleModel || !licensePlate) {
+      if (!vehicleMake || !vehicleModel || !vehicleColor || !licensePlate) {
         if (becomeDriverError) {
           becomeDriverError.textContent = 'All fields are required.';
           becomeDriverError.style.display = 'block';
@@ -308,6 +309,7 @@ document.addEventListener('DOMContentLoaded', () => {
           body: JSON.stringify({
             vehicle_make: vehicleMake,
             vehicle_model: vehicleModel,
+            vehicle_color: vehicleColor,
             license_plate: licensePlate,
           }),
         });

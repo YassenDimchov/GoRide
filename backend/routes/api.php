@@ -34,6 +34,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/payments', [PaymentController::class, 'index']);
     Route::post('/payments/{payment}/confirm', [PaymentController::class, 'confirmCashPayment']);
     Route::post('/payments/{payment}/report-unpaid', [PaymentController::class, 'reportUnpaidCash']);
+    Route::post('/payments/{payment}/stripe-checkout', [PaymentController::class, 'createStripeCheckout']);
+    Route::post('/payments/{payment}/stripe-confirm', [PaymentController::class, 'confirmStripeCheckout']);
 
     Route::post('/rides/{ride}/review', [ReviewController::class, 'store']);
     Route::get('/reviews', [ReviewController::class, 'index']);

@@ -223,6 +223,7 @@ if (isDriver()) {
                     <?php
                         $vehicleMake  = $driver['vehicle_make']  ?? '';
                         $vehicleModel = $driver['vehicle_model'] ?? '';
+                        $vehicleColor = $driver['vehicle_color'] ?? '';
                         $licensePlate = $driver['license_plate'] ?? '';
                     ?>
 
@@ -261,6 +262,22 @@ if (isDriver()) {
                                     value="<?= htmlspecialchars($vehicleModel) ?>"
                                     disabled
                                     data-original="<?= htmlspecialchars($vehicleModel) ?>"
+                                    form="profileForm"
+                                />
+                            </div>
+
+                            <div class="field">
+                                <label class="field-label" for="vehicle_color">
+                                    <span>Color</span>
+                                </label>
+                                <input
+                                    class="field-input"
+                                    type="text"
+                                    id="vehicle_color"
+                                    name="vehicle_color"
+                                    value="<?= htmlspecialchars($vehicleColor) ?>"
+                                    disabled
+                                    data-original="<?= htmlspecialchars($vehicleColor) ?>"
                                     form="profileForm"
                                 />
                             </div>
@@ -334,6 +351,10 @@ if (isDriver()) {
                             <div class="driver-apply-field">
                                 <label for="applyVehicleModel">Vehicle Model</label>
                                 <input type="text" id="applyVehicleModel" name="vehicle_model" required>
+                            </div>
+                            <div class="driver-apply-field">
+                                <label for="applyVehicleColor">Vehicle Color</label>
+                                <input type="text" id="applyVehicleColor" name="vehicle_color" required>
                             </div>
                             <div class="driver-apply-field">
                                 <label for="applyLicensePlate">License Plate</label>

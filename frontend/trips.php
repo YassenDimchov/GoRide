@@ -47,6 +47,7 @@ $rides = getTripHistory($token);
                                     $price   = $r['fare'] ?? null;
                                     $vehicleMake  = $r['driver']['vehicle_make'] ?? null;
                                     $vehicleModel = $r['driver']['vehicle_model'] ?? null;
+                                    $vehicleColor = $r['driver']['vehicle_color'] ?? null;
                                     $plate        = $r['driver']['license_plate'] ?? null;
                                     $driverName = $r['driver']['user']['name'] ?? null;
                                     $driverId = $r['driver']['id'] ?? null;
@@ -66,7 +67,7 @@ $rides = getTripHistory($token);
                                             </div>
                                             <div class="car-description">
                                                 <div class="car-model">
-                                                    <?= htmlspecialchars(trim(($vehicleMake ?? '') . ' ' . ($vehicleModel ?? ''))) ?>
+                                                    <?= htmlspecialchars(trim(($vehicleColor ?? '') . ' ' . ($vehicleMake ?? '') . ' ' . ($vehicleModel ?? ''))) ?>
                                                 </div>
                                                 <div class="car-plate">
                                                     <?= $plate ? 'License plate:  ' . htmlspecialchars($plate) : '' ?>
