@@ -282,6 +282,7 @@ class AuthController extends Controller
             'vehicle_model' => ['required', 'string', 'max:60'],
             'vehicle_color' => ['required', 'string', 'max:30'],
             'license_plate' => ['required', 'string', 'max:30'],
+            'passenger_capacity' => ['required', 'integer', 'min:1', 'max:8'],
         ]);
 
         $adminEmail = (string) env('DRIVER_APPLICATION_EMAIL', env('MAIL_FROM_ADDRESS', ''));
@@ -302,6 +303,7 @@ class AuthController extends Controller
             'Vehicle Model: ' . $data['vehicle_model'],
             'Vehicle Color: ' . $data['vehicle_color'],
             'License Plate: ' . $data['license_plate'],
+            'Passenger Capacity: ' . $data['passenger_capacity'],
             '',
             'Requested At: ' . now()->toDateTimeString(),
         ]);

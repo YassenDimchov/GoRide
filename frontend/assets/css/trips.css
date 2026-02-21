@@ -134,6 +134,17 @@ body { margin: 0; }
     align-items: center;
 }
 
+.trip-passenger-chip {
+    margin-left: auto;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid #bfdbfe;
+    background: #eff6ff;
+    color: #1d4ed8;
+    font-size: 12px;
+    font-weight: var(--fw-semibold);
+}
+
 .trip-core {
     background-color: #F9FAFB;
     display: flex;

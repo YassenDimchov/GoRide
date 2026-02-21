@@ -17,6 +17,7 @@ $vehicleMake  = trim($_POST['vehicle_make'] ?? '');
 $vehicleModel = trim($_POST['vehicle_model'] ?? '');
 $vehicleColor = trim($_POST['vehicle_color'] ?? '');
 $licensePlate = trim($_POST['license_plate'] ?? '');
+$passengerCapacity = (int)($_POST['passenger_capacity'] ?? 0);
 
 if ($name === '') {
     $_SESSION['flash_error'] = 'Name is required.';
@@ -64,12 +65,18 @@ if ($isDriver) {
         $oldModel = (string)($currentDriver['vehicle_model'] ?? '');
         $oldColor = (string)($currentDriver['vehicle_color'] ?? '');
         $oldPlate = (string)($currentDriver['license_plate'] ?? '');
+        $oldCapacity = (int)($currentDriver['passenger_capacity'] ?? 4);
+
+        if ($passengerCapacity < 1 || $passengerCapacity > 8) {
+            $passengerCapacity = $oldCapacity;
+        }
 
         $driverChanged = !(
             $vehicleMake === $oldMake &&
             $vehicleModel === $oldModel &&
             $vehicleColor === $oldColor &&
-            $licensePlate === $oldPlate
+            $licensePlate === $oldPlate &&
+            $passengerCapacity === $oldCapacity
         );
 
         if ($driverChanged) {
@@ -78,6 +85,7 @@ if ($isDriver) {
                 'vehicle_model' => $vehicleModel !== '' ? $vehicleModel : null,
                 'vehicle_color' => $vehicleColor !== '' ? $vehicleColor : null,
                 'license_plate' => $licensePlate !== '' ? $licensePlate : null,
+                'passenger_capacity' => $passengerCapacity,
             ];
 
             $resDriver = apiUpdateDriverMe($token, $payload);

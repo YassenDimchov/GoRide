@@ -90,15 +90,18 @@
     color: var(--text-muted);
 }
 
-.pick-on-map {
+.pick-on-map, .panel-field-label {
     margin-top: 6px;
     font-size: 12px;
     background: transparent;
     border: 0;
     padding: 0;
-    cursor: pointer;
     color: var(--primary);
     text-align: left;
+}
+
+.pick-on-map {
+    cursor: pointer;
 }
 
 .pick-on-map:hover {
@@ -122,6 +125,21 @@
 
 .panel-input input:focus {
     box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+}
+
+.panel-payment-warning {
+    margin-top: 12px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid #f5c542;
+    background: #fff7df;
+    color: #7a4b00;
+    font-size: 13px;
+    font-weight: var(--fw-medium);
+}
+
+.panel-payment-warning strong {
+    color: #6a2f00;
 }
 
 .panel-hint {
@@ -296,6 +314,7 @@
      background: var(--surface);
     border-radius: 14px;
     padding: 16px;
+    cursor: pointer;
 }
 
 .driver-top{
@@ -434,6 +453,20 @@
     font-size: 16px;
     color: var(--text);
     margin-bottom: 14px;
+}
+
+.trip-live-meta {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.trip-live-item {
+    flex: 1;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 10px;
+    background: var(--surface-2);
 }
 
 .trip-row{

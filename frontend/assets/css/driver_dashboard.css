@@ -162,6 +162,22 @@
     font-size: var(--fs-md);
 }
 
+.dash-trip-meta {
+    margin-top: 8px;
+}
+
+.dash-passenger-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid #bfdbfe;
+    background: #eff6ff;
+    color: #1d4ed8;
+    font-size: 12px;
+    font-weight: var(--fw-semibold);
+}
+
 .dash-trip-right {
     font-size: 18px;
     font-weight: var(--fw-bold);

@@ -283,6 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const vehicleModel = document.getElementById('applyVehicleModel')?.value?.trim() || '';
       const vehicleColor = document.getElementById('applyVehicleColor')?.value?.trim() || '';
       const licensePlate = document.getElementById('applyLicensePlate')?.value?.trim() || '';
+      const passengerCapacity = Number(document.getElementById('applyPassengerCapacity')?.value || 0);
 
       if (becomeDriverError) {
         becomeDriverError.textContent = '';
@@ -293,9 +294,9 @@ document.addEventListener('DOMContentLoaded', () => {
         becomeDriverSuccess.style.display = 'none';
       }
 
-      if (!vehicleMake || !vehicleModel || !vehicleColor || !licensePlate) {
+      if (!vehicleMake || !vehicleModel || !vehicleColor || !licensePlate || !Number.isInteger(passengerCapacity) || passengerCapacity < 1 || passengerCapacity > 8) {
         if (becomeDriverError) {
-          becomeDriverError.textContent = 'All fields are required.';
+          becomeDriverError.textContent = 'All fields are required and capacity must be 1-8.';
           becomeDriverError.style.display = 'block';
         }
         return;
@@ -311,6 +312,7 @@ document.addEventListener('DOMContentLoaded', () => {
             vehicle_model: vehicleModel,
             vehicle_color: vehicleColor,
             license_plate: licensePlate,
+            passenger_capacity: passengerCapacity,
           }),
         });
 

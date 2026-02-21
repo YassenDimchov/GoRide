@@ -13,14 +13,15 @@ $vehicleMake = trim((string)($data['vehicle_make'] ?? ''));
 $vehicleModel = trim((string)($data['vehicle_model'] ?? ''));
 $vehicleColor = trim((string)($data['vehicle_color'] ?? ''));
 $licensePlate = trim((string)($data['license_plate'] ?? ''));
+$passengerCapacity = (int)($data['passenger_capacity'] ?? 0);
 
-if ($vehicleMake === '' || $vehicleModel === '' || $vehicleColor === '' || $licensePlate === '') {
+if ($vehicleMake === '' || $vehicleModel === '' || $vehicleColor === '' || $licensePlate === '' || $passengerCapacity < 1 || $passengerCapacity > 8) {
     http_response_code(422);
-    echo json_encode(['message' => 'Vehicle make, model, color, and plate are required']);
+    echo json_encode(['message' => 'Vehicle make, model, color, plate, and valid passenger capacity are required']);
     exit;
 }
 
-$res = apiApplyDriver($token, $vehicleMake, $vehicleModel, $vehicleColor, $licensePlate);
+$res = apiApplyDriver($token, $vehicleMake, $vehicleModel, $vehicleColor, $licensePlate, $passengerCapacity);
 if (!$res) {
     http_response_code(502);
     echo json_encode(['message' => 'Backend request failed']);

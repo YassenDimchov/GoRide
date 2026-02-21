@@ -140,6 +140,7 @@ class DriverController extends Controller
             'vehicle_model' => ['nullable', 'string', 'max:50'],
             'vehicle_color' => ['nullable', 'string', 'max:30'],
             'license_plate' => ['nullable', 'string', 'max:20'],
+            'passenger_capacity' => ['nullable', 'integer', 'min:1', 'max:8'],
             'status' => ['nullable', 'string', Rule::in(['available', 'offline'])],
         ]);
 

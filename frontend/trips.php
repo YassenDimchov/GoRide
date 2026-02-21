@@ -55,6 +55,7 @@ $rides = getTripHistory($token);
                                     $paymentMethod = $r['payment']['method'] ?? null;
                                     $tripDurationMinutes = isset($r['trip_duration_s']) ? round($r['trip_duration_s'] / 60) : null;
                                     $tripDistanceKm = isset($r['trip_distance_m']) ? round($r['trip_distance_m'] / 1000, 2) : null;
+                                    $passengerCount = max(1, (int)($r['passenger_count'] ?? 1));
                                     $nameParts = explode(' ', $driverName);
                                     $driverInitials = strtoupper($nameParts[0][0] . (isset($nameParts[1]) ? $nameParts[1][0] : ''));
                                     $driverProfile = getDriverProfile($token, $driverId)['driver'];
@@ -86,6 +87,9 @@ $rides = getTripHistory($token);
                                         <div class="trip-date">
                                             <img src="./assets/images/Icons/calendar.svg" class="icon14" alt="">
                                             <span><?= htmlspecialchars(fmtDateTime($dt)) ?></span>
+                                            <span class="trip-passenger-chip">
+                                                <?= htmlspecialchars((string)$passengerCount) ?> passenger<?= $passengerCount === 1 ? '' : 's' ?>
+                                            </span>
                                         </div>
                                         <div class="trip-core">
                                             <div class="route-row">

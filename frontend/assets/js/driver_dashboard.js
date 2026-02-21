@@ -237,6 +237,7 @@
             const when = fmtDate(r.completed_at || r.created_at);
             const from = (r.start_address || "").trim();
             const to = (r.end_address || "").trim();
+            const passengerCount = Math.max(1, Number(r.passenger_count || 1));
 
             const amt = (r.payment && r.payment.amount != null) ? r.payment.amount : r.fare;
             const right = money(amt);
@@ -269,6 +270,9 @@
                             <div class="dash-trip-from">${from || "-"}</div>
                             <div class="dash-trip-arrow">&rarr;</div>
                             <div class="dash-trip-to">${to || "-"}</div>
+                        </div>
+                        <div class="dash-trip-meta">
+                            <span class="dash-passenger-chip">${passengerCount} passenger${passengerCount === 1 ? "" : "s"}</span>
                         </div>
                     </div>
                     <div class="dash-trip-right">
@@ -406,7 +410,6 @@
 
     load("today");
 })();
-
 
 
 

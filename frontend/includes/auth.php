@@ -232,7 +232,8 @@ function apiApplyDriver(
     string $vehicleMake,
     string $vehicleModel,
     string $vehicleColor,
-    string $licensePlate
+    string $licensePlate,
+    int $passengerCapacity
 ): ?array
 {
     return apiRequest('POST', '/driver/apply', [
@@ -240,5 +241,6 @@ function apiApplyDriver(
         'vehicle_model' => $vehicleModel,
         'vehicle_color' => $vehicleColor,
         'license_plate' => $licensePlate,
+        'passenger_capacity' => $passengerCapacity,
     ], $token);
 }

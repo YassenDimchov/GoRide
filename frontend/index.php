@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="assets/css/style.css"/>
     <link rel="stylesheet" href="assets/css/index.css"/>
     <link rel="stylesheet" href="assets/css/review.css"/>
+    <link rel="stylesheet" href="assets/css/driver_profile.css"/>
 
     <link
         rel="stylesheet"
@@ -66,6 +67,20 @@
                         </button>
                     </div>
                 </div>
+
+                <div class="panel-row">
+                    <div class="panel-icon">
+                        <img src="./assets/images/Icons/user.svg" alt="" class="icon20">
+                    </div>
+                    <div class="panel-input">
+                        <input id="passengerCount" type="number" min="1" max="8" value="1">
+                        <label for="passengerCount" class="panel-field-label">Passengers</label>
+                    </div>
+                </div>
+
+                <div class="panel-payment-warning" id="selectedPaymentWarning">
+                    Important: Your selected payment method is <strong id="selectedPaymentMethodText">Card</strong>.
+                </div>
             </div>
 
             <!-- State 1 -->
@@ -104,7 +119,7 @@
                     <img src="assets/images/Icons/car.svg" alt="" class="icon20">
                 </div>
                 <div class="info-text">
-                    <div class="info-title">Reqdy to ride?</div>
+                    <div class="info-title">Ready to ride?</div>
                     <div class="info-sub">Click "Request Ride" to find a nearby driver</div>
                 </div>
             </div>
@@ -151,8 +166,8 @@
                             </div>
 
                             <div class="driver-eta">
-                                <div class="eta-min">3 mins</div>
-                                <div class="eta-away">away</div>
+                                <div class="eta-min" id="liveEta">- min</div>
+                                <div class="eta-away" id="liveEtaLabel">away</div>
                             </div>
                         </div>
 
@@ -176,6 +191,17 @@
                 <div class="trip-card">
                     <div class="trip-title">Trip Details</div>
 
+                    <div class="trip-live-meta">
+                        <div class="trip-live-item">
+                            <div class="trip-label">ETA</div>
+                            <div class="trip-value" id="tripEtaLive">-</div>
+                        </div>
+                        <div class="trip-live-item">
+                            <div class="trip-label">Distance Left</div>
+                            <div class="trip-value" id="tripDistanceLeft">-</div>
+                        </div>
+                    </div>
+
                     <div class="trip-row">
                         <span class="trip-dot pickup"></span>
                         <div class="trip-text">
@@ -194,6 +220,88 @@
                 </div>
 
              </div>
+
+            <div id="driverProfileModal" class="modal">
+                <div class="modal-content">
+                    <div class="driver-top">
+                        <span class="drive-modal-title">Driver Profile</span>
+                        <span class="close-btn" id="closeDriverProfileModal">&times;</span>
+                    </div>
+                    <div class="driver-info-modal">
+                        <div class="driver-avatar-modal">
+                            <div id="driverProfileInitials">DR</div>
+                        </div>
+                        <div class="detailed-driver-info">
+                            <div id="driverProfileName"></div>
+                            <div class="rating-and-trips">
+                                <img src="./assets/images/Icons/star-filled.svg" class="star icon16" alt="Filled star" />
+                                <div id="driverProfileAverageRating"></div>
+                                <div id="driverProfileTotalTripsInfo"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="driver-stats">
+                        <div class="driver-profile-stat-card">
+                            <div class="stat-text">Total Trips</div>
+                            <div id="driverProfileTotalTrips"></div>
+                        </div>
+                        <div class="driver-profile-stat-card">
+                            <div class="stat-text">Time as a Driver</div>
+                            <div id="driverProfileYearsActive"></div>
+                        </div>
+                        <div class="driver-profile-stat-card">
+                            <div class="stat-text">Response Time</div>
+                            <div id="driverProfileResponseTime"></div>
+                        </div>
+                    </div>
+                    <div id="driverProfileRatingBreakdown">
+                        <h3>Rating Breakdown:</h3>
+
+                        <div class="rating-item">
+                            <span class="rating-label">5 ★</span>
+                            <div class="rating-bar">
+                                <div id="driverProfileRatingBar5" class="rating-fill"></div>
+                            </div>
+                            <span id="driverProfileRatingCount5" class="rating-count">0%</span>
+                        </div>
+
+                        <div class="rating-item">
+                            <span class="rating-label">4 ★</span>
+                            <div class="rating-bar">
+                                <div id="driverProfileRatingBar4" class="rating-fill"></div>
+                            </div>
+                            <span id="driverProfileRatingCount4" class="rating-count">0%</span>
+                        </div>
+
+                        <div class="rating-item">
+                            <span class="rating-label">3 ★</span>
+                            <div class="rating-bar">
+                                <div id="driverProfileRatingBar3" class="rating-fill"></div>
+                            </div>
+                            <span id="driverProfileRatingCount3" class="rating-count">0%</span>
+                        </div>
+
+                        <div class="rating-item">
+                            <span class="rating-label">2 ★</span>
+                            <div class="rating-bar">
+                                <div id="driverProfileRatingBar2" class="rating-fill"></div>
+                            </div>
+                            <span id="driverProfileRatingCount2" class="rating-count">0%</span>
+                        </div>
+
+                        <div class="rating-item">
+                            <span class="rating-label">1 ★</span>
+                            <div class="rating-bar">
+                                <div id="driverProfileRatingBar1" class="rating-fill"></div>
+                            </div>
+                            <span id="driverProfileRatingCount1" class="rating-count">0%</span>
+                        </div>
+                    </div>
+                    <a class="btn-outline" id="driverProfileCallBtn" href="tel:">
+                        <span><img src="./assets/images/Icons/phone.svg" class="icon16" alt="" /></span> Call Driver
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 

@@ -218,6 +218,7 @@
       const wait = r.match?.wait_min != null ? `${r.match.wait_min} min ago` : "";
       const pickup = r.start_address || `${r.start_lat}, ${r.start_lng}`;
       const drop = r.end_address || `${r.end_lat}, ${r.end_lng}`;
+      const passengers = Math.max(1, Number(r.passenger_count || 1));
 
       const money = r.match?.estimated_fare ?? null;
       const dist = r.match?.distance_km != null ? `${r.match.distance_km.toFixed(1)} km` : "";
@@ -230,7 +231,7 @@
               <div class="req-avatar">${initials(nm)}</div>
               <div>
                 <div class="req-name">${escapeHtml(nm)}</div>
-                <div class="req-sub">${escapeHtml(wait)}</div>
+                <div class="req-sub">${escapeHtml(wait)}${wait ? " • " : ""}${passengers} passenger${passengers === 1 ? "" : "s"}</div>
               </div>
             </div>
 
@@ -624,7 +625,7 @@
   const savedTab = localStorage.getItem(LS_ACTIVE_TAB) || "pending";
   setTab(savedTab);
 
-  (async () => {
+  async function bootstrap() {
     const serverRide = await fetchActiveRideFromServer();
 
     if (serverRide) {
@@ -635,13 +636,15 @@
     } else {
       saveRide(null);
       renderOngoing(null);
+      if (current !== "offline") {
+        paint("available");
+      }
     }
-  })();
 
+    if (current === "available") startLocationTracking();
+    await refreshPending();
+    startPolling();
+  }
 
-
-
-  if (current === "available") startLocationTracking();
-  refreshPending();
-  startPolling();
+  bootstrap();
 })();

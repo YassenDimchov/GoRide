@@ -128,6 +128,15 @@ class RideController extends Controller
             }
 
             $this->touchDriver($lockedDriver);
+
+            $capacity = max(1, (int)($lockedDriver->passenger_capacity ?? 4));
+            $requestedPassengers = max(1, (int)($lockedRide->passenger_count ?? 1));
+            if ($requestedPassengers > $capacity) {
+                return response()->json([
+                    'message' => "Ride requires {$requestedPassengers} passengers but your car capacity is {$capacity}.",
+                    'code' => 'PASSENGER_CAPACITY_EXCEEDED',
+                ], 409);
+            }
             
             // Ride was already accepted.
             if ($lockedRide->status !== RideStatus::PENDING->value) {
@@ -399,9 +408,15 @@ class RideController extends Controller
 
         $this->touchDriver($driver);
 
+        $capacity = max(1, (int)($driver->passenger_capacity ?? 4));
+
         $rides = Ride::query()
             ->where('status', RideStatus::PENDING->value)
             ->whereNull('driver_id')
+            ->where(function ($q) use ($capacity) {
+                $q->whereNull('passenger_count')
+                    ->orWhere('passenger_count', '<=', $capacity);
+            })
             ->with('user')
             ->get();
 

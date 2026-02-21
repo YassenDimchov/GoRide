@@ -27,6 +27,7 @@ class Ride extends Model
         'end_lng',
         'start_address',
         'end_address',
+        'passenger_count',
         'trip_distance_m',
         'trip_duration_s',
         'estimated_fare',

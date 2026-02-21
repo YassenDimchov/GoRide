@@ -225,6 +225,7 @@ if (isDriver()) {
                         $vehicleModel = $driver['vehicle_model'] ?? '';
                         $vehicleColor = $driver['vehicle_color'] ?? '';
                         $licensePlate = $driver['license_plate'] ?? '';
+                        $passengerCapacity = (int)($driver['passenger_capacity'] ?? 4);
                     ?>
 
                     <section class="card vehicle-card">
@@ -297,6 +298,24 @@ if (isDriver()) {
                                     form="profileForm"
                                 />
                             </div>
+
+                            <div class="field">
+                                <label class="field-label" for="passenger_capacity">
+                                    <span>Passenger Capacity</span>
+                                </label>
+                                <input
+                                    class="field-input"
+                                    type="number"
+                                    min="1"
+                                    max="8"
+                                    id="passenger_capacity"
+                                    name="passenger_capacity"
+                                    value="<?= htmlspecialchars((string)$passengerCapacity) ?>"
+                                    disabled
+                                    data-original="<?= htmlspecialchars((string)$passengerCapacity) ?>"
+                                    form="profileForm"
+                                />
+                            </div>
                         </div>
                     </section>
                 <?php endif; ?>
@@ -359,6 +378,10 @@ if (isDriver()) {
                             <div class="driver-apply-field">
                                 <label for="applyLicensePlate">License Plate</label>
                                 <input type="text" id="applyLicensePlate" name="license_plate" required>
+                            </div>
+                            <div class="driver-apply-field">
+                                <label for="applyPassengerCapacity">Passenger Capacity</label>
+                                <input type="number" id="applyPassengerCapacity" name="passenger_capacity" min="1" max="8" value="4" required>
                             </div>
                             <div id="becomeDriverError" class="modal-error"></div>
                             <div id="becomeDriverSuccess" class="modal-success"></div>

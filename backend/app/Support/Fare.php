@@ -6,12 +6,20 @@ class Fare
 {
     public static function estimate(float $km, int $minutes): float
     {
-        $base = 2.50;
-        $perKm = 1.20;
-        $perMin = 0.25;
-        $minFare = 5.00;
+        $baseFare = 1.80;
+        $includedKm = 2.0;
+        $includedMin = 5;
+        $perKmAfterIncluded = 0.85;
+        $perMinAfterIncluded = 0.18;
+        $minFare = 3.50;
 
-        $fare = $base + ($km * $perKm) + ($minutes * $perMin);
+        $billableKm = max(0.0, $km - $includedKm);
+        $billableMin = max(0, $minutes - $includedMin);
+
+        $fare = $baseFare
+            + ($billableKm * $perKmAfterIncluded)
+            + ($billableMin * $perMinAfterIncluded);
+
         return round(max($minFare, $fare), 2);
     }
 }

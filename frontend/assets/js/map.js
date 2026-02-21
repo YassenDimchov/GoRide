@@ -32,14 +32,13 @@ function addOrMoveMarker(kind, loc) {
   if (!loc || !Number.isFinite(Number(loc.lat)) || !Number.isFinite(Number(loc.lng))) return;
 
   const latlng = [Number(loc.lat), Number(loc.lng)];
-  const marker = L.marker(latlng);
 
   if (kind === "pickup") {
-    if (pickupMarker) map.removeLayer(pickupMarker);
-    pickupMarker = marker.addTo(map);
+    if (pickupMarker) pickupMarker.setLatLng(latlng);
+    else pickupMarker = L.marker(latlng).addTo(map);
   } else {
-    if (dropoffMarker) map.removeLayer(dropoffMarker);
-    dropoffMarker = marker.addTo(map);
+    if (dropoffMarker) dropoffMarker.setLatLng(latlng);
+    else dropoffMarker = L.marker(latlng).addTo(map);
   }
 }
 
@@ -64,11 +63,21 @@ function showEstimateFromTripEstimate() {
 
   const km = distanceM / 1000;
   const min = Math.max(1, Math.round(durationS / 60));
+  const baseFare = 1.8;
+  const includedKm = 2;
+  const includedMin = 5;
+  const perKmAfterIncluded = 0.85;
+  const perMinAfterIncluded = 0.18;
+  const minFare = 3.5;
+
+  const billableKm = Math.max(0, km - includedKm);
+  const billableMin = Math.max(0, min - includedMin);
+  const fare = Math.max(minFare, baseFare + (billableKm * perKmAfterIncluded) + (billableMin * perMinAfterIncluded));
 
   card.style.display = "";
   if (etaEl) etaEl.textContent = `${min} min`;
   if (distEl) distEl.textContent = `${km.toFixed(km < 10 ? 1 : 0)} km`;
-  if (fareEl) fareEl.textContent = "-";
+  if (fareEl) fareEl.textContent = `${fare.toFixed(2)} EUR`;
 
   if (noteEl) {
     noteEl.style.display = "";
@@ -235,7 +244,7 @@ window.addEventListener("map:setDropoff", async (e) => {
   await drawRouteIfPossible({ fit: true, force: true });
 });
 
-window.mapRestoreTrip = async function (pickupLoc, dropoffLoc, estimate) {
+window.mapRestoreTrip = async function (pickupLoc, dropoffLoc, estimate, options = {}) {
   if (!pickupLoc || !dropoffLoc) return;
 
   window.pickupLoc = {
@@ -259,7 +268,7 @@ window.mapRestoreTrip = async function (pickupLoc, dropoffLoc, estimate) {
   addOrMoveMarker("pickup", window.pickupLoc);
   addOrMoveMarker("dropoff", window.dropoffLoc);
 
-  await drawRouteIfPossible({ fit: true, force: false });
+  await drawRouteIfPossible({ fit: options.fit !== false, force: false });
 };
 
 window.map = map;

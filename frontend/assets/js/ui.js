@@ -1,5 +1,6 @@
 const pickupEl = document.getElementById("pickup");
 const destinationEl = document.getElementById("destination");
+const passengerCountEl = document.getElementById("passengerCount");
 
 const requestBtn = document.getElementById("requestRideBtn");
 const readyCard = document.getElementById("readyCard");
@@ -15,6 +16,14 @@ const cancelRideBtn = document.getElementById("cancelRideBtn");
 const navigateBtn = document.getElementById("navigateBtn");
 const tripPickup = document.getElementById("tripPickup");
 const tripDropoff = document.getElementById("tripDropoff");
+const liveEtaEl = document.getElementById("liveEta");
+const liveEtaLabelEl = document.getElementById("liveEtaLabel");
+const tripEtaLiveEl = document.getElementById("tripEtaLive");
+const tripDistanceLeftEl = document.getElementById("tripDistanceLeft");
+const driverProfileModalEl = document.getElementById("driverProfileModal");
+const closeDriverProfileModalEl = document.getElementById("closeDriverProfileModal");
+const selectedPaymentWarningEl = document.getElementById("selectedPaymentWarning");
+const selectedPaymentMethodTextEl = document.getElementById("selectedPaymentMethodText");
 
 const estimateCard = document.getElementById("estimateCard");
 
@@ -28,6 +37,8 @@ let currentRideId = null;
 let pollTimer = null;
 
 let driverLocationMarker = null;
+let currentDriverForProfile = null;
+let driverProfileOverlayEl = null;
 
 function saveRideId(id) {
   if (!id) localStorage.removeItem(LS_ACTIVE_RIDE_ID);
@@ -55,6 +66,71 @@ function hasLoc(loc) {
 function lockInputs(lock) {
   pickupEl.disabled = lock;
   destinationEl.disabled = lock;
+  if (passengerCountEl) passengerCountEl.disabled = lock;
+}
+
+async function loadPreferredPaymentWarning() {
+  if (!selectedPaymentWarningEl || !selectedPaymentMethodTextEl) return;
+
+  try {
+    const url = new URL("/GoRide/frontend/api/preferred_payment.php", window.location.origin);
+    const res = await fetch(url.toString(), { headers: { Accept: "application/json" } });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(json.message || "Failed to load payment method");
+
+    const label = (json?.label || "Card").toString();
+    selectedPaymentMethodTextEl.textContent = label;
+    selectedPaymentWarningEl.style.display = "";
+  } catch {
+    selectedPaymentMethodTextEl.textContent = "Card";
+    selectedPaymentWarningEl.style.display = "";
+  }
+}
+
+function haversineKm(lat1, lng1, lat2, lng2) {
+  const toRad = (v) => (v * Math.PI) / 180;
+  const R = 6371;
+  const dLat = toRad(lat2 - lat1);
+  const dLng = toRad(lng2 - lng1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+    Math.sin(dLng / 2) * Math.sin(dLng / 2);
+  return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function updateLiveTripMetrics(ride) {
+  const status = String(ride?.status || "");
+  if (status !== "accepted" && status !== "ongoing") {
+    if (liveEtaEl) liveEtaEl.textContent = "- min";
+    if (liveEtaLabelEl) liveEtaLabelEl.textContent = "away";
+    if (tripEtaLiveEl) tripEtaLiveEl.textContent = "-";
+    if (tripDistanceLeftEl) tripDistanceLeftEl.textContent = "-";
+    return;
+  }
+
+  const driverLat = Number(ride?.driver?.current_lat);
+  const driverLng = Number(ride?.driver?.current_lng);
+
+  const targetLat = status === "accepted" ? Number(ride?.start_lat) : Number(ride?.end_lat);
+  const targetLng = status === "accepted" ? Number(ride?.start_lng) : Number(ride?.end_lng);
+
+  if (![driverLat, driverLng, targetLat, targetLng].every(Number.isFinite)) {
+    if (liveEtaEl) liveEtaEl.textContent = "- min";
+    if (tripEtaLiveEl) tripEtaLiveEl.textContent = "-";
+    if (tripDistanceLeftEl) tripDistanceLeftEl.textContent = "-";
+    return;
+  }
+
+  const kmLeft = haversineKm(driverLat, driverLng, targetLat, targetLng);
+  const speedKmh = status === "ongoing" ? 30 : 25;
+  const etaMin = Math.max(1, Math.round((kmLeft / speedKmh) * 60));
+  const distanceText = `${kmLeft.toFixed(kmLeft >= 10 ? 0 : 1)} km`;
+
+  if (liveEtaEl) liveEtaEl.textContent = `${etaMin} min`;
+  if (liveEtaLabelEl) liveEtaLabelEl.textContent = status === "ongoing" ? "to dropoff" : "to pickup";
+  if (tripEtaLiveEl) tripEtaLiveEl.textContent = `${etaMin} min`;
+  if (tripDistanceLeftEl) tripDistanceLeftEl.textContent = distanceText;
 }
 
 async function restoreTripFromRide(ride) {
@@ -81,6 +157,9 @@ async function restoreTripFromRide(ride) {
 
   window.pickupLoc = { lat: startLat, lng: startLng, address: startAddr || pickupEl.value };
   window.dropoffLoc = { lat: endLat, lng: endLng, address: endAddr || destinationEl.value };
+  if (passengerCountEl) {
+    passengerCountEl.value = String(Math.max(1, Number(ride.passenger_count || 1)));
+  }
 
   window.tripEstimate = {
     distance_m: ride.trip_distance_m != null ? Number(ride.trip_distance_m) : null,
@@ -92,7 +171,7 @@ async function restoreTripFromRide(ride) {
   }
 
   if (typeof window.mapRestoreTrip === "function") {
-    await window.mapRestoreTrip(window.pickupLoc, window.dropoffLoc, window.tripEstimate);
+    await window.mapRestoreTrip(window.pickupLoc, window.dropoffLoc, window.tripEstimate, { fit: false });
   }
 }
 
@@ -109,6 +188,7 @@ function toState1() {
 
   pickupEl.value = "";
   destinationEl.value = "";
+  if (passengerCountEl) passengerCountEl.value = "1";
   window.pickupLoc = null;
   window.dropoffLoc = null;
   window.tripEstimate = null;
@@ -180,6 +260,83 @@ function clearDriverMarker() {
     map.removeLayer(driverLocationMarker);
     driverLocationMarker = null;
   }
+}
+
+async function fetchDriverProfile(driverId) {
+  const url = new URL("/GoRide/frontend/api/driver_profile.php", window.location.origin);
+  url.searchParams.set("id", String(driverId));
+
+  const res = await fetch(url.toString(), { headers: { Accept: "application/json" } });
+  const json = await res.json().catch(() => ({}));
+
+  if (!res.ok) throw new Error(json.message || "Could not load driver profile.");
+  return json?.driver || null;
+}
+
+function closeDriverProfileModal() {
+  if (!driverProfileModalEl) return;
+  driverProfileModalEl.style.display = "none";
+  if (driverProfileOverlayEl) {
+    driverProfileOverlayEl.remove();
+    driverProfileOverlayEl = null;
+  }
+  document.body.style.overflow = "auto";
+}
+
+function openDriverProfileModal(profile, phone, initials) {
+  if (!driverProfileModalEl || !profile) return;
+
+  const setText = (id, text) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = text;
+  };
+
+  setText("driverProfileInitials", initials || "DR");
+  setText("driverProfileName", profile.name || "Driver");
+  setText("driverProfileAverageRating", String(profile.average_review ?? "-"));
+  setText("driverProfileTotalTripsInfo", `• ${profile.total_trips ?? 0} trips`);
+  setText("driverProfileTotalTrips", String(profile.total_trips ?? 0));
+
+  const years = Number(profile?.active_time?.years || 0);
+  const months = Number(profile?.active_time?.months || 0);
+  const days = Number(profile?.active_time?.days || 0);
+  let activeText = `${days} days`;
+  if (years > 0) activeText = `${years} years, ${months} months, ${days} days`;
+  else if (months > 0) activeText = `${months} months, ${days} days`;
+  setText("driverProfileYearsActive", activeText);
+
+  const avgResponseMin = Math.round(Number(profile?.average_response_time || 0) / 60);
+  setText("driverProfileResponseTime", `${avgResponseMin} minutes`);
+
+  const breakdown = profile?.rating_breakdown || {};
+  const totalReviews = Object.values(breakdown).reduce((acc, n) => acc + Number(n || 0), 0);
+  for (let i = 1; i <= 5; i++) {
+    const count = Number(breakdown[i] || 0);
+    const percent = totalReviews > 0 ? Math.round((count / totalReviews) * 100) : 0;
+    const bar = document.getElementById(`driverProfileRatingBar${i}`);
+    const txt = document.getElementById(`driverProfileRatingCount${i}`);
+    if (bar) bar.style.width = `${percent}%`;
+    if (txt) txt.textContent = `${percent}%`;
+  }
+
+  const callBtn = document.getElementById("driverProfileCallBtn");
+  if (callBtn) {
+    if (phone) {
+      callBtn.href = `tel:${phone}`;
+      callBtn.setAttribute("aria-disabled", "false");
+    } else {
+      callBtn.href = "javascript:void(0)";
+      callBtn.setAttribute("aria-disabled", "true");
+    }
+  }
+
+  driverProfileOverlayEl = document.createElement("div");
+  driverProfileOverlayEl.className = "modal-overlay";
+  driverProfileOverlayEl.addEventListener("click", closeDriverProfileModal);
+  document.body.appendChild(driverProfileOverlayEl);
+
+  driverProfileModalEl.style.display = "block";
+  document.body.style.overflow = "hidden";
 }
 
 function updateDriverMarkerPopup(status) {
@@ -280,6 +437,9 @@ function updateState() {
   const canRequest =
     pickup.length > 0 &&
     dest.length > 0 &&
+    Number.isInteger(Number(passengerCountEl?.value || 0)) &&
+    Number(passengerCountEl?.value || 0) >= 1 &&
+    Number(passengerCountEl?.value || 0) <= 8 &&
     hasLoc(window.pickupLoc) &&
     hasLoc(window.dropoffLoc);
 
@@ -335,6 +495,7 @@ function goFoundUI(ride) {
 
   const d = ride.driver || null;
   const du = d?.user || null;
+  currentDriverForProfile = d?.id ? { id: d.id, phone: du?.phone || "" } : null;
 
   const driverName = du?.name || "Driver";
   const initials =
@@ -366,10 +527,24 @@ function goFoundUI(ride) {
   const status = String(ride.status || "accepted");
   setFoundHeader(status);
   applyActionButtons(ride);
+  updateLiveTripMetrics(ride);
 
   if (ride.driver) {
     updateDriverLocation(ride.driver.current_lat, ride.driver.current_lng);
     updateDriverMarkerPopup(status);
+  }
+
+  const driverCardEl = foundWrap?.querySelector(".driver-card");
+  if (driverCardEl) {
+    driverCardEl.onclick = async () => {
+      if (!currentDriverForProfile?.id) return;
+      try {
+        const profile = await fetchDriverProfile(currentDriverForProfile.id);
+        openDriverProfileModal(profile, currentDriverForProfile.phone, initials);
+      } catch (e) {
+        alert(e?.message || "Could not open driver profile.");
+      }
+    };
   }
 }
 
@@ -469,11 +644,17 @@ async function cancelBackendRideIfAny() {
 pickupEl.addEventListener("input", updateState);
 destinationEl.addEventListener("input", updateState);
 window.addEventListener("ride:locationChanged", updateState);
+if (passengerCountEl) passengerCountEl.addEventListener("input", updateState);
 
 // Request ride
 requestBtn.addEventListener("click", async () => {
   if (!window.pickupLoc || !window.dropoffLoc) {
     alert("Please select BOTH pickup and dropoff (from suggestions or by pin).");
+    return;
+  }
+  const passengerCount = Number(passengerCountEl?.value || 0);
+  if (!Number.isInteger(passengerCount) || passengerCount < 1 || passengerCount > 8) {
+    alert("Passenger count must be between 1 and 8.");
     return;
   }
 
@@ -482,6 +663,7 @@ requestBtn.addEventListener("click", async () => {
     start_lng: window.pickupLoc.lng,
     end_lat: window.dropoffLoc.lat,
     end_lng: window.dropoffLoc.lng,
+    passenger_count: passengerCount,
     start_address: window.pickupLoc.address || normalize(pickupEl.value),
     end_address: window.dropoffLoc.address || normalize(destinationEl.value),
     trip_distance_m: window.tripEstimate?.distance_m ?? null,
@@ -539,7 +721,19 @@ cancelRideBtn.addEventListener("click", async () => {
   toState1();
 });
 
+if (closeDriverProfileModalEl) {
+  closeDriverProfileModalEl.addEventListener("click", closeDriverProfileModal);
+}
+
+window.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && driverProfileModalEl && driverProfileModalEl.style.display !== "none") {
+    closeDriverProfileModal();
+  }
+});
+
 (async () => {
+  await loadPreferredPaymentWarning();
+
   const saved = loadRideId();
   if (saved) {
     currentRideId = saved;

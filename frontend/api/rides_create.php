@@ -23,7 +23,7 @@ if (!is_array($data)) {
     exit;
 }
 
-$required = ['start_lat','start_lng','end_lat','end_lng','start_address','end_address'];
+$required = ['start_lat','start_lng','end_lat','end_lng','start_address','end_address','passenger_count'];
 foreach ($required as $k) {
     if (!array_key_exists($k, $data) || $data[$k] === null || $data[$k] === '') {
         http_response_code(422);
@@ -39,9 +39,16 @@ $payload = [
     'end_lng' => (float)$data['end_lng'],
     'start_address' => (string)$data['start_address'],
     'end_address' => (string)$data['end_address'],
+    'passenger_count' => (int)$data['passenger_count'],
     'trip_distance_m' => isset($data['trip_distance_m']) ? (int)$data['trip_distance_m'] : null,
     'trip_duration_s' => isset($data['trip_duration_s']) ? (int)$data['trip_duration_s'] : null,
 ];
+
+if (!is_numeric($data['passenger_count']) || (int)$data['passenger_count'] < 1 || (int)$data['passenger_count'] > 8) {
+    http_response_code(422);
+    echo json_encode(['message' => 'passenger_count must be an integer between 1 and 8']);
+    exit;
+}
 
 if (isset($data['trip_distance_m']) && !is_numeric($data['trip_distance_m'])) {
     http_response_code(422);

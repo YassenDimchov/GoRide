@@ -23,6 +23,7 @@ class Driver extends Model
         'vehicle_model',
         'vehicle_color',
         'license_plate',
+        'passenger_capacity',
         'status',
         'last_seen_at',
         'current_lat',
