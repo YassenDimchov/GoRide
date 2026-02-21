@@ -1,0 +1,237 @@
+.md-shell {
+    padding-top: 100px;
+    min-height: 90vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    margin-bottom: 24px;
+}
+
+.md-wrap {
+    width: 1180px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.md-title {
+    font-size: var(--fs-xxl);
+    font-weight: var(--fw-bold);
+    color: var(--text);
+}
+
+.md-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.md-stat {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    background: var(--white);
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+}
+
+.md-stat-highlight {
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+}
+
+.md-stat-label {
+    color: var(--text-muted);
+    font-size: var(--fs-lg);
+}
+
+.md-stat-value {
+    font-size: 42px;
+    font-weight: var(--fw-bold);
+}
+
+.md-tools {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--white);
+    padding: 18px;
+}
+
+.md-tools input {
+    width: 100%;
+    height: 46px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: #f8fafc;
+    padding: 0 14px;
+    font-size: var(--fs-md);
+    outline: none;
+}
+
+.md-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.md-card {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+    background: var(--white);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-height: 300px;
+}
+
+.md-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.md-user {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.md-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    color: #fff;
+    font-weight: var(--fw-bold);
+    font-size: var(--fs-lg);
+    background: linear-gradient(var(--accent-2), var(--accent));
+}
+
+.md-name {
+    font-size: var(--fs-lg);
+    font-weight: var(--fw-bold);
+}
+
+.md-license {
+    font-size: var(--fs-md);
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.md-status {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: var(--fw-semibold);
+}
+
+.md-status-online {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.md-status-offline {
+    background: #e5e7eb;
+    color: #4b5563;
+}
+
+.md-vehicle {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: #f8fafc;
+    padding: 12px;
+    font-size: var(--fs-md);
+    font-weight: var(--fw-semibold);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.md-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.md-metric-label {
+    color: var(--text-muted);
+    font-size: var(--fs-md);
+}
+
+.md-metric-value {
+    margin-top: 6px;
+    font-size: var(--fs-md);
+    font-weight: var(--fw-bold);
+}
+
+.md-earnings-value {
+    color: #00a63e;
+}
+
+.md-rating-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.md-rating-star {
+    width: 15px;
+    height: 15px;
+}
+
+.md-contact {
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+    color: var(--text-muted);
+    font-size: var(--fs-md);
+    min-height: 50px;
+}
+
+.md-warning {
+    margin-top: 6px;
+    color: #b91c1c;
+    font-weight: var(--fw-semibold);
+}
+
+.md-actions {
+    display: flex;
+    margin-top: auto;
+}
+
+.md-view-btn {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: #fff;
+    padding: 10px;
+    font-size: var(--fs-lg);
+    font-weight: var(--fw-semibold);
+    cursor: pointer;
+}
+
+.md-view-btn:hover {
+    background: #f8fafc;
+}
+
+.md-empty {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: #fff;
+    padding: 18px;
+    color: var(--text-muted);
+}
+
+#mdDriverProfileRatingBreakdown {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 16px;
+    background-color: #FEFCE8;
+    border-radius: 16px;
+    border: 1px solid #FFF085;
+}

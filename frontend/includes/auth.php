@@ -264,3 +264,9 @@ function apiAdminSetUserRole(string $token, int $userId, string $role): ?array
         'role' => $role,
     ], $token);
 }
+
+function apiAdminDrivers(string $token, string $search = ''): ?array
+{
+    $qs = $search !== '' ? ('?search=' . urlencode($search)) : '';
+    return apiRequest('GET', '/admin/drivers' . $qs, [], $token);
+}

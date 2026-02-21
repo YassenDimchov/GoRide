@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\DriverController;
 use App\Http\Controllers\Api\AdminUserController;
+use App\Http\Controllers\Api\AdminDriverController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\OrsController;
 use App\Http\Controllers\Api\PaymentPreferenceController;
@@ -66,6 +67,7 @@ Route::middleware(['auth:sanctum', 'not_suspended'])->group(function () {
     Route::get('/admin/users', [AdminUserController::class, 'index']);
     Route::patch('/admin/users/{user}/suspended', [AdminUserController::class, 'setSuspended']);
     Route::patch('/admin/users/{user}/role', [AdminUserController::class, 'setRole']);
+    Route::get('/admin/drivers', [AdminDriverController::class, 'index']);
 });
 
 Route::get('/geocode/autocomplete', [OrsController::class, 'autocomplete']);

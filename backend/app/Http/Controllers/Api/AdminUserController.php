@@ -132,6 +132,10 @@ class AdminUserController extends Controller
                     'status' => 'offline',
                 ]
             );
+        } else {
+            Driver::where('user_id', $user->id)->update([
+                'status' => 'offline',
+            ]);
         }
 
         return response()->json([
