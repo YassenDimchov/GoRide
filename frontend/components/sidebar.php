@@ -89,12 +89,6 @@
                 <span>Manage Drivers</span>
             </a>
 
-            <?php $analytics = navItem('analytics.php', $current); ?>
-            <a href="<?= $analytics['href'] ?>" class="<?= $analytics['class'] ?>"<?= $analytics['data'] ?><?= $analytics['aria'] ?>>
-                <img src="./assets/images/Icons/chart.svg" alt="" class="nav-ic icon20">
-                <span>Analytics</span>
-            </a>
-
             <?php $allTrips = navItem('all_trips.php', $current); ?>
             <a href="<?= $allTrips['href'] ?>" class="<?= $allTrips['class'] ?>"<?= $allTrips['data'] ?><?= $allTrips['aria'] ?>>
                 <img src="./assets/images/Icons/all-trips.svg" alt="" class="nav-ic icon20">

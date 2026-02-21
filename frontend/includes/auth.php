@@ -270,3 +270,14 @@ function apiAdminDrivers(string $token, string $search = ''): ?array
     $qs = $search !== '' ? ('?search=' . urlencode($search)) : '';
     return apiRequest('GET', '/admin/drivers' . $qs, [], $token);
 }
+
+function apiAdminTrips(string $token, int $page = 1, int $perPage = 8, string $search = ''): ?array
+{
+    $safePage = max(1, $page);
+    $safePerPage = max(5, min(20, $perPage));
+    $qs = '?page=' . $safePage . '&per_page=' . $safePerPage;
+    if ($search !== '') {
+        $qs .= '&search=' . urlencode($search);
+    }
+    return apiRequest('GET', '/admin/trips' . $qs, [], $token);
+}
