@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use App\Http\Middleware\EnsureUserNotSuspended;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -16,7 +17,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->alias([
+            'not_suspended' => EnsureUserNotSuspended::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
 

@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\DriverController;
+use App\Http\Controllers\Api\AdminUserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\OrsController;
 use App\Http\Controllers\Api\PaymentPreferenceController;
@@ -14,7 +15,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/auth/google/redirect', [AuthController::class, 'googleRedirect']);
 Route::get('/auth/google/callback', [AuthController::class, 'googleCallback']);
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'not_suspended'])->group(function () {
     Route::post('/rides', [RideController::class, 'store']);
     Route::post('/rides/{ride}/cancel', [RideController::class, 'cancel']);
 
@@ -61,6 +62,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me/preferred-payment', [PaymentPreferenceController::class, 'getPreferredPaymentMethod']);
 
     Route::patch('/me/preferred-payment', [PaymentPreferenceController::class, 'updatePreferredPaymentMethod']);
+
+    Route::get('/admin/users', [AdminUserController::class, 'index']);
+    Route::patch('/admin/users/{user}/suspended', [AdminUserController::class, 'setSuspended']);
+    Route::patch('/admin/users/{user}/role', [AdminUserController::class, 'setRole']);
 });
 
 Route::get('/geocode/autocomplete', [OrsController::class, 'autocomplete']);

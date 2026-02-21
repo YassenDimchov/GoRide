@@ -112,6 +112,10 @@ class AuthController extends Controller
             ]);
         }
 
+        if ((bool)($user->suspended ?? false)) {
+            return $redirectWithError('Your account has been suspended. Please contact support.');
+        }
+
         $token = $user->createToken('api')->plainTextToken;
 
         return redirect()->away($frontendCallback . '?token=' . urlencode($token));
@@ -164,6 +168,12 @@ class AuthController extends Controller
             throw ValidationException::withMessages([
                 'email' => ['Invalid credentials.'],
             ]);
+        }
+
+        if ((bool)($user->suspended ?? false)) {
+            return response()->json([
+                'message' => 'Your account has been suspended. Please contact support.',
+            ], 403);
         }
 
         $token = $user->createToken('api')->plainTextToken;

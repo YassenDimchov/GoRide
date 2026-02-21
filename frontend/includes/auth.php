@@ -244,3 +244,23 @@ function apiApplyDriver(
         'passenger_capacity' => $passengerCapacity,
     ], $token);
 }
+
+function apiAdminUsers(string $token, string $search = ''): ?array
+{
+    $qs = $search !== '' ? ('?search=' . urlencode($search)) : '';
+    return apiRequest('GET', '/admin/users' . $qs, [], $token);
+}
+
+function apiAdminSetUserSuspended(string $token, int $userId, bool $suspended): ?array
+{
+    return apiRequest('PATCH', '/admin/users/' . $userId . '/suspended', [
+        'suspended' => $suspended,
+    ], $token);
+}
+
+function apiAdminSetUserRole(string $token, int $userId, string $role): ?array
+{
+    return apiRequest('PATCH', '/admin/users/' . $userId . '/role', [
+        'role' => $role,
+    ], $token);
+}

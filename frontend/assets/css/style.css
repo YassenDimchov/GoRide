@@ -314,6 +314,12 @@ body.sidebar-open .sidebar {
     color: #1447E6;
 }
 
+.user-badge.badge-admin {
+    width: 52px;
+    background-color: #ff6057;
+    color: var(--black);
+}
+
 .sidebar-nav {
     padding: 16px;
     display: flex;

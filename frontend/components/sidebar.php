@@ -41,8 +41,8 @@
                     <div class="user-email">
                         <?= htmlspecialchars($user['email'] ?? '') ?>
                     </div>
-                    <span class="user-badge <?= $isDriver ? 'badge-driver' : 'badge-user' ?>">
-                        <?= $isDriver ? 'Driver' : 'User' ?>
+                    <span class="user-badge <?= $isAdmin ? 'badge-admin' : ($isDriver ? 'badge-driver' : 'badge-user') ?>">
+                        <?= $isAdmin ? 'Admin' : ($isDriver ? 'Driver' : 'User') ?>
                     </span>
                 </div>
             </div>

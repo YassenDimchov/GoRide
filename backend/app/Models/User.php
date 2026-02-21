@@ -28,6 +28,7 @@ class User extends Authenticatable
         'password',
         'phone',
         'role',
+        'suspended',
         'preferred_payment'
     ];
 
@@ -49,6 +50,7 @@ class User extends Authenticatable
     {
         return [
             'password' => 'hashed',
+            'suspended' => 'boolean',
         ];
     }
 
