@@ -27,7 +27,7 @@ Route::middleware(['auth:sanctum', 'not_suspended'])->group(function () {
 
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::delete('/me', [AuthController::class, 'destroy']);
-    Route::get('/me', [AuthController::class, 'me']); // may scrape
+    Route::get('/me', [AuthController::class, 'me']);
     Route::post('/change-password', [AuthController::class, 'changePassword']);
     Route::post('/logout-all', [AuthController::class, 'logoutAll']);
     Route::get('/sessions', [AuthController::class, 'sessions']);
@@ -62,7 +62,6 @@ Route::middleware(['auth:sanctum', 'not_suspended'])->group(function () {
     Route::get('/rides/{ride}', [RideController::class, 'show']);
 
     Route::get('/me/preferred-payment', [PaymentPreferenceController::class, 'getPreferredPaymentMethod']);
-
     Route::patch('/me/preferred-payment', [PaymentPreferenceController::class, 'updatePreferredPaymentMethod']);
 
     Route::get('/admin/users', [AdminUserController::class, 'index']);

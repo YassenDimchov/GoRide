@@ -538,6 +538,4 @@ class RideController extends Controller
     }
 
 
-
-
 }
