@@ -12,9 +12,9 @@
                 <button class="btn1">
                     <img src="./assets/images/Icons/clock.svg" alt="" class=" icon16">
                 </button>
-                <button class="btn1">
+                <!-- <button class="btn1">
                     <img src="./assets/images/Icons/gift.svg" alt="" class=" icon16">
-                </button>
+                </button> -->
                 <a href="profile.php" class="avatar-link">
                     <button class="avatar-btn icon40">
                         <?= htmlspecialchars($initials) ?>
