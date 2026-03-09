@@ -11,6 +11,7 @@ class PaymentPreferenceController extends Controller
     public function getPreferredPaymentMethod()
     {
         $user = Auth::user();
+
         return response()->json(['preferred_payment' => $user->preferred_payment]);
     }
 

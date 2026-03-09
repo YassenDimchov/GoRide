@@ -11,7 +11,7 @@ class EnsureUserNotSuspended
     public function handle(Request $request, Closure $next): Response
     {
         $user = $request->user();
-        if ($user && (bool)($user->suspended ?? false)) {
+        if ($user && (bool) ($user->suspended ?? false)) {
             $request->user()?->currentAccessToken()?->delete();
 
             return response()->json([

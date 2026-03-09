@@ -24,7 +24,7 @@ class AdminDriverController extends Controller
             return $forbidden;
         }
 
-        $search = trim((string)$request->query('search', ''));
+        $search = trim((string) $request->query('search', ''));
 
         $query = Driver::query()
             ->with('user:id,name,email,phone,role')
@@ -33,19 +33,19 @@ class AdminDriverController extends Controller
             ->withSum([
                 'rides as earnings_total' => function ($q) {
                     $q->where('status', 'completed');
-                }
+                },
             ], 'fare')
             ->orderByDesc('created_at');
 
         if ($search !== '') {
             $query->where(function ($q) use ($search) {
-                $q->where('vehicle_make', 'like', '%' . $search . '%')
-                    ->orWhere('vehicle_model', 'like', '%' . $search . '%')
-                    ->orWhere('vehicle_color', 'like', '%' . $search . '%')
-                    ->orWhere('license_plate', 'like', '%' . $search . '%')
+                $q->where('vehicle_make', 'like', '%'.$search.'%')
+                    ->orWhere('vehicle_model', 'like', '%'.$search.'%')
+                    ->orWhere('vehicle_color', 'like', '%'.$search.'%')
+                    ->orWhere('license_plate', 'like', '%'.$search.'%')
                     ->orWhereHas('user', function ($uq) use ($search) {
-                        $uq->where('name', 'like', '%' . $search . '%')
-                            ->orWhere('email', 'like', '%' . $search . '%');
+                        $uq->where('name', 'like', '%'.$search.'%')
+                            ->orWhere('email', 'like', '%'.$search.'%');
                     });
             });
         }
@@ -63,9 +63,9 @@ class AdminDriverController extends Controller
                 'vehicle_color' => $d->vehicle_color,
                 'license_plate' => $d->license_plate,
                 'status' => $d->status,
-                'rides_count' => (int)($d->rides_count ?? 0),
-                'average_rating' => $d->reviews_avg_rating !== null ? round((float)$d->reviews_avg_rating, 2) : null,
-                'earnings_total' => round((float)($d->earnings_total ?? 0), 2),
+                'rides_count' => (int) ($d->rides_count ?? 0),
+                'average_rating' => $d->reviews_avg_rating !== null ? round((float) $d->reviews_avg_rating, 2) : null,
+                'earnings_total' => round((float) ($d->earnings_total ?? 0), 2),
                 'created_at' => optional($d->created_at)->toISOString(),
             ];
         })->values();
@@ -84,7 +84,7 @@ class AdminDriverController extends Controller
                     });
             })
             ->count();
-        $avgRating = (float)(DB::table('reviews')->avg('rating') ?? 0);
+        $avgRating = (float) (DB::table('reviews')->avg('rating') ?? 0);
         $tripsToday = DB::table('rides')
             ->whereDate('completed_at', now()->toDateString())
             ->count();
@@ -94,7 +94,7 @@ class AdminDriverController extends Controller
                 'total_drivers' => $totalDrivers,
                 'online_now' => $onlineNow,
                 'avg_rating' => round($avgRating, 2),
-                'total_trips_today' => (int)$tripsToday,
+                'total_trips_today' => (int) $tripsToday,
             ],
             'drivers' => $drivers,
         ]);

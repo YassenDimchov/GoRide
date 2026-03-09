@@ -2,16 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Driver extends Model
 {
     use HasFactory;
-    
+
     /**
      * The attributes that are mass assignable.
      *
@@ -42,7 +41,7 @@ class Driver extends Model
         return $this->belongsTo(User::class);
     }
 
-     /**
+    /**
      * Get the rides for the driver.
      */
     public function rides(): HasMany
@@ -57,5 +56,4 @@ class Driver extends Model
     {
         return $this->hasMany(Review::class);
     }
-
 }

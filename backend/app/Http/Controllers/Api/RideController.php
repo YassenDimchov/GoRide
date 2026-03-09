@@ -2,20 +2,18 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\PaymentStatus;
+use App\Enums\RideStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateRideRequest;
-use Illuminate\Http\Request;
-use App\Models\Ride;
-use App\Enums\RideStatus;
-use Illuminate\Support\Facades\DB;
 use App\Models\Driver;
-use App\Models\Payment;
-use App\Enums\PaymentStatus;
+use App\Models\Ride;
 use App\Support\Fare;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class RideController extends Controller
 {
-
     private function autoOfflineIfStale(Driver $driver, int $minutes = 5): bool
     {
         $cutoff = now()->subMinutes($minutes);
@@ -24,6 +22,7 @@ class RideController extends Controller
         if ($driver->status === 'available' && $isStale) {
             $driver->status = 'offline';
             $driver->save();
+
             return true;
         }
 
@@ -54,7 +53,7 @@ class RideController extends Controller
 
             $data['trip_distance_m'] = $distanceM;
             $data['trip_duration_s'] = $durationS;
-            $data['estimated_fare']  = Fare::estimate($km, $min);
+            $data['estimated_fare'] = Fare::estimate($km, $min);
         }
 
         $ride = Ride::create($data);
@@ -62,29 +61,27 @@ class RideController extends Controller
         return response()->json(['data' => $ride], 201);
     }
 
-
-    //Show ride details (used for testing)
-    public function show(Ride $ride) 
+    // Show ride details (used for testing)
+    public function show(Ride $ride)
     {
         $user = auth()->user();
 
-        $isPassenger = (int)$ride->user_id === (int)$user->id;
-        $isDriver = $user->driver && (int)$ride->driver_id === (int)$user->driver->id;
+        $isPassenger = (int) $ride->user_id === (int) $user->id;
+        $isDriver = $user->driver && (int) $ride->driver_id === (int) $user->driver->id;
 
-        if (!$isPassenger && !$isDriver) 
-        {
+        if (! $isPassenger && ! $isDriver) {
             return response()->json(['message' => 'Forbidden'], 403);
         }
 
         $ride->load([
-        'user',
-        'driver.user',
-        'payment',
-        'review',
+            'user',
+            'driver.user',
+            'payment',
+            'review',
         ]);
 
         return response()->json([
-            'data' => $ride
+            'data' => $ride,
         ], 200);
     }
 
@@ -92,26 +89,23 @@ class RideController extends Controller
     {
         $driver = auth()->user()->driver;
 
-        if (!$driver) 
-        {
+        if (! $driver) {
             return response()->json([
-                'message' => 'Only drivers can accept rides.'
+                'message' => 'Only drivers can accept rides.',
             ], 403);
         }
 
-        return DB::transaction(function () use ($ride, $driver) 
-        {
+        return DB::transaction(function () use ($ride, $driver) {
             $lockedRide = Ride::whereKey($ride->id)
                 ->lockForUpdate()
                 ->first();
-            
-            if ($lockedRide->user_id === auth()->id()) 
-            {
+
+            if ($lockedRide->user_id === auth()->id()) {
                 return response()->json([
-                    'message' => 'You cannot accept your own ride.'
+                    'message' => 'You cannot accept your own ride.',
                 ], 409);
             }
-            
+
             $lockedDriver = Driver::whereKey($driver->id)
                 ->lockForUpdate()
                 ->first();
@@ -129,15 +123,15 @@ class RideController extends Controller
 
             $this->touchDriver($lockedDriver);
 
-            $capacity = max(1, (int)($lockedDriver->passenger_capacity ?? 4));
-            $requestedPassengers = max(1, (int)($lockedRide->passenger_count ?? 1));
+            $capacity = max(1, (int) ($lockedDriver->passenger_capacity ?? 4));
+            $requestedPassengers = max(1, (int) ($lockedRide->passenger_count ?? 1));
             if ($requestedPassengers > $capacity) {
                 return response()->json([
                     'message' => "Ride requires {$requestedPassengers} passengers but your car capacity is {$capacity}.",
                     'code' => 'PASSENGER_CAPACITY_EXCEEDED',
                 ], 409);
             }
-            
+
             // Ride was already accepted.
             if ($lockedRide->status !== RideStatus::PENDING->value) {
                 // Same driver trying to accept
@@ -149,13 +143,13 @@ class RideController extends Controller
                 }
 
                 return response()->json([
-                    'message' => 'Ride is not available for acceptance.'
+                    'message' => 'Ride is not available for acceptance.',
                 ], 409);
             }
 
             if ($lockedRide->driver_id !== null && $lockedRide->driver_id !== $driver->id) {
                 return response()->json([
-                    'message' => 'Ride has already been accepted by another driver.'
+                    'message' => 'Ride has already been accepted by another driver.',
                 ], 409);
             }
 
@@ -169,36 +163,32 @@ class RideController extends Controller
             $lockedDriver->save();
 
             return response()->json([
-                'data' => $lockedRide
+                'data' => $lockedRide,
             ], 200);
         });
     }
 
-
-    public function start(Ride $ride) 
+    public function start(Ride $ride)
     {
         $driver = auth()->user()->driver;
 
-        if (!$driver) 
-        {
+        if (! $driver) {
             return response()->json([
-                'message' => 'Only drivers can start rides.'
+                'message' => 'Only drivers can start rides.',
             ], 403);
         }
 
-        if ($ride->driver_id !== $driver->id) 
-        {
+        if ($ride->driver_id !== $driver->id) {
             return response()->json([
-                'message' => 'You are not assigned to this ride.'
+                'message' => 'You are not assigned to this ride.',
             ], 403);
         }
 
-        if ($ride->status !== RideStatus::ACCEPTED->value) 
-        {
+        if ($ride->status !== RideStatus::ACCEPTED->value) {
             return response()->json([
-                'message' => 'Ride cannot be started in its current state.'
+                'message' => 'Ride cannot be started in its current state.',
             ], 409);
-        }   
+        }
 
         $pickupLat = $ride->start_lat;
         $pickupLng = $ride->start_lng;
@@ -210,7 +200,7 @@ class RideController extends Controller
         if ($distance > 0.3) {
             return response()->json([
                 'message' => 'You are too far from the pickup location to start the ride.',
-                'distance' => $distance
+                'distance' => $distance,
             ], 409);
         }
 
@@ -219,7 +209,7 @@ class RideController extends Controller
         $ride->save();
 
         return response()->json([
-            'data' => $ride
+            'data' => $ride,
         ], 200);
     }
 
@@ -227,16 +217,17 @@ class RideController extends Controller
     {
         $driver = auth()->user()->driver;
 
-        if (!$driver) {
+        if (! $driver) {
             return response()->json(['message' => 'Only drivers can complete rides.'], 403);
         }
 
-        if ((int)$ride->driver_id !== (int)$driver->id) {
+        if ((int) $ride->driver_id !== (int) $driver->id) {
             return response()->json(['message' => 'You are not assigned to this ride.'], 403);
         }
 
         if ($ride->status === RideStatus::COMPLETED->value) {
             $ride->load(['payment']);
+
             return response()->json([
                 'message' => 'Ride already completed.',
                 'data' => $ride,
@@ -261,6 +252,7 @@ class RideController extends Controller
 
             if ($lockedRide->status === RideStatus::COMPLETED->value) {
                 $lockedRide->load(['payment']);
+
                 return response()->json([
                     'message' => 'Ride already completed.',
                     'data' => $lockedRide,
@@ -284,9 +276,9 @@ class RideController extends Controller
                 $payment = $lockedRide->payment()->updateOrCreate(
                     ['ride_id' => $lockedRide->id],
                     [
-                        'amount'  => $lockedRide->fare,
-                        'method'  => 'cash',
-                        'status'  => PaymentStatus::Pending->value,
+                        'amount' => $lockedRide->fare,
+                        'method' => 'cash',
+                        'status' => PaymentStatus::Pending->value,
                         'paid_at' => null,
                     ]
                 );
@@ -294,9 +286,9 @@ class RideController extends Controller
                 $payment = $lockedRide->payment()->updateOrCreate(
                     ['ride_id' => $lockedRide->id],
                     [
-                        'amount'  => $lockedRide->fare,
-                        'method'  => 'card',
-                        'status'  => PaymentStatus::Pending->value,
+                        'amount' => $lockedRide->fare,
+                        'method' => 'card',
+                        'status' => PaymentStatus::Pending->value,
                         'paid_at' => null,
                     ]
                 );
@@ -313,31 +305,33 @@ class RideController extends Controller
         });
     }
 
-
     public function mine(Request $request)
     {
         $user = $request->user();
 
         $query = Ride::query()->where('user_id', $user->id);
 
-        if ($status = $request->query('status')) 
-        {
+        if ($status = $request->query('status')) {
             $query->where('status', $status);
         }
 
-        if ($from = $request->query('from')) 
-        {
+        if ($from = $request->query('from')) {
             $query->whereDate('created_at', '>=', $from);
         }
 
-        if ($to = $request->query('to')) 
-        {
+        if ($to = $request->query('to')) {
             $query->whereDate('created_at', '<=', $to);
         }
 
-        if ($request->boolean('with_payment')) $query->with('payment');
-        if ($request->boolean('with_review')) $query->with('review');
-        if ($request->boolean('with_driver')) $query->with('driver.user');
+        if ($request->boolean('with_payment')) {
+            $query->with('payment');
+        }
+        if ($request->boolean('with_review')) {
+            $query->with('review');
+        }
+        if ($request->boolean('with_driver')) {
+            $query->with('driver.user');
+        }
 
         $rides = $query->latest()->paginate(20);
 
@@ -349,31 +343,33 @@ class RideController extends Controller
         $user = $request->user();
         $driver = $user->driver;
 
-        if (!$driver) 
-        {
+        if (! $driver) {
             return response()->json(['message' => 'Only drivers can view driver rides.'], 403);
         }
 
         $query = Ride::query()->where('driver_id', $driver->id);
 
-        if ($status = $request->query('status')) 
-        {
+        if ($status = $request->query('status')) {
             $query->where('status', $status);
         }
 
-        if ($from = $request->query('from')) 
-        {
+        if ($from = $request->query('from')) {
             $query->whereDate('created_at', '>=', $from);
         }
 
-        if ($to = $request->query('to')) 
-        {
+        if ($to = $request->query('to')) {
             $query->whereDate('created_at', '<=', $to);
         }
 
-        if ($request->boolean('with_payment')) $query->with('payment');
-        if ($request->boolean('with_review')) $query->with('review');
-        if ($request->boolean('with_user')) $query->with('user');
+        if ($request->boolean('with_payment')) {
+            $query->with('payment');
+        }
+        if ($request->boolean('with_review')) {
+            $query->with('review');
+        }
+        if ($request->boolean('with_user')) {
+            $query->with('user');
+        }
 
         $rides = $query->latest()->paginate(20);
 
@@ -385,13 +381,11 @@ class RideController extends Controller
         $user = $request->user();
         $driver = $user->driver;
 
-        if (!$driver) 
-        {
+        if (! $driver) {
             return response()->json(['message' => 'Only drivers can view available rides.'], 403);
         }
 
-        if ($driver->current_lat === null || $driver->current_lng === null) 
-        {
+        if ($driver->current_lat === null || $driver->current_lng === null) {
             return response()->json(['message' => 'Driver location is not set.'], 409);
         }
 
@@ -408,7 +402,7 @@ class RideController extends Controller
 
         $this->touchDriver($driver);
 
-        $capacity = max(1, (int)($driver->passenger_capacity ?? 4));
+        $capacity = max(1, (int) ($driver->passenger_capacity ?? 4));
 
         $rides = Ride::query()
             ->where('status', RideStatus::PENDING->value)
@@ -423,8 +417,7 @@ class RideController extends Controller
         $maxKm = 10.0;
         $maxWaitMin = 60.0;
 
-        $scored = $rides->map(function ($ride) use ($driver, $maxKm, $maxWaitMin) 
-        {
+        $scored = $rides->map(function ($ride) use ($driver, $maxKm, $maxWaitMin) {
 
             $distanceKm = $this->haversineKm(
                 (float) $driver->current_lat,
@@ -459,19 +452,17 @@ class RideController extends Controller
                 'distance_km' => round($distanceKm, 2),
                 'wait_min' => $waitMin,
                 'trip_km' => round($tripKm, 2),
-                'estimated_fare' => round((float)$estimatedFare, 2),
+                'estimated_fare' => round((float) $estimatedFare, 2),
                 'score' => round($score, 4),
             ];
 
             return $ride;
         })
-        ->sortBy(fn($r) => $r->match['score'])
-        ->values();
+            ->sortBy(fn ($r) => $r->match['score'])
+            ->values();
 
         return response()->json(['data' => $scored], 200);
     }
-
-
 
     private function haversineKm(float $lat1, float $lon1, float $lat2, float $lon2): float
     {
@@ -483,6 +474,7 @@ class RideController extends Controller
             + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * (sin($dLon / 2) ** 2);
 
         $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+
         return $earth * $c;
     }
 
@@ -490,7 +482,7 @@ class RideController extends Controller
     {
         $user = auth()->user();
 
-        if ((int)$ride->user_id !== (int)$user->id) {
+        if ((int) $ride->user_id !== (int) $user->id) {
             return response()->json(['message' => 'Forbidden'], 403);
         }
 
@@ -523,7 +515,7 @@ class RideController extends Controller
     public function driverActive()
     {
         $driver = auth()->user()->driver;
-        if (!$driver) {
+        if (! $driver) {
             return response()->json(['message' => 'Only drivers.'], 403);
         }
 
@@ -536,6 +528,4 @@ class RideController extends Controller
 
         return response()->json(['data' => $ride], 200);
     }
-
-
 }

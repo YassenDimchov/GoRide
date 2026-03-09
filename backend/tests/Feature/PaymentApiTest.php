@@ -183,7 +183,7 @@ test('driver can report unpaid cash payment by email', function () {
         'recipient_email' => 'ops@example.com',
         'note' => 'Passenger did not pay.',
     ])->assertOk()
-      ->assertJsonPath('sent_to', 'ops@example.com');
+        ->assertJsonPath('sent_to', 'ops@example.com');
 });
 
 test('stripe checkout can be created for pending card payment', function () {
@@ -267,7 +267,7 @@ test('stripe confirm marks payment paid when stripe session is paid', function (
     $this->postJson("/api/payments/{$payment->id}/stripe-confirm", [
         'session_id' => 'cs_paid_123',
     ])->assertOk()
-      ->assertJsonPath('message', 'Payment confirmed successfully');
+        ->assertJsonPath('message', 'Payment confirmed successfully');
 
     expect($payment->fresh()->status)->toBe(PaymentStatus::Paid->value);
 });

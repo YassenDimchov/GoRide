@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Driver;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use App\Models\Driver;
 
 class DriverController extends Controller
 {
@@ -15,7 +15,7 @@ class DriverController extends Controller
 
         $driver = Driver::where('user_id', $user->id)->first();
 
-        if (!$driver) {
+        if (! $driver) {
             return response()->json([
                 'message' => 'Driver profile not found.',
             ], 404);
@@ -37,12 +37,13 @@ class DriverController extends Controller
         ]);
     }
 
-    public function profile(Request $request, $driver_id) {
+    public function profile(Request $request, $driver_id)
+    {
         $user = $request->user();
 
         $driver = Driver::where('id', $driver_id)->first();
 
-        if (!$driver) {
+        if (! $driver) {
             return response()->json([
                 'message' => 'Driver profile not found.',
             ], 404);
@@ -80,7 +81,7 @@ class DriverController extends Controller
             4 => 0,
             3 => 0,
             2 => 0,
-            1 => 0
+            1 => 0,
         ];
 
         foreach ($driver->reviews as $review) {
@@ -104,11 +105,11 @@ class DriverController extends Controller
                 'active_time' => [
                     'years' => $yearsActive,
                     'months' => $monthsActive,
-                    'days' => $daysActive
+                    'days' => $daysActive,
                 ],
                 'average_response_time' => $averageResponseTime,
-                'rating_breakdown' => $ratingBreakdown
-            ]
+                'rating_breakdown' => $ratingBreakdown,
+            ],
         ]);
     }
 
@@ -122,7 +123,7 @@ class DriverController extends Controller
 
         $driver = Driver::where('user_id', $user->id)->first();
 
-        if (!$driver) {
+        if (! $driver) {
             return response()->json([
                 'message' => 'Driver profile not found.',
             ], 404);
@@ -136,7 +137,7 @@ class DriverController extends Controller
         }
 
         $validated = $request->validate([
-            'vehicle_make'  => ['nullable', 'string', 'max:50'],
+            'vehicle_make' => ['nullable', 'string', 'max:50'],
             'vehicle_model' => ['nullable', 'string', 'max:50'],
             'vehicle_color' => ['nullable', 'string', 'max:30'],
             'license_plate' => ['nullable', 'string', 'max:20'],
@@ -157,7 +158,7 @@ class DriverController extends Controller
         $driver->fill($validated);
 
         $driver->last_seen_at = now();
-        
+
         $driver->save();
 
         return response()->json([
@@ -174,7 +175,7 @@ class DriverController extends Controller
         }
 
         $driver = Driver::where('user_id', $user->id)->first();
-        if (!$driver) {
+        if (! $driver) {
             return response()->json(['message' => 'Driver profile not found.'], 404);
         }
 
@@ -199,5 +200,4 @@ class DriverController extends Controller
             'driver' => $driver,
         ]);
     }
-
 }

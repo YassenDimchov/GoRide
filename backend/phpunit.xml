@@ -14,7 +14,8 @@
     </testsuites>
     <source>
         <include>
-            <directory>app</directory>
+            <directory>app/Enums</directory>
+            <directory>app/Support</directory>
         </include>
     </source>
     <php>

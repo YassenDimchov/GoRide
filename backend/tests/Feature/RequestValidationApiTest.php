@@ -31,7 +31,7 @@ test('register validation fails for missing and short fields', function () {
         'password' => '123',
         'password_confirmation' => '456',
     ])->assertStatus(422)
-      ->assertJsonValidationErrors(['name', 'email', 'password']);
+        ->assertJsonValidationErrors(['name', 'email', 'password']);
 });
 
 test('driver location validation fails for out of range coordinates', function () {
@@ -55,7 +55,7 @@ test('driver location validation fails for out of range coordinates', function (
             'lat' => 100,
             'lng' => -500,
         ])->assertStatus(422)
-          ->assertJsonValidationErrors(['lat', 'lng']);
+        ->assertJsonValidationErrors(['lat', 'lng']);
 });
 
 test('review validation fails when rating is out of bounds', function () {
@@ -91,5 +91,5 @@ test('review validation fails when rating is out of bounds', function () {
         ->postJson("/api/rides/{$ride->id}/review", [
             'rating' => 6,
         ])->assertStatus(422)
-          ->assertJsonValidationErrors(['rating']);
+        ->assertJsonValidationErrors(['rating']);
 });

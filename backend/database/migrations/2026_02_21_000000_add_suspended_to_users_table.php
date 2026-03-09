@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            if (!Schema::hasColumn('users', 'suspended')) {
+            if (! Schema::hasColumn('users', 'suspended')) {
                 $table->boolean('suspended')->default(false)->after('role');
             }
         });
