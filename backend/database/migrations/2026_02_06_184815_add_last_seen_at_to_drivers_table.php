@@ -22,5 +22,4 @@ return new class extends Migration
             $table->dropColumn('last_seen_at');
         });
     }
-    
 };

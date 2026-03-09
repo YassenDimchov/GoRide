@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Ride;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class AdminTripController extends Controller
 {
@@ -25,9 +24,9 @@ class AdminTripController extends Controller
             return $forbidden;
         }
 
-        $page = max(1, (int)$request->query('page', 1));
-        $perPage = min(20, max(5, (int)$request->query('per_page', 8)));
-        $search = trim((string)$request->query('search', ''));
+        $page = max(1, (int) $request->query('page', 1));
+        $perPage = min(20, max(5, (int) $request->query('per_page', 8)));
+        $search = trim((string) $request->query('search', ''));
 
         $query = Ride::query()
             ->with(['user:id,name,email,phone', 'driver.user:id,name,email,phone', 'review:id,ride_id,rating,review_text,created_at'])
@@ -37,13 +36,13 @@ class AdminTripController extends Controller
             $normalizedId = preg_replace('/\D+/', '', $search);
             $query->where(function ($q) use ($search, $normalizedId) {
                 $q->whereHas('user', function ($uq) use ($search) {
-                    $uq->where('name', 'like', '%' . $search . '%');
+                    $uq->where('name', 'like', '%'.$search.'%');
                 })->orWhereHas('driver.user', function ($dq) use ($search) {
-                    $dq->where('name', 'like', '%' . $search . '%');
+                    $dq->where('name', 'like', '%'.$search.'%');
                 });
 
                 if ($normalizedId !== '') {
-                    $q->orWhere('id', (int)$normalizedId);
+                    $q->orWhere('id', (int) $normalizedId);
                 }
             });
         }
@@ -53,11 +52,11 @@ class AdminTripController extends Controller
         $trips = collect($paginator->items())->map(function (Ride $r) {
             return [
                 'id' => $r->id,
-                'status' => (string)$r->status,
-                'passenger_count' => max(1, (int)($r->passenger_count ?? 1)),
-                'fare' => $r->fare !== null ? round((float)$r->fare, 2) : null,
-                'trip_distance_m' => $r->trip_distance_m !== null ? (int)$r->trip_distance_m : null,
-                'trip_duration_s' => $r->trip_duration_s !== null ? (int)$r->trip_duration_s : null,
+                'status' => (string) $r->status,
+                'passenger_count' => max(1, (int) ($r->passenger_count ?? 1)),
+                'fare' => $r->fare !== null ? round((float) $r->fare, 2) : null,
+                'trip_distance_m' => $r->trip_distance_m !== null ? (int) $r->trip_distance_m : null,
+                'trip_duration_s' => $r->trip_duration_s !== null ? (int) $r->trip_duration_s : null,
                 'start_address' => $r->start_address,
                 'end_address' => $r->end_address,
                 'created_at' => optional($r->created_at)->toISOString(),
@@ -82,10 +81,10 @@ class AdminTripController extends Controller
             ];
         })->values();
 
-        $totalRevenue = (float)(Ride::where('status', 'completed')->sum('fare') ?? 0);
-        $totalTrips = (int)Ride::count();
-        $activeUsers = (int)User::where('suspended', false)->count();
-        $avgTripValue = (float)(Ride::where('status', 'completed')->avg('fare') ?? 0);
+        $totalRevenue = (float) (Ride::where('status', 'completed')->sum('fare') ?? 0);
+        $totalTrips = (int) Ride::count();
+        $activeUsers = (int) User::where('suspended', false)->count();
+        $avgTripValue = (float) (Ride::where('status', 'completed')->avg('fare') ?? 0);
 
         return response()->json([
             'stats' => [

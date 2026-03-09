@@ -59,7 +59,7 @@ test('passenger can leave review for completed ride', function () {
         'rating' => 5,
         'review_text' => 'Excellent ride',
     ])->assertCreated()
-      ->assertJsonPath('review.rating', 5);
+        ->assertJsonPath('review.rating', 5);
 
     $this->assertDatabaseHas('reviews', [
         'ride_id' => $ride->id,
@@ -101,7 +101,7 @@ test('review requires completed ride', function () {
     $this->postJson("/api/rides/{$ride->id}/review", [
         'rating' => 4,
     ])->assertStatus(409)
-      ->assertJsonPath('message', 'Ride must be completed to leave a review.');
+        ->assertJsonPath('message', 'Ride must be completed to leave a review.');
 });
 
 test('only passenger can leave review', function () {
@@ -143,7 +143,7 @@ test('only passenger can leave review', function () {
     $this->postJson("/api/rides/{$ride->id}/review", [
         'rating' => 3,
     ])->assertStatus(403)
-      ->assertJsonPath('message', 'Only the passenger can review this ride.');
+        ->assertJsonPath('message', 'Only the passenger can review this ride.');
 });
 
 test('review creation is idempotent for same ride', function () {
@@ -187,7 +187,7 @@ test('review creation is idempotent for same ride', function () {
         'rating' => 1,
         'review_text' => 'Should not overwrite',
     ])->assertOk()
-      ->assertJsonPath('message', 'Review already exists for this ride.');
+        ->assertJsonPath('message', 'Review already exists for this ride.');
 
     expect(Review::where('ride_id', $ride->id)->count())->toBe(1);
     expect((int) Review::where('ride_id', $ride->id)->first()->rating)->toBe(5);

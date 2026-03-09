@@ -1,16 +1,16 @@
 <?php
 
-use App\Http\Controllers\Api\RideController;
-use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\PaymentController;
-use App\Http\Controllers\Api\ReviewController;
-use App\Http\Controllers\Api\DriverController;
-use App\Http\Controllers\Api\AdminUserController;
 use App\Http\Controllers\Api\AdminDriverController;
 use App\Http\Controllers\Api\AdminTripController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\AdminUserController;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\DriverController;
 use App\Http\Controllers\Api\OrsController;
+use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\PaymentPreferenceController;
+use App\Http\Controllers\Api\ReviewController;
+use App\Http\Controllers\Api\RideController;
+use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -44,11 +44,11 @@ Route::middleware(['auth:sanctum', 'not_suspended'])->group(function () {
     Route::get('/reviews', [ReviewController::class, 'index']);
     Route::get('/drivers/{driver}/reviews', [ReviewController::class, 'driverReviews']);
     Route::get('/drivers/{driver}/rating', [ReviewController::class, 'rating']);
-    
+
     Route::get('/rides/mine', [RideController::class, 'mine']);
     Route::get('/rides/driver', [RideController::class, 'driverRides']);
-    Route::get('/rides/available', [RideController::class, 'available']); 
-    
+    Route::get('/rides/available', [RideController::class, 'available']);
+
     Route::patch('/me', [AuthController::class, 'update']);
     Route::get('/driver/me', [DriverController::class, 'me']);
     Route::patch('/driver/me', [DriverController::class, 'updateMe']);
@@ -57,7 +57,7 @@ Route::middleware(['auth:sanctum', 'not_suspended'])->group(function () {
 
     Route::get('/driver/active-ride', [RideController::class, 'driverActive']);
     Route::get('/users/{id}/reviews', [ReviewController::class, 'forUser']);
-    
+
     // for debugging
     Route::get('/rides/{ride}', [RideController::class, 'show']);
 
@@ -73,4 +73,3 @@ Route::middleware(['auth:sanctum', 'not_suspended'])->group(function () {
 
 Route::get('/geocode/autocomplete', [OrsController::class, 'autocomplete']);
 Route::get('/directions', [OrsController::class, 'directions']);
-

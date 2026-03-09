@@ -52,7 +52,7 @@ function something()
 
 function ensureApiTestSchema(): void
 {
-    if (!Schema::hasTable('users')) {
+    if (! Schema::hasTable('users')) {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
@@ -67,7 +67,7 @@ function ensureApiTestSchema(): void
         });
     }
 
-    if (!Schema::hasTable('drivers')) {
+    if (! Schema::hasTable('drivers')) {
         Schema::create('drivers', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
@@ -84,7 +84,7 @@ function ensureApiTestSchema(): void
         });
     }
 
-    if (!Schema::hasTable('rides')) {
+    if (! Schema::hasTable('rides')) {
         Schema::create('rides', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
@@ -108,7 +108,7 @@ function ensureApiTestSchema(): void
         });
     }
 
-    if (!Schema::hasTable('payments')) {
+    if (! Schema::hasTable('payments')) {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('ride_id')->unique();
@@ -120,7 +120,7 @@ function ensureApiTestSchema(): void
         });
     }
 
-    if (!Schema::hasTable('reviews')) {
+    if (! Schema::hasTable('reviews')) {
         Schema::create('reviews', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('ride_id');
@@ -132,7 +132,7 @@ function ensureApiTestSchema(): void
         });
     }
 
-    if (!Schema::hasTable('personal_access_tokens')) {
+    if (! Schema::hasTable('personal_access_tokens')) {
         Schema::create('personal_access_tokens', function (Blueprint $table) {
             $table->id();
             $table->string('tokenable_type');

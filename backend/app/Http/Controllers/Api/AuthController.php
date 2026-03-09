@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -22,7 +22,7 @@ class AuthController extends Controller
 
     private function googleRedirectUri(): string
     {
-        return (string) config('services.google.redirect_uri', rtrim(config('app.url'), '/') . '/api/auth/google/callback');
+        return (string) config('services.google.redirect_uri', rtrim(config('app.url'), '/').'/api/auth/google/callback');
     }
 
     public function googleRedirect()
@@ -33,7 +33,7 @@ class AuthController extends Controller
         }
 
         $state = Str::random(40);
-        Cache::put('google_oauth_state_' . $state, true, now()->addMinutes(10));
+        Cache::put('google_oauth_state_'.$state, true, now()->addMinutes(10));
 
         $query = http_build_query([
             'client_id' => $clientId,
@@ -45,18 +45,18 @@ class AuthController extends Controller
             'prompt' => 'select_account',
         ]);
 
-        return redirect()->away('https://accounts.google.com/o/oauth2/v2/auth?' . $query);
+        return redirect()->away('https://accounts.google.com/o/oauth2/v2/auth?'.$query);
     }
 
     public function googleCallback(Request $request)
     {
         $frontendCallback = $this->frontendGoogleCallbackUrl();
         $redirectWithError = function (string $message) use ($frontendCallback) {
-            return redirect()->away($frontendCallback . '?error=' . urlencode($message));
+            return redirect()->away($frontendCallback.'?error='.urlencode($message));
         };
 
         $state = (string) $request->query('state', '');
-        if ($state === '' || !Cache::pull('google_oauth_state_' . $state, false)) {
+        if ($state === '' || ! Cache::pull('google_oauth_state_'.$state, false)) {
             return $redirectWithError('Invalid or expired Google auth state.');
         }
 
@@ -79,7 +79,7 @@ class AuthController extends Controller
             'grant_type' => 'authorization_code',
         ]);
 
-        if (!$tokenRes->ok()) {
+        if (! $tokenRes->ok()) {
             return $redirectWithError('Google token exchange failed.');
         }
 
@@ -89,7 +89,7 @@ class AuthController extends Controller
         }
 
         $profileRes = Http::withToken($accessToken)->get('https://www.googleapis.com/oauth2/v3/userinfo');
-        if (!$profileRes->ok()) {
+        if (! $profileRes->ok()) {
             return $redirectWithError('Failed to load Google profile.');
         }
 
@@ -97,13 +97,13 @@ class AuthController extends Controller
         $name = trim((string) ($profileRes->json('name') ?? ''));
         $verified = (bool) ($profileRes->json('email_verified') ?? false);
 
-        if ($email === '' || !$verified) {
+        if ($email === '' || ! $verified) {
             return $redirectWithError('Google account email is missing or not verified.');
         }
 
         $user = User::where('email', $email)->first();
 
-        if (!$user) {
+        if (! $user) {
             $user = User::create([
                 'name' => $name !== '' ? $name : 'Google User',
                 'email' => $email,
@@ -112,16 +112,17 @@ class AuthController extends Controller
             ]);
         }
 
-        if ((bool)($user->suspended ?? false)) {
+        if ((bool) ($user->suspended ?? false)) {
             return $redirectWithError('Your account has been suspended. Please contact support.');
         }
 
         $token = $user->createToken('api')->plainTextToken;
 
-        return redirect()->away($frontendCallback . '?token=' . urlencode($token));
+        return redirect()->away($frontendCallback.'?token='.urlencode($token));
     }
 
-    public function register(Request $request) {
+    public function register(Request $request)
+    {
         $data = $request->validate([
             'name' => ['required', 'string', 'min:2', 'max:100'],
             'email' => ['required', 'email', 'max:150', 'unique:users,email'],
@@ -164,13 +165,13 @@ class AuthController extends Controller
             }
         }
 
-        if (!$valid) {
+        if (! $valid) {
             throw ValidationException::withMessages([
                 'email' => ['Invalid credentials.'],
             ]);
         }
 
-        if ((bool)($user->suspended ?? false)) {
+        if ((bool) ($user->suspended ?? false)) {
             return response()->json([
                 'message' => 'Your account has been suspended. Please contact support.',
             ], 403);
@@ -184,7 +185,8 @@ class AuthController extends Controller
         ]);
     }
 
-    public function logout(Request $request) {
+    public function logout(Request $request)
+    {
         $request->user()->currentAccessToken()->delete();
 
         return response()->json([
@@ -192,13 +194,15 @@ class AuthController extends Controller
         ]);
     }
 
-    public function me(Request $request) {
+    public function me(Request $request)
+    {
         return response()->json([
             'user' => $request->user(),
         ]);
     }
 
-    public function destroy(Request $request) {
+    public function destroy(Request $request)
+    {
         $user = $request->user();
 
         $user->tokens()->delete();
@@ -210,7 +214,7 @@ class AuthController extends Controller
     public function update(Request $request)
     {
         $data = $request->validate([
-            'name'  => ['required', 'string', 'min:2', 'max:100'],
+            'name' => ['required', 'string', 'min:2', 'max:100'],
             'phone' => ['nullable', 'string', 'max:20'],
         ]);
 
@@ -234,7 +238,7 @@ class AuthController extends Controller
             'newPassword' => 'required|string|confirmed|min:8',
         ]);
 
-        if (!Hash::check($validated['oldPassword'], $user->password)) {
+        if (! Hash::check($validated['oldPassword'], $user->password)) {
             throw ValidationException::withMessages([
                 'oldPassword' => ['The provided password does not match our records.'],
             ]);
@@ -268,12 +272,12 @@ class AuthController extends Controller
             ->orderByDesc('last_used_at')
             ->orderByDesc('created_at')
             ->get(['id', 'name', 'created_at', 'last_used_at'])
-            ->map(fn($t) => [
+            ->map(fn ($t) => [
                 'id' => $t->id,
                 'name' => $t->name,
                 'created_at' => optional($t->created_at)->toISOString(),
                 'last_used_at' => optional($t->last_used_at)->toISOString(),
-                'is_current' => $currentId !== null && (int)$t->id === (int)$currentId,
+                'is_current' => $currentId !== null && (int) $t->id === (int) $currentId,
             ])
             ->values();
 
@@ -300,22 +304,22 @@ class AuthController extends Controller
             return response()->json(['message' => 'Driver application email is not configured'], 500);
         }
 
-        $subject = 'GoRide driver application - User #' . $user->id;
+        $subject = 'GoRide driver application - User #'.$user->id;
         $body = implode("\n", [
             'A user requested to become a driver.',
             '',
-            'User ID: ' . $user->id,
-            'Name: ' . (string) $user->name,
-            'Email: ' . (string) $user->email,
-            'Phone: ' . (string) ($user->phone ?? 'N/A'),
+            'User ID: '.$user->id,
+            'Name: '.(string) $user->name,
+            'Email: '.(string) $user->email,
+            'Phone: '.(string) ($user->phone ?? 'N/A'),
             '',
-            'Vehicle Make: ' . $data['vehicle_make'],
-            'Vehicle Model: ' . $data['vehicle_model'],
-            'Vehicle Color: ' . $data['vehicle_color'],
-            'License Plate: ' . $data['license_plate'],
-            'Passenger Capacity: ' . $data['passenger_capacity'],
+            'Vehicle Make: '.$data['vehicle_make'],
+            'Vehicle Model: '.$data['vehicle_model'],
+            'Vehicle Color: '.$data['vehicle_color'],
+            'License Plate: '.$data['license_plate'],
+            'Passenger Capacity: '.$data['passenger_capacity'],
             '',
-            'Requested At: ' . now()->toDateTimeString(),
+            'Requested At: '.now()->toDateTimeString(),
         ]);
 
         try {
@@ -327,6 +331,7 @@ class AuthController extends Controller
             if (config('app.debug')) {
                 $payload['error'] = $e->getMessage();
             }
+
             return response()->json($payload, 500);
         }
 
@@ -335,6 +340,4 @@ class AuthController extends Controller
             'sent_to' => $adminEmail,
         ]);
     }
-
-
 }

@@ -106,7 +106,7 @@ test('change-password updates password and old password no longer works', functi
             'newPassword' => 'newpassword123',
             'newPassword_confirmation' => 'newpassword123',
         ])->assertOk()
-          ->assertJsonPath('message', 'Password updated successfully.');
+        ->assertJsonPath('message', 'Password updated successfully.');
 
     expect(Hash::check('newpassword123', $user->fresh()->password))->toBeTrue();
 

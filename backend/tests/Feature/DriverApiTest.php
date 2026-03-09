@@ -46,7 +46,7 @@ test('driver location update is forbidden for non-driver users', function () {
         'lat' => 42.7,
         'lng' => 23.3,
     ])->assertStatus(403)
-      ->assertJsonPath('message', 'Forbidden.');
+        ->assertJsonPath('message', 'Forbidden.');
 });
 
 test('driver cannot update location while offline', function () {
@@ -69,7 +69,7 @@ test('driver cannot update location while offline', function () {
         'lat' => 42.7,
         'lng' => 23.3,
     ])->assertStatus(409)
-      ->assertJsonPath('message', 'Driver is offline.');
+        ->assertJsonPath('message', 'Driver is offline.');
 });
 
 test('busy driver cannot manually change status via driver update endpoint', function () {
@@ -92,7 +92,7 @@ test('busy driver cannot manually change status via driver update endpoint', fun
     $this->patchJson('/api/driver/me', [
         'status' => 'offline',
     ])->assertStatus(409)
-      ->assertJsonPath('message', 'You are busy on a ride.');
+        ->assertJsonPath('message', 'You are busy on a ride.');
 
     expect($driver->fresh()->status)->toBe('busy');
 });

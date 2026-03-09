@@ -6,10 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
-
 class OrsController extends Controller
 {
-
     private function orsGeocodeAutocomplete(string $q, $lat, $lng): array
     {
         $key = config('services.ors.key');
@@ -49,7 +47,7 @@ class OrsController extends Controller
 
     private function orsGeocode(string $url, array $params): array
     {
-        $full = $url . '?' . http_build_query($params);
+        $full = $url.'?'.http_build_query($params);
 
         $ch = curl_init($full);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -58,7 +56,9 @@ class OrsController extends Controller
         $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
-        if ($raw === false || $status < 200 || $status >= 300) return [];
+        if ($raw === false || $status < 200 || $status >= 300) {
+            return [];
+        }
 
         $json = json_decode($raw, true);
         $features = $json['features'] ?? [];
@@ -67,10 +67,14 @@ class OrsController extends Controller
         foreach ($features as $f) {
             $p = $f['properties'] ?? [];
             $g = $f['geometry']['coordinates'] ?? null;
-            if (!$g || count($g) < 2) continue;
+            if (! $g || count($g) < 2) {
+                continue;
+            }
 
             $label = $p['label'] ?? $p['name'] ?? null;
-            if (!$label) continue;
+            if (! $label) {
+                continue;
+            }
 
             $out[] = [
                 'label' => $label,
@@ -83,7 +87,6 @@ class OrsController extends Controller
 
         return $out;
     }
-
 
     public function autocomplete(Request $request)
     {
@@ -105,8 +108,10 @@ class OrsController extends Controller
         $seen = [];
 
         foreach ($all as $item) {
-            $key = $item['label'] . '|' . $item['lat'] . '|' . $item['lng'];
-            if (isset($seen[$key])) continue;
+            $key = $item['label'].'|'.$item['lat'].'|'.$item['lng'];
+            if (isset($seen[$key])) {
+                continue;
+            }
             $seen[$key] = true;
             $unique[] = $item;
         }
@@ -119,15 +124,17 @@ class OrsController extends Controller
         $request->validate([
             'start_lat' => ['required', 'numeric'],
             'start_lng' => ['required', 'numeric'],
-            'end_lat'   => ['required', 'numeric'],
-            'end_lng'   => ['required', 'numeric'],
+            'end_lat' => ['required', 'numeric'],
+            'end_lng' => ['required', 'numeric'],
         ]);
 
         $key = config('services.ors.key');
-        if (!$key) return response()->json(['message' => 'ORS key missing'], 500);
+        if (! $key) {
+            return response()->json(['message' => 'ORS key missing'], 500);
+        }
 
-        $start = [(float)$request->start_lng, (float)$request->start_lat];
-        $end   = [(float)$request->end_lng, (float)$request->end_lat];
+        $start = [(float) $request->start_lng, (float) $request->start_lat];
+        $end = [(float) $request->end_lng, (float) $request->end_lat];
 
         $body = [
             'coordinates' => [$start, $end],
@@ -136,13 +143,12 @@ class OrsController extends Controller
         $res = Http::withHeaders([
             'Authorization' => $key,
         ])->asJson()
-        ->post('https://api.openrouteservice.org/v2/directions/driving-car/geojson', $body);
+            ->post('https://api.openrouteservice.org/v2/directions/driving-car/geojson', $body);
 
-
-        if (!$res->ok()) {
+        if (! $res->ok()) {
             \Log::warning('ORS directions failed', [
                 'status' => $res->status(),
-                'body'   => $res->body(),
+                'body' => $res->body(),
             ]);
 
             return response()->json([
@@ -152,6 +158,4 @@ class OrsController extends Controller
 
         return response()->json($res->json());
     }
-
-
 }

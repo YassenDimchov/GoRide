@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateReviewRequest;
-use App\Models\Ride;
 use App\Models\Review;
+use App\Models\Ride;
 
 class ReviewController extends Controller
 {
@@ -13,7 +13,7 @@ class ReviewController extends Controller
     {
         $user = $request->user();
 
-        if ((int)$ride->user_id !== (int)$user->id) {
+        if ((int) $ride->user_id !== (int) $user->id) {
             return response()->json(['message' => 'Only the passenger can review this ride.'], 403);
         }
 
@@ -21,7 +21,7 @@ class ReviewController extends Controller
             return response()->json(['message' => 'Ride must be completed to leave a review.'], 409);
         }
 
-        if (!$ride->driver_id) {
+        if (! $ride->driver_id) {
             return response()->json(['message' => 'Ride has no driver; cannot review.'], 409);
         }
 
@@ -65,7 +65,7 @@ class ReviewController extends Controller
         return response()->json($reviews);
     }
 
-    public function rating(\App\Models\Driver $driver)  
+    public function rating(\App\Models\Driver $driver)
     {
         $count = $driver->reviews()->count();
         $avg = $driver->reviews()->avg('rating');
@@ -73,7 +73,7 @@ class ReviewController extends Controller
         return response()->json([
             'driver_id' => $driver->id,
             'reviews_count' => $count,
-            'average_rating' => $avg ? round((float)$avg, 2) : null,
+            'average_rating' => $avg ? round((float) $avg, 2) : null,
         ]);
     }
 
@@ -81,7 +81,7 @@ class ReviewController extends Controller
     {
         $reviews = \App\Models\Review::query()
             ->where('user_id', $userId)
-            ->select('id','rating','comment','created_at')
+            ->select('id', 'rating', 'comment', 'created_at')
             ->latest()
             ->get();
 

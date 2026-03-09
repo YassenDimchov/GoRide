@@ -44,8 +44,8 @@ test('admin can suspend a user', function () {
     $this->patchJson("/api/admin/users/{$target->id}/suspended", [
         'suspended' => true,
     ])->assertOk()
-      ->assertJsonPath('user.suspended', true)
-      ->assertJsonPath('message', 'User suspended.');
+        ->assertJsonPath('user.suspended', true)
+        ->assertJsonPath('message', 'User suspended.');
 
     expect((bool) $target->fresh()->suspended)->toBeTrue();
 });
@@ -63,7 +63,7 @@ test('admin cannot suspend their own account', function () {
     $this->patchJson("/api/admin/users/{$admin->id}/suspended", [
         'suspended' => true,
     ])->assertStatus(409)
-      ->assertJsonPath('message', "Admin accounts can't be suspended.");
+        ->assertJsonPath('message', "Admin accounts can't be suspended.");
 });
 
 test('admin can promote user to driver and driver profile is created', function () {
@@ -86,8 +86,8 @@ test('admin can promote user to driver and driver profile is created', function 
     $this->patchJson("/api/admin/users/{$target->id}/role", [
         'role' => 'driver',
     ])->assertOk()
-      ->assertJsonPath('user.role', 'driver')
-      ->assertJsonPath('message', 'User promoted to driver.');
+        ->assertJsonPath('user.role', 'driver')
+        ->assertJsonPath('message', 'User promoted to driver.');
 
     expect($target->fresh()->role)->toBe('driver');
     expect(Driver::where('user_id', $target->id)->exists())->toBeTrue();

@@ -10,13 +10,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('drivers', function (Blueprint $table) {
-            if (!Schema::hasColumn('drivers', 'passenger_capacity')) {
+            if (! Schema::hasColumn('drivers', 'passenger_capacity')) {
                 $table->unsignedTinyInteger('passenger_capacity')->default(4)->after('license_plate');
             }
         });
 
         Schema::table('rides', function (Blueprint $table) {
-            if (!Schema::hasColumn('rides', 'passenger_count')) {
+            if (! Schema::hasColumn('rides', 'passenger_count')) {
                 $table->unsignedTinyInteger('passenger_count')->default(1)->after('end_address');
             }
         });
